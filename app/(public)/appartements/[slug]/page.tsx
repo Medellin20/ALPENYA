@@ -119,7 +119,9 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             <div className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-ink-100 bg-white p-4 sm:grid-cols-4 sm:gap-4 sm:p-5">
               <Feature icon={BedDouble} label="Chambres" value={String(property.bedrooms)} />
               <Feature icon={Bath} label="Salles de bain" value={String(property.bathrooms)} />
-              <Feature icon={Ruler} label="Surface" value={formatSurface(property.surface_m2)} />
+              {property.surface_m2 > 0 && (
+                <Feature icon={Ruler} label="Surface" value={formatSurface(property.surface_m2)} />
+              )}
               <Feature
                 icon={Building}
                 label="Étage"
