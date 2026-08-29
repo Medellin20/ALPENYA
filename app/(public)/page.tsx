@@ -54,7 +54,7 @@ export default async function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-canal-500 via-canal-700 to-ink-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-canal-500/60 via-canal-700/65 to-ink-950/75 backdrop-blur-[1px]">
         <div className="container-app relative pb-16 pt-20 sm:pb-24 sm:pt-28 lg:pt-32">
           <FadeIn>
             <span className="text-eyebrow inline-block rounded-full bg-white/10 px-3 py-1.5 uppercase text-sand-200">
