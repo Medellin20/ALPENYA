@@ -19,6 +19,24 @@ function getClientKey(): string {
   return h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip') || 'unknown';
 }
 
+function isSecureRequest(): boolean {
+  const h = headers();
+  const forwardedProtocol = h.get('x-forwarded-proto')?.split(',')[0]?.trim().toLowerCase();
+
+  if (forwardedProtocol) return forwardedProtocol === 'https';
+
+  // Certains hébergeurs ne transmettent pas x-forwarded-proto, mais Origin
+  // reste disponible sur la requête de la Server Action.
+  const origin = h.get('origin');
+  if (!origin) return false;
+
+  try {
+    return new URL(origin).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function safeCompare(a: string, b: string): boolean {
   const bufferA = Buffer.from(a);
   const bufferB = Buffer.from(b);
@@ -66,13 +84,22 @@ export async function loginAdmin(_prevState: AdminLoginState, formData: FormData
   const token = await createAdminSessionToken();
   cookies().set(ADMIN_SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    // Un cookie Secure est ignoré par les navigateurs lorsque l'application
+    // est servie en HTTP (cas fréquent sur une IP ou derrière certains
+    // reverse proxies), ce qui provoquait une boucle /admin/login en prod.
+    secure: isSecureRequest(),
     sameSite: 'lax',
     path: '/',
     maxAge: ADMIN_SESSION_DURATION_MS / 1000,
   });
 
-  await logAdminAction({ action: 'admin.login', details: { ip: clientKey } });
+  // Une panne du journal d'audit ne doit pas invalider une authentification
+  // réussie ni empêcher l'envoi du cookie de session.
+  try {
+    await logAdminAction({ action: 'admin.login', details: { ip: clientKey } });
+  } catch (error) {
+    console.error('Impossible de journaliser la connexion administrateur.', error);
+  }
 
   redirect('/admin');
 }
