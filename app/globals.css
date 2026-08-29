@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sand-100 text-ink antialiased;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    overflow-wrap: anywhere;
+  }
+
+  ::selection {
+    @apply bg-canal-200 text-ink-900;
+  }
+
+  /* Anneau de focus visible et cohérent au clavier partout dans l'app */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ink-700 ring-offset-2 ring-offset-sand-100;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .scrollbar-safe {
+    scrollbar-width: thin;
+    overscroll-behavior-inline: contain;
+  }
+
+  /* Motif "ligne de canal" — signature visuelle utilisée entre les sections */
+  .canal-divider {
+    @apply relative h-px w-full bg-canal-line;
+  }
+  .canal-divider::after {
+    content: '';
+    @apply absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-brick-500;
+  }
+}
+
+/* Skeleton shimmer keyframe fallback (au cas où le plugin tailwind ne l'ait pas injecté) */
+@keyframes shimmer {
+  from { background-position: -700px 0; }
+  to { background-position: 700px 0; }
+}
+
+/* Intégration compacte du sélecteur Google Translate dans la navigation. */
+.language-translator .goog-te-gadget {
+  color: transparent;
+  font-size: 0;
+  line-height: 1;
+}
+
+.language-translator .goog-te-gadget .goog-te-combo {
+  margin: 0;
+  width: 100%;
+  height: 2rem;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: #263238;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.language-translator .goog-logo-link,
+.language-translator .goog-te-gadget span {
+  display: none !important;
+}
+
+body > .skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+/* Les tarifs utilisent des champs numériques sobres et identiques sur tous les navigateurs. */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+input[type='number'] {
+  appearance: textfield;
+}

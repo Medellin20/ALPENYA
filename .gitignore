@@ -1,0 +1,14 @@
+# Secrets et configuration locale
+.env
+.env.local
+.env.*.local
+
+# Dépendances et sorties Next.js
+node_modules/
+.next/
+out/
+
+# Fichiers locaux
+*.log
+.DS_Store
+
