@@ -104,3 +104,30 @@ input[type='number']::-webkit-outer-spin-button {
 input[type='number'] {
   appearance: textfield;
 }
+
+/* Panorama global des pages publiques, avec un voile pour garder une bonne
+   lisibilité sur ordinateur comme sur mobile. */
+.site-background {
+  background-image:
+    linear-gradient(rgba(247, 245, 240, 0.76), rgba(247, 245, 240, 0.76)),
+    url('/images/site-background.webp');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* Les surfaces claires restent lisibles tout en laissant apparaître le décor. */
+.site-background .bg-white {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.site-background .bg-sand-100 {
+  background-color: rgba(247, 245, 240, 0.86);
+}
+
+@media (max-width: 767px) {
+  .site-background {
+    /* background-attachment: fixed est coûteux et instable sur certains mobiles. */
+    background-attachment: scroll;
+  }
+}
