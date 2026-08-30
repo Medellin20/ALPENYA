@@ -78,7 +78,7 @@ export function AdminSidebar() {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink-700 text-white">
             <Home className="h-4 w-4" />
           </span>
-          <span className="truncate font-extrabold text-ink-900">ALPENYA</span>
+          <span className="truncate font-extrabold text-ink-900">ALPENIA</span>
         </Link>
         <button
           type="button"
@@ -121,7 +121,7 @@ function SidebarHeader({ compact }: { compact?: boolean }) {
         <Home className="h-4.5 w-4.5 text-white" />
       </span>
       <div>
-        <p className="text-sm font-extrabold text-white">ALPENYA</p>
+        <p className="text-sm font-extrabold text-white">ALPENIA</p>
         <p className="text-[11px] font-medium uppercase tracking-wide text-sand-400">Administration</p>
       </div>
     </Link>

@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Palette ALPENYA — bleu ciel lumineux, bleu nuit pour le contraste,
+        // Palette ALPENIA — bleu ciel lumineux, bleu nuit pour le contraste,
         // et magenta comme accent distinctif.
         ink: {
           DEFAULT: '#102A43',

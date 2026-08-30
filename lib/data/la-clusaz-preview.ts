@@ -13,19 +13,56 @@ export const LA_CLUSAZ_PREVIEW: PropertyWithRelations = {
   id: '11111111-1111-4111-8111-111111111111',
   slug: 'chalet-la-clusaz-haute-savoie',
   title: 'Chalet d’exception à La Clusaz',
-  description: `Ce sublime chalet de 155 m², situé dans le quartier calme du Gotty à La Clusaz, accueille confortablement jusqu’à 14 voyageurs, avec 2 couchages supplémentaires possibles.
+  description: `# Chalet spacieux à La Clusaz – Quartier du Gotty
 
-Il comprend 5 chambres : 4 chambres avec lit double et 1 chambre avec 4 lits individuels. Les 5 salles de bain privatives offrent confort et intimité à tous les voyageurs. Le chalet dispose également du Wi-Fi, d’un sauna, d’une cheminée, d’un garage pour 2 véhicules et d’un spacieux jardin. Les draps et le linge de maison sont fournis.
+Situé dans le **quartier calme du Gotty à La Clusaz**, ce magnifique chalet de **155 m²** offre un cadre chaleureux et confortable pour profiter pleinement d’un séjour à la montagne.
 
-Situation privilégiée pour les séjours au ski : la piste la plus proche se trouve à environ 350 mètres et l’arrêt du ski-bus à 100 mètres. La télécabine de Beauregard dessert directement le secteur de Beauregard jusqu’à 1 640 mètres d’altitude. Le village, son marché, ses commerces et ses restaurants se trouvent à environ 1,5 km.
+Il peut accueillir **jusqu’à 14 voyageurs**, avec la possibilité d’ajouter **2 couchages supplémentaires**, ce qui en fait une adresse idéale pour les familles nombreuses, les groupes d’amis ou les séjours en tribu.
 
-TARIFS À LA SEMAINE
-• Hors saison : 1 806 €
-• Noël et Nouvel An : 2 156 €
-• De janvier à mars : 2 338 €
-• Forfait ménage en option : 150 € par semaine
+## Le chalet
 
-Ce chalet est idéal pour un séjour paisible à la montagne, en famille ou entre amis.`,
+Le chalet dispose de **5 chambres confortables**, réparties comme suit :
+
+- **4 chambres avec lit double** ;
+- **1 chambre avec 4 lits individuels**.
+
+Chaque chambre bénéficie de sa **salle de bain privative**, soit **5 salles de bain au total**, garantissant confort, intimité et praticité à l’ensemble des voyageurs.
+
+Pour rendre votre séjour encore plus agréable, le chalet comprend également :
+
+- une connexion **Wi-Fi** ;
+- un **sauna privatif** ;
+- une **cheminée** ;
+- un **garage pouvant accueillir 2 véhicules** ;
+- un **spacieux jardin** ;
+- les **draps et le linge de maison fournis**.
+
+## Un emplacement idéal pour le ski
+
+Le chalet bénéficie d’une situation privilégiée pour profiter facilement du domaine skiable de La Clusaz :
+
+- **Piste de ski la plus proche :** environ 350 mètres ;
+- **Arrêt du ski-bus :** environ 100 mètres ;
+- **Télécabine de Beauregard :** accès privilégié au secteur de Beauregard, jusqu’à environ **1 640 mètres d’altitude**.
+
+Cette localisation permet de rejoindre rapidement les pistes tout en profitant du calme du quartier du Gotty.
+
+## À proximité du village
+
+Le centre de **La Clusaz** se trouve à environ **1,5 km** du chalet.
+
+Vous pourrez facilement profiter :
+
+- du marché local ;
+- des commerces ;
+- des restaurants ;
+- des animations et services de la station.
+
+## Un séjour entre montagne, confort et tranquillité
+
+Grâce à ses grands espaces, ses nombreux équipements et sa proximité avec les pistes, ce chalet est parfaitement adapté à un **séjour en famille ou entre amis**.
+
+Un lieu idéal pour profiter de **La Clusaz**, de son domaine skiable et de l’atmosphère authentique de la montagne, dans un environnement à la fois **paisible, confortable et convivial**.`,
   property_type: 'chalet',
   address: '630 route des Fiaux',
   city: 'La Clusaz',
@@ -42,14 +79,9 @@ Ce chalet est idéal pour un séjour paisible à la montagne, en famille ou entr
   bathrooms: 5,
   rooms: 7,
   floor: null,
-  floors_count: 2,
-  volume_m3: null,
   contract_type: 'Location saisonnière à la semaine',
   interior_type: 'Entièrement meublé',
   maintenance_condition: 'Excellent',
-  construction_type: 'Chalet traditionnel rénové',
-  construction_year: null,
-  energy_label: null,
   has_elevator: false,
   has_balcony: true,
   has_terrace: true,
@@ -57,7 +89,6 @@ Ce chalet est idéal pour un séjour paisible à la montagne, en famille ou entr
   has_garage: true,
   has_garden: true,
   is_furnished: true,
-  pets_allowed: false,
   available_from: null,
   minimum_stay_months: 1,
   status: 'available',
@@ -91,4 +122,3 @@ Ce chalet est idéal pour un séjour paisible à la montagne, en famille ou entr
     icon,
   })),
 };
-

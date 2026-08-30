@@ -40,6 +40,7 @@ export async function GET(_request: NextRequest) {
     'Entrée souhaitée',
     'Durée (jours)',
     'Occupants',
+    'Animaux de compagnie',
     'Statut',
     'Créée le',
   ];
@@ -54,6 +55,7 @@ export async function GET(_request: NextRequest) {
     r.desired_move_in_date,
     r.duration_months,
     r.occupants_count,
+    r.has_pets ? 'Oui' : 'Non',
     r.status,
     r.created_at,
   ]);

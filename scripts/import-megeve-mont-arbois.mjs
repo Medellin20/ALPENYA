@@ -11,19 +11,48 @@ const env = Object.fromEntries(rawEnv.split(/\r?\n/).map((line) => line.trim()).
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 
 const slug = 'chalet-megeve-mont-d-arbois';
-const description = `Magnifique chalet entièrement rénové avec goût, situé au Mont d’Arbois à Megève.
+const description = `# Chalet haut de gamme au Mont d’Arbois – Megève
 
-Le logement dispose d’une cuisine entièrement équipée, de 4 chambres avec lit double et salle de bain privative, ainsi que d’une spacieuse chambre dortoir avec 2 lits doubles. Il peut accueillir jusqu’à 14 voyageurs. Une buanderie avec lave-linge et sèche-linge, un sauna, un ski-room, une terrasse, un magnifique jardin et un parking pour 2 véhicules complètent les prestations.
+Magnifiquement rénové avec goût, ce chalet situé au **Mont d’Arbois à Megève** offre un cadre élégant, chaleureux et confortable pour un séjour d’exception à la montagne.
 
-L’arrêt du ski-bus se trouve à proximité immédiate. Le chalet est situé à 2 minutes du Four Seasons, à 3 minutes des remontées mécaniques du Mont d’Arbois et à 6 minutes du centre de Megève. Les remontées sont accessibles à pied à environ 1 km ; une navette gratuite dessert également directement le Mont d’Arbois.
+Pouvant accueillir **jusqu’à 14 voyageurs**, il est parfaitement adapté aux familles nombreuses et aux groupes d’amis souhaitant profiter de Megève dans un environnement privilégié.
 
-TARIFS À LA SEMAINE
-• Hors saison : 2 156 €
-• Noël et Nouvel An : 2 478 €
-• De janvier à mars : 2 876 €
-• Forfait ménage en option : 200 € par semaine
+## Le chalet
 
-Surface non communiquée.`;
+Le logement dispose d’une **cuisine entièrement équipée** ainsi que de plusieurs espaces pensés pour garantir confort et convivialité.
+
+Il comprend :
+
+- **4 chambres avec lit double**, chacune avec **salle de bain privative** ;
+- **1 grande chambre dortoir** équipée de **2 lits doubles** ;
+- une **buanderie** avec lave-linge et sèche-linge ;
+- un **sauna privatif** ;
+- un **ski-room** ;
+- une agréable **terrasse** ;
+- un **magnifique jardin** ;
+- un **parking pouvant accueillir 2 véhicules**.
+
+L’ensemble a été aménagé avec soin afin d’offrir une atmosphère à la fois élégante, chaleureuse et fonctionnelle.
+
+## Un emplacement privilégié au Mont d’Arbois
+
+Le chalet bénéficie d’une excellente situation pour profiter pleinement du domaine skiable et des principales adresses de Megève :
+
+- **Four Seasons Megève :** environ 2 minutes ;
+- **Remontées mécaniques du Mont d’Arbois :** environ 3 minutes ;
+- **Centre de Megève :** environ 6 minutes ;
+- **Remontées mécaniques accessibles à pied :** environ 1 km ;
+- **Arrêt du ski-bus :** à proximité immédiate.
+
+Une **navette gratuite** permet également de rejoindre directement le secteur du Mont d’Arbois.
+
+## Un séjour entre ski, détente et élégance
+
+Grâce à sa proximité avec les pistes, ses équipements de qualité et ses généreux espaces de vie, ce chalet constitue une adresse idéale pour profiter pleinement de **Megève et du Mont d’Arbois**.
+
+Après une journée sur les pistes, vous pourrez vous détendre dans le **sauna**, profiter du jardin ou partager des moments conviviaux dans le confort du chalet.
+
+Un lieu idéal pour un séjour à la montagne placé sous le signe du **confort, du ski, de la détente et de l’élégance alpine**.`;
 
 const { data: property, error: propertyError } = await supabase.from('properties').upsert({
   slug,
@@ -42,11 +71,9 @@ const { data: property, error: propertyError } = await supabase.from('properties
   bedrooms: 5,
   bathrooms: 4,
   rooms: 7,
-  floors_count: 3,
   contract_type: 'Location saisonnière à la semaine',
   interior_type: 'Entièrement meublé',
   maintenance_condition: 'Entièrement rénové',
-  construction_type: 'Chalet traditionnel rénové',
   has_elevator: false,
   has_balcony: true,
   has_terrace: true,
@@ -54,7 +81,6 @@ const { data: property, error: propertyError } = await supabase.from('properties
   has_garage: false,
   has_garden: true,
   is_furnished: true,
-  pets_allowed: false,
   minimum_stay_months: 1,
   status: 'available',
   is_published: true,

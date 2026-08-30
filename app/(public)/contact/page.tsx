@@ -5,11 +5,11 @@ import { FadeIn } from '@/components/ui/fade-in';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: "Contactez l’équipe ALPENYA pour toute question sur la location d’un chalet ou d’une villa en France.",
+  description: "Contactez l’équipe ALPENIA pour toute question sur la location d’un chalet ou d’une villa en France.",
 };
 
 const INFO = [
-  { icon: Mail, label: 'contacts@alpenya.fr' },
+  { icon: Mail, label: 'contacts@alpenia-residences.com' },
   { icon: Phone, label: '+33 1 23 45 67 89' },
   { icon: MapPin, label: 'Paris, France' },
   { icon: Clock, label: 'Lun–Ven, 9h–18h (CET)' },

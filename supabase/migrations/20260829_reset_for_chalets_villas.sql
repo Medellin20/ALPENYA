@@ -1,4 +1,4 @@
--- Réinitialisation du catalogue ALPENYA et activation des types chalet/villa.
+-- Réinitialisation du catalogue ALPENIA et activation des types chalet/villa.
 -- Les équipements et la configuration bancaire sont volontairement conservés.
 
 alter type public.property_type add value if not exists 'chalet';

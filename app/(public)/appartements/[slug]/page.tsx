@@ -7,7 +7,6 @@ import {
   Ruler,
   Building,
   ArrowUpDown,
-  PawPrint,
   Sofa,
   MessageCircle,
 } from 'lucide-react';
@@ -17,6 +16,7 @@ import { AmenityIcon } from '@/components/properties/amenity-icon';
 import { FavoriteButton } from '@/components/properties/favorite-button';
 import { ShareButton } from '@/components/properties/share-button';
 import { PropertyCard } from '@/components/properties/property-card';
+import { SeasonalPriceSelector } from '@/components/properties/seasonal-price-selector';
 import { Badge, StatusDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FadeIn } from '@/components/ui/fade-in';
@@ -130,10 +130,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             </div>
 
             <div className="mt-10">
-              <h2 className="text-lg font-bold text-ink-900">Description</h2>
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-ink-600">
-                {property.description}
-              </p>
+              <h2 className="text-lg font-bold text-ink-900">Présentation</h2>
+              <PropertyPresentation description={property.description} />
             </div>
 
             <div className="mt-10">
@@ -149,10 +147,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   value={property.is_furnished ? 'Meublé' : 'Non meublé'}
                 />
                 <DetailRow
-                  label="Animaux acceptés"
-                  value={property.pets_allowed ? 'Oui' : 'Non'}
-                />
-                <DetailRow
                   label="Disponible à partir du"
                   value={property.available_from ? formatDate(property.available_from) : 'Nous consulter'}
                 />
@@ -160,11 +154,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   label="Durée minimale de location"
                   value={property.contract_type.includes('semaine') ? '1 semaine' : `${property.minimum_stay_months ?? 12} mois`}
                 />
-                <DetailRow label="Volume" value={property.volume_m3 ? `${property.volume_m3} m³` : '—'} />
-                <DetailRow label="Nombre d’étages" value={property.floors_count ? String(property.floors_count) : '—'} />
-                <DetailRow label="Type de construction" value={property.construction_type} />
-                <DetailRow label="Année de construction" value={property.construction_year ? String(property.construction_year) : '—'} />
-                <DetailRow label="Étiquette énergétique" value={property.energy_label || '—'} />
                 <DetailRow label="Parking" value={property.has_parking ? 'Oui' : 'Non'} />
                 <DetailRow label="Garage" value={property.has_garage ? 'Oui' : 'Non'} />
               </dl>
@@ -194,18 +183,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         <div className="lg:col-span-1">
           <FadeIn delay={0.1} className="lg:sticky lg:top-24">
             <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-card sm:p-6">
-              <div className="flex flex-wrap items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold text-ink-900">
-                  {formatPrice(property.monthly_price)}
-                </span>
-                <span className="text-ink-400">/ semaine hors saison</span>
-              </div>
-              <div className="mt-5 space-y-2 rounded-xl bg-sand-100 p-4 text-sm">
-                <PriceRow label="Hors saison" value={property.monthly_price} />
-                <PriceRow label="Noël – Nouvel An" value={property.deposit_amount} />
-                <PriceRow label="Janvier – Mars" value={property.viewing_fee} />
-                <PriceRow label="Forfait ménage" value={property.service_charges} suffix="" />
-              </div>
+              <SeasonalPriceSelector
+                lowSeasonPrice={property.monthly_price}
+                holidayPrice={property.deposit_amount}
+                winterPrice={property.viewing_fee}
+                cleaningFee={property.service_charges}
+              />
               {isBookable ? (
                 <div className="mt-5 space-y-2.5">
                   <Button asChild className="w-full" size="lg">
@@ -225,10 +208,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5"><Sofa className="h-3.5 w-3.5" /> Meublé</span>
                   <span className="font-medium text-ink-700">{property.is_furnished ? 'Oui' : 'Non'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5"><PawPrint className="h-3.5 w-3.5" /> Animaux</span>
-                  <span className="font-medium text-ink-700">{property.pets_allowed ? 'Acceptés' : 'Non acceptés'}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5"><ArrowUpDown className="h-3.5 w-3.5" /> Ascenseur</span>
@@ -254,6 +233,77 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   );
 }
 
+function PropertyPresentation({ description }: { description: string }) {
+  const blocks = description.trim().split(/\n\s*\n/);
+
+  return (
+    <div className="mt-4 space-y-5 leading-relaxed text-ink-600">
+      {blocks.map((block, blockIndex) => {
+        const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+        const markdownHeading = lines.length === 1 ? lines[0].match(/^(#{1,3})\s+(.+)$/) : null;
+        const isList = lines.length > 0 && lines.every((line) => /^[•*-]\s+/.test(line));
+        const isHeading = lines.length === 1
+          && lines[0] === lines[0].toLocaleUpperCase('fr-FR')
+          && /[A-ZÀ-ÖØ-Þ]/.test(lines[0]);
+
+        if (markdownHeading) {
+          const isMainHeading = markdownHeading[1].length === 1;
+          return (
+            <h3
+              key={blockIndex}
+              className={isMainHeading
+                ? 'text-xl font-extrabold leading-tight text-ink-900 sm:text-2xl'
+                : 'pt-2 text-lg font-bold text-ink-900'}
+            >
+              {formatBoldText(markdownHeading[2])}
+            </h3>
+          );
+        }
+
+        if (isHeading) {
+          return (
+            <h3 key={blockIndex} className="pt-2 text-base font-extrabold uppercase tracking-wide text-ink-900">
+              {formatBoldText(lines[0])}
+            </h3>
+          );
+        }
+
+        if (isList) {
+          return (
+            <ul key={blockIndex} className="space-y-2 rounded-2xl bg-sand-100 px-5 py-4">
+              {lines.map((line, lineIndex) => (
+                <li key={lineIndex} className="flex gap-3">
+                  <span aria-hidden="true" className="font-bold text-canal-600">•</span>
+                  <span>{formatBoldText(line.replace(/^[•*-]\s+/, ''))}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        }
+
+        return (
+          <p key={blockIndex}>
+            {lines.map((line, lineIndex) => (
+              <span key={lineIndex}>
+                {lineIndex > 0 && <br />}
+                {formatBoldText(line)}
+              </span>
+            ))}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+function formatBoldText(text: string) {
+  return text.split(/(\*\*.+?\*\*)/g).map((part, index) =>
+    part.startsWith('**') && part.endsWith('**') ? (
+      <strong key={index} className="font-bold text-ink-900">{part.slice(2, -2)}</strong>
+    ) : part
+  );
+}
+
 function Feature({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <div className="flex flex-col items-center gap-1.5 text-center sm:items-start sm:text-left">
@@ -269,15 +319,6 @@ function DetailRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between border-b border-ink-100 py-2 text-sm">
       <dt className="text-ink-400">{label}</dt>
       <dd className="font-medium text-ink-700">{value}</dd>
-    </div>
-  );
-}
-
-function PriceRow({ label, value, suffix = ' / semaine' }: { label: string; value: number; suffix?: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-ink-500">{label}</span>
-      <span className="text-right font-bold text-ink-800">{value > 0 ? `${formatPrice(value)}${suffix}` : 'Nous consulter'}</span>
     </div>
   );
 }

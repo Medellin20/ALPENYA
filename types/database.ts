@@ -71,14 +71,9 @@ export interface Property {
   bathrooms: number;
   rooms: number | null;
   floor: number | null;
-  floors_count: number | null;
-  volume_m3: number | null;
   contract_type: string;
   interior_type: string;
   maintenance_condition: string;
-  construction_type: string;
-  construction_year: number | null;
-  energy_label: string | null;
   has_elevator: boolean;
   has_balcony: boolean;
   has_terrace: boolean;
@@ -86,7 +81,6 @@ export interface Property {
   has_garage: boolean;
   has_garden: boolean;
   is_furnished: boolean;
-  pets_allowed: boolean;
   available_from: string | null;
   minimum_stay_months: number | null;
   status: PropertyStatus;
@@ -146,11 +140,11 @@ export interface Reservation {
   desired_move_in_date: string;
   duration_months: number;
   occupants_count: number;
+  has_pets: boolean;
   profession: string | null;
   monthly_income: number | null;
   employment_contract: string | null;
   origin_city: string | null;
-  message: string | null;
   status: ReservationStatus;
   admin_notes: string | null;
   created_at: string;

@@ -9,7 +9,8 @@ import { ArrowLeft, ArrowRight, ClipboardList, FileCheck2, User } from 'lucide-r
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { createReservation } from '@/actions/reservations';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Select } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label, FieldError } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils/cn';
@@ -39,6 +40,8 @@ export function ReservationForm({
     defaultValues: {
       propertyId,
       durationDays: 7,
+      occupantsCount: 1,
+      hasPets: false,
     },
   });
 
@@ -48,7 +51,7 @@ export function ReservationForm({
   async function goNext() {
     const fieldsByStep: (keyof ReservationInput)[][] = [
       ['firstName', 'lastName', 'email', 'phone'],
-      ['desiredMoveInDate', 'durationDays'],
+      ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets'],
     ];
     const valid = await trigger(fieldsByStep[step]);
     if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -150,12 +153,20 @@ export function ReservationForm({
                   <Input id="durationDays" type="number" min={1} max={365} {...register('durationDays')} />
                   <FieldError message={errors.durationDays?.message} />
                 </div>
+                <div>
+                  <Label htmlFor="occupantsCount">Nombre d’occupants</Label>
+                  <Select id="occupantsCount" {...register('occupantsCount')}>
+                    {Array.from({ length: 20 }, (_, index) => index + 1).map((count) => (
+                      <option key={count} value={count}>{count}</option>
+                    ))}
+                  </Select>
+                  <FieldError message={errors.occupantsCount?.message} />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="message">Message complémentaire (facultatif)</Label>
-                <Textarea id="message" rows={4} {...register('message')} />
-                <FieldError message={errors.message?.message} />
-              </div>
+              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-ink-100 bg-sand-100/60 p-4 text-sm font-semibold text-ink-700">
+                <Checkbox {...register('hasPets')} />
+                Je voyage avec un ou plusieurs animaux de compagnie
+              </label>
             </motion.div>
           )}
 
@@ -178,6 +189,8 @@ export function ReservationForm({
                 <Row label="E-mail" value={values.email || '—'} />
                 <Row label="Date de réservation" value={values.desiredMoveInDate || '—'} />
                 <Row label="Durée" value={values.durationDays ? `${values.durationDays} jour${values.durationDays > 1 ? 's' : ''}` : '—'} />
+                <Row label="Nombre d’occupants" value={String(values.occupantsCount || '—')} />
+                <Row label="Animaux de compagnie" value={values.hasPets ? 'Oui' : 'Non'} />
               </div>
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
                 Cette étape transmet uniquement votre demande de réservation. Aucun paiement ni

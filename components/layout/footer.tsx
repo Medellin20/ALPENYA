@@ -28,7 +28,7 @@ export function Footer() {
               <Home className="h-4.5 w-4.5 text-white" strokeWidth={2.25} />
             </span>
             <span className="text-lg font-extrabold tracking-tight text-white">
-              ALPENYA
+              ALPENIA
             </span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-sand-300">
@@ -91,11 +91,11 @@ export function Footer() {
           <ul className="mt-4 space-y-3">
             <li>
               <a
-                href="mailto:contacts@alpenya.fr"
+                href="mailto:contacts@alpenia-residences.com"
                 className="flex min-w-0 items-center gap-2.5 break-all text-sm text-sand-300 transition-colors hover:text-white"
               >
                 <Mail className="h-4 w-4 shrink-0" />
-                contacts@alpenya.fr
+                contacts@alpenia-residences.com
               </a>
             </li>
             <li>
@@ -113,7 +113,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-app flex flex-col items-center justify-between gap-3 py-5 text-xs text-sand-400 sm:flex-row">
-          <p>© {year} ALPENYA. Tous droits réservés.</p>
+          <p>© {year} ALPENIA. Tous droits réservés.</p>
           <p>Location de chalets et villas en France</p>
         </div>
       </div>

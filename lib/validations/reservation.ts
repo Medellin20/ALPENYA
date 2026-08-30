@@ -12,7 +12,12 @@ export const reservationSchema = z.object({
     .int()
     .min(1, 'La durée minimale est de 1 jour.')
     .max(365, 'Merci de contacter l’agence pour un séjour supérieur à un an.'),
-  message: z.string().trim().max(2000).optional().or(z.literal('')),
+  occupantsCount: z.coerce
+    .number()
+    .int()
+    .min(1, 'Indiquez au moins un occupant.')
+    .max(50, 'Le nombre d’occupants ne peut pas dépasser 50.'),
+  hasPets: z.boolean().default(false),
 });
 
 export type ReservationInput = z.infer<typeof reservationSchema>;

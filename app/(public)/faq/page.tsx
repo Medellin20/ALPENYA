@@ -4,7 +4,7 @@ import { FadeIn } from '@/components/ui/fade-in';
 
 export const metadata: Metadata = {
   title: 'FAQ',
-  description: 'Questions fréquentes sur les demandes de visite et de réservation chez ALPENYA.',
+  description: 'Questions fréquentes sur les demandes de visite et de réservation chez ALPENIA.',
 };
 
 const CATEGORIES = [

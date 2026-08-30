@@ -1,5 +1,5 @@
 -- =============================================================================
--- ALPENYA — SCHÉMA DE BASE DE DONNÉES
+-- ALPENIA — SCHÉMA DE BASE DE DONNÉES
 -- À exécuter dans Supabase SQL Editor (Project > SQL Editor > New query)
 -- Ordre d'exécution : schema.sql -> rls_policies.sql -> seed.sql
 -- =============================================================================
@@ -89,14 +89,9 @@ create table properties (
   bathrooms integer not null default 1,
   rooms integer,
   floor integer,
-  floors_count integer,
-  volume_m3 numeric(8, 2),
   contract_type text not null default 'Période indéterminée',
   interior_type text not null default 'Non meublé',
   maintenance_condition text not null default 'Bien',
-  construction_type text not null default 'Bâtiment existant',
-  construction_year integer,
-  energy_label text,
   has_elevator boolean not null default false,
   has_balcony boolean not null default false,
   has_terrace boolean not null default false,
@@ -104,7 +99,6 @@ create table properties (
   has_garage boolean not null default false,
   has_garden boolean not null default false,
   is_furnished boolean not null default false,
-  pets_allowed boolean not null default false,
 
   -- Disponibilité
   available_from date,
@@ -206,11 +200,11 @@ create table reservations (
   desired_move_in_date date not null,
   duration_months integer not null default 12,
   occupants_count integer not null default 1,
+  has_pets boolean not null default false,
   profession text,
   monthly_income numeric(10, 2),
   employment_contract text,
   origin_city text,
-  message text,
 
   status reservation_status not null default 'submitted',
 
@@ -296,7 +290,7 @@ create table bank_settings (
 );
 
 insert into bank_settings (id, beneficiary_name, iban, bic, bank_name, payment_instructions, default_deposit_amount)
-values (1, 'ALPENYA (À CONFIGURER)', 'FR00 0000 0000 0000 0000 0000 000', 'XXXXXXXX', 'Banque à configurer',
+values (1, 'ALPENIA (À CONFIGURER)', 'FR00 0000 0000 0000 0000 0000 000', 'XXXXXXXX', 'Banque à configurer',
         'RIB de démonstration — ne pas effectuer de virement avant son remplacement dans l''espace administrateur.', 0)
 on conflict (id) do nothing;
 

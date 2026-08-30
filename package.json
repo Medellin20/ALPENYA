@@ -1,8 +1,8 @@
 {
-  "name": "alpenya",
+  "name": "alpenia",
   "version": "1.0.0",
   "private": true,
-  "description": "ALPENYA — plateforme de location de chalets et villas en France",
+  "description": "ALPENIA — plateforme de location de chalets et villas en France",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

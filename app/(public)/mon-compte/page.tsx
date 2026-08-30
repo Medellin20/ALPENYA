@@ -31,7 +31,7 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
       <div className="mb-8">
         <h1 className="text-display-sm font-extrabold text-ink-900 sm:text-display-md">Mon compte</h1>
         <p className="mt-2 text-ink-500">
-          Bonjour {dossier.client.first_name}, voici le suivi de vos démarches auprès d’ALPENYA.
+          Bonjour {dossier.client.first_name}, voici le suivi de vos démarches auprès d’ALPENIA.
         </p>
       </div>
 

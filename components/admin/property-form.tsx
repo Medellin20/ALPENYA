@@ -26,7 +26,6 @@ const BOOLEAN_FIELDS: { key: keyof PropertyInput; label: string }[] = [
   { key: 'hasGarage', label: 'Garage' },
   { key: 'hasGarden', label: 'Jardin' },
   { key: 'isFurnished', label: 'Meublé' },
-  { key: 'petsAllowed', label: 'Animaux autorisés' },
 ];
 
 function propertyToFormValues(property: Property, amenityIds: string[]): PropertyInput {
@@ -48,8 +47,6 @@ function propertyToFormValues(property: Property, amenityIds: string[]): Propert
     contractType: property.contract_type,
     interiorType: property.interior_type,
     maintenanceCondition: property.maintenance_condition,
-    constructionType: property.construction_type,
-    energyLabel: property.energy_label ?? '',
     hasElevator: property.has_elevator,
     hasBalcony: property.has_balcony,
     hasTerrace: property.has_terrace,
@@ -57,7 +54,6 @@ function propertyToFormValues(property: Property, amenityIds: string[]): Propert
     hasGarage: property.has_garage,
     hasGarden: property.has_garden,
     isFurnished: property.is_furnished,
-    petsAllowed: property.pets_allowed,
     availableFrom: property.available_from ?? '',
     minimumStayMonths: property.minimum_stay_months ?? 12,
     status: property.status,
@@ -111,7 +107,6 @@ export function PropertyForm({
             contractType: 'Location saisonnière à la semaine',
             interiorType: 'Meublé',
             maintenanceCondition: 'Bien',
-            constructionType: 'Chalet traditionnel',
             hasElevator: false,
             hasBalcony: false,
             hasTerrace: false,
@@ -119,7 +114,6 @@ export function PropertyForm({
             hasGarage: false,
             hasGarden: false,
             isFurnished: true,
-            petsAllowed: false,
             minimumStayMonths: 1,
             status: 'draft',
             isPublished: false,
@@ -172,7 +166,9 @@ export function PropertyForm({
               placeholder={'Indiquez la capacité maximale, les couchages, les salles de bain, les équipements, les distances, les tarifs saisonniers et les services inclus.'}
               {...register('description')}
             />
-            <p className="mt-1.5 text-xs text-ink-400">Structure conseillée : présentation, capacité et couchages, équipements, emplacement, puis tarifs par saison.</p>
+            <p className="mt-1.5 text-xs text-ink-400">
+              Structure conseillée : présentation, capacité et couchages, équipements, emplacement, puis tarifs par saison. Entourez un passage de **deux astérisques** pour l’afficher en gras.
+            </p>
             <FieldError message={errors.description?.message} />
           </div>
           <div className="sm:col-span-2">
@@ -326,29 +322,6 @@ export function PropertyForm({
               <option value="Bien">Bien</option>
               <option value="À rafraîchir">À rafraîchir</option>
               <option value="À rénover">À rénover</option>
-            </Select>
-          </div>
-        </div>
-      </FormSection>
-
-      <FormSection title="Construction et énergie">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <Label htmlFor="constructionType">Type de construction</Label>
-            <Select id="constructionType" {...register('constructionType')}>
-              <option value="Bâtiment existant">Bâtiment existant</option>
-              <option value="Chalet traditionnel">Chalet traditionnel</option>
-              <option value="Villa contemporaine">Villa contemporaine</option>
-              <option value="Construction neuve">Construction neuve</option>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="energyLabel">Étiquette énergétique</Label>
-            <Select id="energyLabel" {...register('energyLabel')}>
-              <option value="">Non renseignée</option>
-              {['A++++', 'A+++', 'A++', 'A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G'].map((label) => (
-                <option key={label} value={label}>{label}</option>
-              ))}
             </Select>
           </div>
         </div>

@@ -87,7 +87,7 @@ export function Navbar() {
             <Home className="h-4.5 w-4.5" strokeWidth={2.25} />
           </span>
           <span className="hidden text-lg font-extrabold tracking-tight text-ink-900 min-[390px]:inline">
-            <span className="text-canal-600">ALPENYA</span>
+            <span className="text-canal-600">ALPENIA</span>
           </span>
         </Link>
 

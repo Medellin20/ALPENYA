@@ -11,19 +11,48 @@ const env = Object.fromEntries(envText.split(/\r?\n/).map((line) => line.trim())
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 
 const slug = 'appartement-centre-grand-bornand';
-const description = `Appartement haut de gamme situé au deuxième étage avec ascenseur, au cœur du village du Grand-Bornand, en Haute-Savoie. Il offre une vue magnifique et imprenable sur la chaîne des Aravis.
+const description = `# Appartement haut de gamme au Grand-Bornand – Vue sur les Aravis
 
-Fonctionnel et entièrement équipé, le logement comprend 3 chambres : 2 chambres avec lit double et 1 chambre avec 2 lits superposés. Il peut accueillir jusqu’à 10 personnes. Les draps, les serviettes et le linge de maison sont fournis. Le Wi-Fi ainsi que les équipements de cuisine sont également mis à disposition.
+Situé au **deuxième étage avec ascenseur**, en plein cœur du village du **Grand-Bornand en Haute-Savoie**, cet appartement haut de gamme bénéficie d’un emplacement privilégié et d’une **vue exceptionnelle sur la chaîne des Aravis**.
 
-La station de ski est toute proche : cinq minutes à pied suffisent pour rejoindre la télécabine donnant directement accès au domaine skiable du Grand-Bornand. Une navette gratuite permet également de rejoindre les télécabines.
+Confortable, fonctionnel et entièrement équipé, il peut accueillir **jusqu’à 10 voyageurs** et constitue une excellente adresse pour un séjour à la montagne en famille ou entre amis.
 
-TARIFS À LA SEMAINE
-• Hors saison : 1 350 €
-• Noël et Nouvel An : 1 670 €
-• De janvier à mars : 1 876 €
-• Forfait ménage en option : 150 € par semaine
+## Le logement
 
-Surface non communiquée.`;
+L’appartement dispose de **3 chambres**, réparties comme suit :
+
+- **2 chambres avec lit double** ;
+- **1 chambre équipée de 2 lits superposés**.
+
+Pensé pour offrir confort et praticité tout au long du séjour, le logement met également à disposition :
+
+- une connexion **Wi-Fi** ;
+- une **cuisine entièrement équipée** ;
+- les **draps et serviettes** ;
+- le **linge de maison** ;
+- un **ascenseur** facilitant l’accès à l’appartement.
+
+## Une vue exceptionnelle sur les Aravis
+
+Depuis l’appartement, profitez d’une **magnifique vue dégagée sur la chaîne des Aravis**, véritable décor naturel emblématique du Grand-Bornand.
+
+Son emplacement au cœur du village permet également de profiter facilement de l’ambiance de la station et de ses différents services.
+
+## Accès rapide au domaine skiable
+
+L’appartement bénéficie d’une situation idéale pour les amateurs de sports d’hiver :
+
+- **Télécabine :** environ 5 minutes à pied ;
+- **Accès direct au domaine skiable du Grand-Bornand** ;
+- **Navette gratuite** permettant également de rejoindre facilement les remontées mécaniques.
+
+Vous pouvez ainsi rejoindre les pistes rapidement tout en profitant du confort d’un logement situé au centre du village.
+
+## Un séjour au cœur du Grand-Bornand
+
+Grâce à son emplacement central, ses équipements et sa proximité avec les remontées mécaniques, cet appartement est parfaitement adapté à un **séjour en famille ou entre amis**.
+
+Une adresse idéale pour profiter pleinement du **Grand-Bornand**, entre **ski, montagne, confort et panorama exceptionnel sur les Aravis**.`;
 
 const { data: property, error: propertyError } = await supabase.from('properties').upsert({
   slug,
@@ -47,7 +76,6 @@ const { data: property, error: propertyError } = await supabase.from('properties
   contract_type: 'Location saisonnière à la semaine',
   interior_type: 'Entièrement meublé',
   maintenance_condition: 'Excellent',
-  construction_type: 'Résidence de standing',
   has_elevator: true,
   has_balcony: true,
   has_terrace: false,
@@ -55,7 +83,6 @@ const { data: property, error: propertyError } = await supabase.from('properties
   has_garage: false,
   has_garden: false,
   is_furnished: true,
-  pets_allowed: false,
   minimum_stay_months: 1,
   status: 'available',
   is_published: true,

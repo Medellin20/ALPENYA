@@ -1,5 +1,5 @@
 -- =============================================================================
--- ALPENYA — DONNÉES DE RÉFÉRENCE (aucun bien ni client)
+-- ALPENIA — DONNÉES DE RÉFÉRENCE (aucun bien ni client)
 -- À exécuter après schema.sql et rls_policies.sql
 -- Utilise la service role (SQL Editor Supabase l'exécute déjà avec les
 -- droits nécessaires, RLS n'entre pas en jeu ici).
@@ -29,7 +29,7 @@ on conflict (key) do nothing;
 -- -----------------------------------------------------------------------------
 
 update bank_settings set
-  beneficiary_name = 'ALPENYA (À CONFIGURER)',
+  beneficiary_name = 'ALPENIA (À CONFIGURER)',
   iban = 'FR00 0000 0000 0000 0000 0000 000',
   bic = 'XXXXXXXX',
   bank_name = 'Banque à configurer',

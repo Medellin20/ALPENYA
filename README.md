@@ -1,8 +1,8 @@
-# ALPENYA
+# ALPENIA
 
 **Plateforme professionnelle de gestion et de location de chalets et villas en France.**
 
-ALPENYA permet de publier des chalets et villas, gérer les demandes de visite, les réservations, les paiements de garantie et les remboursements — avec un espace client et un tableau de bord administrateur intégré.
+ALPENIA permet de publier des chalets et villas, gérer les demandes de visite, les réservations, les paiements de garantie et les remboursements — avec un espace client et un tableau de bord administrateur intégré.
 
 ---
 

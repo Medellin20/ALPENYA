@@ -37,7 +37,7 @@ export default function ConfidentialitePage() {
       <p>
         Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d’un
         droit d’accès, de rectification et de suppression de vos données. Pour exercer ces droits,
-        contactez-nous à contacts@alpenya.fr.
+        contactez-nous à contacts@alpenia-residences.com.
       </p>
 
       <h2>Cookies</h2>

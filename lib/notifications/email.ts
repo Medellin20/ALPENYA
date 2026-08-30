@@ -32,7 +32,7 @@ export async function sendAdminAlert(subject: string, details: AlertDetails) {
     });
 
     await transporter.sendMail({
-      from: `ALPENYA <${user}>`,
+      from: `ALPENIA <${user}>`,
       to: recipient,
       subject,
       text: Object.entries(details).map(([label, value]) => `${label}: ${value ?? '—'}`).join('\n'),

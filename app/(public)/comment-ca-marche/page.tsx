@@ -5,7 +5,7 @@ import { SectionHeading } from '@/components/ui/section-heading';
 
 export const metadata: Metadata = {
   title: 'Comment ça marche',
-  description: 'Découvrez les étapes pour trouver, visiter et réserver votre chalet ou villa avec ALPENYA.',
+  description: 'Découvrez les étapes pour trouver, visiter et réserver votre chalet ou villa avec ALPENIA.',
 };
 
 const STEPS = [
@@ -53,7 +53,7 @@ export default function CommentCaMarchePage() {
         <SectionHeading
           eyebrow="Notre processus"
           title="Comment ça marche"
-          description="De la première recherche à la remise des clés, voici comment se déroule votre parcours avec ALPENYA."
+          description="De la première recherche à la remise des clés, voici comment se déroule votre parcours avec ALPENIA."
         />
       </FadeIn>
 

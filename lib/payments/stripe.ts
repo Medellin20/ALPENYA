@@ -2,7 +2,7 @@ import 'server-only';
 import Stripe from 'stripe';
 
 // -----------------------------------------------------------------------------
-// Abstraction de paiement — ALPENYA
+// Abstraction de paiement — ALPENIA
 //
 // Aujourd'hui : Stripe Checkout (carte + iDEAL) pour les FRAIS DE VISITE.
 // La garantie/dépôt de location reste réglée par virement bancaire classique

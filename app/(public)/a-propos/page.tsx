@@ -5,7 +5,7 @@ import { SectionHeading } from '@/components/ui/section-heading';
 
 export const metadata: Metadata = {
   title: 'À propos',
-  description: 'ALPENYA sélectionne et gère des chalets et villas d’exception en France.',
+  description: 'ALPENIA sélectionne et gère des chalets et villas d’exception en France.',
 };
 
 const VALUES = [
@@ -42,7 +42,7 @@ export default function AProposPage() {
               Votre partenaire pour des lieux d’exception en France
             </h1>
             <p className="mt-4 max-w-xl text-sand-200">
-              ALPENYA accompagne voyageurs et locataires dans la découverte, la visite et la
+              ALPENIA accompagne voyageurs et locataires dans la découverte, la visite et la
               réservation de chalets et villas soigneusement sélectionnés.
             </p>
           </FadeIn>
@@ -57,7 +57,7 @@ export default function AProposPage() {
               title="Rendre la location haut de gamme simple et transparente"
             />
             <p className="mt-4 leading-relaxed text-ink-500">
-              ALPENYA réunit sur une même plateforme des annonces vérifiées, un processus de visite
+              ALPENIA réunit sur une même plateforme des annonces vérifiées, un processus de visite
               structuré et un suivi rigoureux de chaque réservation, de la première demande jusqu’à
               la remise des clés.
             </p>

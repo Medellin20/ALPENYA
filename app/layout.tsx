@@ -16,30 +16,30 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'ALPENYA — Chalets et villas d’exception',
-    template: '%s | ALPENYA',
+    default: 'ALPENIA — Chalets et villas d’exception',
+    template: '%s | ALPENIA',
   },
   description:
-    'Découvrez, visitez et réservez des chalets et villas soigneusement sélectionnés en France avec ALPENYA.',
+    'Découvrez, visitez et réservez des chalets et villas soigneusement sélectionnés en France avec ALPENIA.',
   keywords: [
     'location chalet France',
     'location villa France',
     'chalet Alpes',
     'villa Côte d’Azur',
-    'ALPENYA',
+    'ALPENIA',
   ],
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    siteName: 'ALPENYA',
-    title: 'ALPENYA — Chalets et villas d’exception',
+    siteName: 'ALPENIA',
+    title: 'ALPENIA — Chalets et villas d’exception',
     description:
       'Recherchez, visitez et réservez votre prochain chalet ou votre prochaine villa en toute confiance.',
     url: siteUrl,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ALPENYA — Chalets et villas d’exception',
+    title: 'ALPENIA — Chalets et villas d’exception',
     description: 'Trouvez votre prochain chalet ou votre prochaine villa en France.',
   },
   robots: {

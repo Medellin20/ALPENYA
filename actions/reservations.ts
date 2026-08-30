@@ -54,8 +54,8 @@ export async function createReservation(input: ReservationInput, propertySlug: s
       desired_move_in_date: parsed.data.desiredMoveInDate,
       // Colonne historique : elle contient désormais la durée du séjour en jours.
       duration_months: parsed.data.durationDays,
-      occupants_count: 1,
-      message: parsed.data.message || null,
+      occupants_count: parsed.data.occupantsCount,
+      has_pets: parsed.data.hasPets,
       status: 'submitted',
     })
     .select('*')
@@ -80,6 +80,8 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     Téléphone: parsed.data.phone,
     'Date de réservation': parsed.data.desiredMoveInDate,
     Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
+    Occupants: parsed.data.occupantsCount,
+    'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
   });
 
   revalidatePath('/admin/reservations');

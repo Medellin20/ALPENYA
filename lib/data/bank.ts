@@ -4,7 +4,7 @@ import type { BankSettings } from '@/types/database';
 
 export const DEMO_BANK_SETTINGS: BankSettings = {
   id: 1,
-  beneficiary_name: 'ALPENYA (À CONFIGURER)',
+  beneficiary_name: 'ALPENIA (À CONFIGURER)',
   iban: 'NL00 TEST 0000 0000 00',
   bic: 'TESTNL2A',
   bank_name: 'Nederlandse Voorbeeldbank',

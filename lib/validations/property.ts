@@ -24,8 +24,6 @@ export const propertySchema = z.object({
   contractType: z.string().trim().min(2),
   interiorType: z.string().trim().min(2),
   maintenanceCondition: z.string().trim().min(2),
-  constructionType: z.string().trim().min(2),
-  energyLabel: z.string().trim().optional().or(z.literal('')),
 
   hasElevator: z.boolean().default(false),
   hasBalcony: z.boolean().default(false),
@@ -34,7 +32,6 @@ export const propertySchema = z.object({
   hasGarage: z.boolean().default(false),
   hasGarden: z.boolean().default(false),
   isFurnished: z.boolean().default(false),
-  petsAllowed: z.boolean().default(false),
 
   availableFrom: z.string().optional().or(z.literal('')),
   minimumStayMonths: z.coerce.number().int().min(1).default(12),
