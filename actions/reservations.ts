@@ -45,21 +45,40 @@ export async function createReservation(input: ReservationInput, propertySlug: s
 
   const reference = generateReference('REN');
 
-  const { data: reservation, error: insertError } = await supabase
+  const reservationPayload = {
+    reference,
+    property_id: property.id,
+    client_id: client.id,
+    desired_move_in_date: parsed.data.desiredMoveInDate,
+    // Colonne historique : elle contient désormais la durée du séjour en jours.
+    duration_months: parsed.data.durationDays,
+    occupants_count: parsed.data.occupantsCount,
+    has_pets: parsed.data.hasPets,
+    status: 'submitted' as const,
+  };
+
+  let { data: reservation, error: insertError } = await supabase
     .from('reservations')
-    .insert({
-      reference,
-      property_id: property.id,
-      client_id: client.id,
-      desired_move_in_date: parsed.data.desiredMoveInDate,
-      // Colonne historique : elle contient désormais la durée du séjour en jours.
-      duration_months: parsed.data.durationDays,
-      occupants_count: parsed.data.occupantsCount,
-      has_pets: parsed.data.hasPets,
-      status: 'submitted',
-    })
+    .insert(reservationPayload)
     .select('*')
     .single();
+
+  // Compatibilité temporaire avec une base qui n’a pas encore reçu la
+  // migration `has_pets`. Le champ message n’est plus exposé au client et sert
+  // uniquement à conserver cette réponse jusqu’au déploiement de la migration.
+  if (insertError?.code === 'PGRST204' || insertError?.code === '42703') {
+    const { has_pets: _hasPets, ...legacyPayload } = reservationPayload;
+    const legacyInsert = await supabase
+      .from('reservations')
+      .insert({
+        ...legacyPayload,
+        message: parsed.data.hasPets ? 'ANIMAUX_DE_COMPAGNIE_OUI' : 'ANIMAUX_DE_COMPAGNIE_NON',
+      })
+      .select('*')
+      .single();
+    reservation = legacyInsert.data;
+    insertError = legacyInsert.error;
+  }
 
   if (insertError || !reservation) {
     return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
