@@ -194,7 +194,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <Button asChild className="w-full" size="lg">
                     <Link href={`/appartements/${property.slug}/reagir`}>
                       <MessageCircle className="h-4.5 w-4.5" />
-                      Réagir
+                      Répondre
                     </Link>
                   </Button>
                 </div>
