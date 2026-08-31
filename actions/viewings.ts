@@ -57,7 +57,6 @@ export async function createViewingRequest(
       client_id: client.id,
       requested_date: parsed.data.requestedDate,
       requested_time_slot: parsed.data.requestedTimeSlot,
-      occupants_count: parsed.data.occupantsCount,
       status: initialStatus,
       fee_amount: 0,
     })
@@ -84,7 +83,6 @@ export async function createViewingRequest(
     Téléphone: parsed.data.phone,
     Date: parsed.data.requestedDate,
     Créneau: parsed.data.requestedTimeSlot,
-    Occupants: parsed.data.occupantsCount,
   });
 
   revalidatePath('/admin/visites');

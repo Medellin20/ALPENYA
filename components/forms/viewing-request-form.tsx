@@ -37,7 +37,7 @@ export function ViewingRequestForm({
     formState: { errors },
   } = useForm<ViewingRequestInput>({
     resolver: zodResolver(viewingRequestSchema),
-    defaultValues: { propertyId, occupantsCount: 1 },
+    defaultValues: { propertyId },
   });
 
   const values = watch();
@@ -46,7 +46,7 @@ export function ViewingRequestForm({
   async function goNext() {
     const fieldsByStep: (keyof ViewingRequestInput)[][] = [
       ['requestedDate', 'requestedTimeSlot'],
-      ['firstName', 'lastName', 'email', 'phone', 'occupantsCount'],
+      ['firstName', 'lastName', 'email', 'phone'],
     ];
     const valid = await trigger(fieldsByStep[step]);
     if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -160,15 +160,6 @@ export function ViewingRequestForm({
                 <Input id="phone" type="tel" placeholder="+33 6 12 34 56 78" {...register('phone')} />
                 <FieldError message={errors.phone?.message} />
               </div>
-              <div>
-                <Label htmlFor="occupantsCount">Nombre d’occupants</Label>
-                <Select id="occupantsCount" {...register('occupantsCount')}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((number) => (
-                    <option key={number} value={number}>{number}</option>
-                  ))}
-                </Select>
-                <FieldError message={errors.occupantsCount?.message} />
-              </div>
             </motion.div>
           )}
 
@@ -193,7 +184,6 @@ export function ViewingRequestForm({
                 <Row label="Nom" value={`${values.firstName || ''} ${values.lastName || ''}`.trim() || '—'} />
                 <Row label="E-mail" value={values.email || '—'} />
                 <Row label="Téléphone" value={values.phone || '—'} />
-                <Row label="Nombre d’occupants" value={String(values.occupantsCount || '—')} />
               </div>
 
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">

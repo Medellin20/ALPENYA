@@ -17,7 +17,6 @@ export const viewingRequestSchema = z.object({
     .trim()
     .min(8, 'Numéro de téléphone invalide.')
     .max(20, 'Numéro de téléphone invalide.'),
-  occupantsCount: z.coerce.number().int().min(1, 'Indiquez au moins un occupant.').max(10),
 });
 
 export type ViewingRequestInput = z.infer<typeof viewingRequestSchema>;
