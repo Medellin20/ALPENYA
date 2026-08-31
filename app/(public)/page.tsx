@@ -46,76 +46,64 @@ const TRUST_POINTS = [
   { value: '48h', label: 'délai moyen de réponse à une demande' },
 ];
 
-const HERO_SLIDES = [
-  {
-    src: '/properties/la-clusaz/IMG_4208.jpeg',
-    alt: 'Chalet enneigé à La Clusaz sous un ciel bleu',
-  },
-  {
-    src: '/properties/megeve-mont-arbois/IMG_4259.jpeg',
-    alt: 'Chalet de montagne au Mont d’Arbois à Megève',
-  },
-  {
-    src: '/properties/grand-bornand/IMG_4225.jpeg',
-    alt: 'Salon chaleureux avec vue sur les montagnes au Grand-Bornand',
-  },
-] as const;
-
 export default async function HomePage() {
   const citySummaries = await getCityPropertySummaries();
 
   return (
     <>
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden bg-ink-950">
-        <div aria-hidden="true" className="absolute inset-0 -z-20">
-          {HERO_SLIDES.map((slide, index) => (
-            <Image
-              key={slide.src}
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className="hero-slide object-cover"
-            />
-          ))}
-        </div>
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-950/90 via-ink-900/72 to-canal-900/45" />
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-950/55 via-transparent to-ink-950/20" />
-
-        <div className="container-app relative flex min-h-[480px] flex-col items-center justify-center py-20 text-center sm:min-h-[580px] sm:py-24">
-          <FadeIn className="flex flex-col items-center">
-            <h1 className="text-5xl font-extrabold tracking-tight text-white drop-shadow-lg sm:text-7xl lg:text-8xl">
-              ALPENIA
-            </h1>
-            <p className="mt-4 max-w-3xl text-lg font-semibold leading-relaxed text-white drop-shadow-md sm:text-2xl">
-              <span className="block">Nous sélectionnons des chalets et villas d’exception.</span>
-              <span className="block">Nous vous accompagnons de la visite jusqu’à la réservation.</span>
-            </p>
-            <p className="mt-6 inline-flex items-center rounded-full border border-white/25 bg-white/15 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-sm sm:text-base">
-              Annonces vérifiées&nbsp; · &nbsp;Réponse sous 48 h
-            </p>
+      {/* HERO ÉDITORIAL */}
+      <section className="overflow-hidden bg-sand-100 pb-12 pt-8 sm:pb-16 sm:pt-12">
+        <div className="container-app grid items-stretch gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-7">
+          <FadeIn className="flex flex-col justify-between rounded-[2rem] bg-ink-950 p-7 text-white sm:p-10 lg:min-h-[620px] lg:p-12">
+            <div>
+              <p className="text-eyebrow uppercase text-canal-300">Lieux choisis · France</p>
+              <h1 className="mt-7 max-w-xl text-5xl font-extrabold leading-[0.96] tracking-[-0.05em] sm:text-7xl lg:text-[5.25rem]">
+                L’ailleurs,
+                <span className="block font-light italic text-canal-300">autrement.</span>
+              </h1>
+              <p className="mt-8 max-w-md text-base leading-relaxed text-sand-200 sm:text-lg">
+                Des chalets et villas singuliers, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
+              </p>
+            </div>
+            <div className="mt-12 flex flex-wrap gap-3">
+              <Button asChild size="lg" variant="secondary">
+                <Link href="/appartements">Explorer la sélection <ArrowRight className="h-4 w-4" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                <Link href="/comment-ca-marche">Notre approche</Link>
+              </Button>
+            </div>
           </FadeIn>
 
+          <FadeIn delay={0.08} className="relative min-h-[440px] overflow-hidden rounded-[2rem] sm:min-h-[560px] lg:min-h-[620px]">
+            <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet sélectionné par ALPENIA à La Clusaz" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-transparent" />
+            <div className="absolute inset-x-5 bottom-5 flex items-end justify-between gap-4 rounded-2xl border border-white/20 bg-white/10 p-5 text-white backdrop-blur-md sm:inset-x-7 sm:bottom-7 sm:p-6">
+              <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">À la une</p><p className="mt-1 text-xl font-bold sm:text-2xl">La Clusaz</p></div>
+              <Link href="/appartements?city=La%20Clusaz" aria-label="Voir les biens à La Clusaz" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-950 transition-transform hover:rotate-[-12deg]"><ArrowRight className="h-5 w-5" /></Link>
+            </div>
+          </FadeIn>
+        </div>
+
+        <div className="container-app mt-5 grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-ink-200 sm:grid-cols-3">
+          {TRUST_POINTS.map((point) => <div key={point.label} className="flex items-baseline gap-3 bg-white/90 px-6 py-5"><span className="text-2xl font-extrabold text-ink-950">{point.value}</span><span className="text-sm text-ink-500">{point.label}</span></div>)}
         </div>
       </section>
 
       {/* ACCÈS PAR CATÉGORIE */}
-      <section className="bg-white py-12 sm:py-16">
-        <div className="container-app">
+      <section className="bg-white py-16 sm:py-24">
+        <div className="container-app grid gap-9 lg:grid-cols-[0.65fr_1.35fr] lg:gap-12">
           <FadeIn>
             <SectionHeading
               eyebrow="Nos collections"
-              title="Quel lieu recherchez-vous ?"
-              description="Accédez directement à la catégorie qui correspond à votre prochain séjour."
-              align="center"
-              className="mx-auto"
+              title="Deux façons de prendre le large."
+              description="L’altitude ou le grand air : choisissez le décor, nous vous présentons les lieux qui ont une âme."
             />
+            <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collection 01 — 02</p>
           </FadeIn>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
             <FadeIn delay={0.05}>
-              <Link href="/appartements?type=chalet" className="group relative flex min-h-52 overflow-hidden rounded-3xl bg-ink-900 p-6 text-white shadow-card sm:min-h-64 sm:p-8">
+              <Link href="/appartements?type=chalet" className="group relative flex min-h-80 overflow-hidden rounded-[2rem] bg-ink-900 p-6 text-white shadow-card sm:min-h-[430px] sm:p-8">
                 <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-45" />
                 <div className="relative mt-auto">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><MountainSnow className="h-5 w-5" /></span>
@@ -126,7 +114,7 @@ export default async function HomePage() {
               </Link>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <Link href="/appartements?type=villa" className="group relative flex min-h-52 overflow-hidden rounded-3xl bg-canal-800 p-6 text-white shadow-card sm:min-h-64 sm:p-8">
+              <Link href="/appartements?type=villa" className="group relative flex min-h-80 overflow-hidden rounded-[2rem] bg-canal-800 p-6 text-white shadow-card sm:mt-14 sm:min-h-[430px] sm:p-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-canal-500/30 via-transparent to-ink-950/70" />
                 <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" />
                 <div className="absolute -right-4 top-12 h-36 w-36 rounded-full border border-white/10" />
@@ -142,29 +130,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CHIFFRES DE CONFIANCE */}
-      <section className="border-b border-ink-100 bg-white py-8">
-        <div className="container-app grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {TRUST_POINTS.map((point) => (
-            <div key={point.label} className="flex items-center gap-4">
-              <span className="text-3xl font-extrabold text-ink-900">{point.value}</span>
-              <span className="text-sm text-ink-500">{point.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* APPARTEMENTS CLASSÉS PAR VILLE */}
-      <section className="py-16 sm:py-20">
+      <section className="bg-ink-950 py-16 text-white sm:py-24">
         <div className="container-app">
           <FadeIn>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
                 eyebrow="France"
-                title="Villes populaires"
+                title="Une France à habiter"
                 description="Choisissez une destination pour découvrir les chalets et villas disponibles."
+                className="[&_h2]:text-white [&_p]:text-sand-300"
               />
-              <Button asChild variant="outline">
+              <Button asChild variant="secondary">
                 <Link href="/appartements">
                   Voir tous les biens
                   <ArrowRight className="h-4 w-4" />
@@ -173,36 +150,33 @@ export default async function HomePage() {
             </div>
           </FadeIn>
 
-          <div className="mt-9 max-w-3xl divide-y divide-ink-100">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {citySummaries.map((summary, index) => (
               <FadeIn key={summary.city} delay={Math.min(index, 6) * 0.04}>
                 <Link
                   href={`/appartements?city=${encodeURIComponent(summary.city)}`}
-                  className="group flex items-center gap-4 py-4 sm:gap-6 sm:py-5"
+                  className="group relative flex min-h-72 overflow-hidden rounded-3xl bg-ink-900 p-6 sm:min-h-80"
                 >
-                  <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-xl bg-sand-200 sm:h-28 sm:w-44 animate-float">
+                  <div className="absolute inset-0 bg-ink-900">
                     {summary.imageUrl ? (
-                      <Image src={summary.imageUrl} alt={`Chalet ou villa à ${summary.city}`} fill sizes="(max-width: 640px) 112px, 176px" className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                      <Image src={summary.imageUrl} alt={`Chalet ou villa à ${summary.city}`} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover opacity-65 transition duration-500 group-hover:scale-105 group-hover:opacity-50" />
                     ) : (
                       <span className="flex h-full items-center justify-center text-canal-500"><MapPin className="h-7 w-7" /></span>
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-xl font-extrabold text-canal-700 sm:text-2xl">{summary.city}</h3>
-                    <p className="mt-1 text-sm text-ink-600 sm:text-base">{summary.count} bien{summary.count > 1 ? 's' : ''}</p>
-                    <p className="mt-0.5 text-sm text-ink-500 sm:text-base">À partir de {formatPrice(summary.averagePrice)} / semaine</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/15 to-transparent" />
+                  <div className="relative mt-auto min-w-0 flex-1">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-canal-200">{summary.count} bien{summary.count > 1 ? 's' : ''}</p>
+                    <h3 className="mt-2 truncate text-2xl font-extrabold text-white sm:text-3xl">{summary.city}</h3>
+                    <p className="mt-1 text-sm text-white/70">Dès {formatPrice(summary.averagePrice)} / semaine</p>
                   </div>
-                  <ArrowRight className="h-7 w-7 shrink-0 text-canal-500 transition-transform group-hover:translate-x-1 sm:h-8 sm:w-8" />
+                  <ArrowRight className="relative mt-auto h-6 w-6 shrink-0 text-white transition-transform group-hover:translate-x-1" />
                 </Link>
               </FadeIn>
             ))}
           </div>
         </div>
       </section>
-
-      <div className="container-app">
-        <div className="canal-divider" />
-      </div>
 
       {/* COMMENT ÇA MARCHE */}
       <section className="py-16 sm:py-20">
@@ -217,16 +191,18 @@ export default async function HomePage() {
             />
           </FadeIn>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative mx-auto mt-12 max-w-4xl">
+            <div className="absolute bottom-10 left-5 top-10 hidden w-px bg-ink-100 sm:block" />
             {STEPS.map((step, i) => (
               <FadeIn key={step.title} delay={i * 0.08}>
-                <div className="relative rounded-2xl border border-ink-100 bg-white p-6 shadow-soft">
-                  <span className="text-eyebrow text-ink-300">Étape {i + 1}</span>
-                  <div className="mt-3 flex h-11 w-11 items-center justify-center rounded-xl bg-canal-50 text-canal-700">
+                <div className="relative mb-4 grid gap-4 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft sm:grid-cols-[2.5rem_1fr] sm:items-center sm:gap-6 sm:p-6">
+                  <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-ink-950 text-sm font-bold text-white">{i + 1}</div>
+                  <div className="grid gap-3 sm:grid-cols-[3rem_1fr] sm:items-center">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-canal-50 text-canal-700">
                     <step.icon className="h-5 w-5" />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-ink-900">{step.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{step.description}</p>
+                  <div><h3 className="text-base font-bold text-ink-900">{step.title}</h3><p className="mt-1 text-sm leading-relaxed text-ink-500">{step.description}</p></div>
+                  </div>
                 </div>
               </FadeIn>
             ))}

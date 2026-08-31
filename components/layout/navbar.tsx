@@ -75,13 +75,13 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full transition-all duration-300',
+        'sticky top-0 z-50 w-full border-b transition-all duration-300',
         scrolled
-          ? 'bg-white/90 shadow-soft backdrop-blur-md'
-          : 'bg-white/70 backdrop-blur-sm'
+          ? 'border-ink-100 bg-white/95 shadow-soft backdrop-blur-xl'
+          : 'border-transparent bg-sand-100/85 backdrop-blur-lg'
       )}
     >
-      <nav className="container-app flex h-16 items-center justify-between md:h-[4.5rem]">
+      <nav className="container-app flex h-16 items-center justify-between md:h-20">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-canal-400 to-canal-700 text-white shadow-soft">
             <Home className="h-4.5 w-4.5" strokeWidth={2.25} />
@@ -90,6 +90,24 @@ export function Navbar() {
             <span className="text-canal-600">ALPENIA</span>
           </span>
         </Link>
+
+        <div className="hidden items-center gap-1 xl:flex">
+          {NAV_LINKS.slice(0, 4).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActivePath(pathname, link.href) ? 'page' : undefined}
+              className={cn(
+                'rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
+                isActivePath(pathname, link.href)
+                  ? 'bg-ink-950 text-white'
+                  : 'text-ink-600 hover:bg-white hover:text-ink-950'
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
 
         <div className="hidden items-center gap-2 md:flex">
           <LanguageTranslator id="desktop-language-translator" />
@@ -106,7 +124,7 @@ export function Navbar() {
               Découvrir nos biens
             </Link>
           </Button>
-          <div ref={tabletMenuRef} className="relative">
+          <div ref={tabletMenuRef} className="relative xl:hidden">
             <button
               type="button"
               onClick={() => setTabletOpen((open) => !open)}
