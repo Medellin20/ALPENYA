@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Wand2, Save } from 'lucide-react';
 import { propertySchema, type PropertyInput } from '@/lib/validations/property';
-import { createProperty, updateProperty } from '@/actions/admin-properties';
+import { checkPropertySlugAvailability, createProperty, updateProperty } from '@/actions/admin-properties';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select } from '@/components/ui/select';
@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { PROPERTY_TYPES } from '@/lib/utils/constants';
 import { slugify } from '@/lib/utils/format';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import type { Amenity, Property } from '@/types/database';
 
 const BOOLEAN_FIELDS: { key: keyof PropertyInput; label: string }[] = [
@@ -79,6 +80,8 @@ export function PropertyForm({
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
   const [slugTouched, setSlugTouched] = React.useState(mode === 'edit');
+  const [slugStatus, setSlugStatus] = React.useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+  const slugCheckId = React.useRef(0);
 
   const {
     register,
@@ -86,6 +89,8 @@ export function PropertyForm({
     control,
     watch,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<PropertyInput>({
     resolver: zodResolver(propertySchema),
@@ -123,12 +128,46 @@ export function PropertyForm({
   });
 
   const title = watch('title');
+  const slug = watch('slug');
+  const debouncedSlug = useDebouncedValue(slug, 450);
 
   React.useEffect(() => {
     if (!slugTouched && title) {
       setValue('slug', slugify(title));
     }
   }, [title, slugTouched, setValue]);
+
+  React.useEffect(() => {
+    // Annule immédiatement une vérification devenue obsolète pendant que
+    // l'utilisateur continue à modifier le titre ou le slug.
+    slugCheckId.current += 1;
+    setSlugStatus('idle');
+    clearErrors('slug');
+  }, [slug, clearErrors]);
+
+  React.useEffect(() => {
+    const isValidSlug = debouncedSlug.length >= 5 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(debouncedSlug);
+    if (!isValidSlug) {
+      setSlugStatus('idle');
+      return;
+    }
+
+    const checkId = ++slugCheckId.current;
+    setSlugStatus('checking');
+
+    void checkPropertySlugAvailability(debouncedSlug, propertyId).then((result) => {
+      if (checkId !== slugCheckId.current) return;
+
+      if (!result.available && !result.error) {
+        setSlugStatus('taken');
+        setError('slug', { type: 'duplicate', message: 'Cet appartement existe déjà (ce slug est déjà utilisé).' });
+        return;
+      }
+
+      setSlugStatus(result.available ? 'available' : 'idle');
+      if (result.available) clearErrors('slug');
+    });
+  }, [debouncedSlug, propertyId, setError, clearErrors]);
 
   function onSubmit(data: PropertyInput) {
     startTransition(async () => {
@@ -186,7 +225,15 @@ export function PropertyForm({
                 Générer depuis le titre
               </button>
             </div>
-            <Input id="slug" {...register('slug')} onChange={() => setSlugTouched(true)} />
+            <Input
+              id="slug"
+              error={errors.slug?.message}
+              aria-invalid={Boolean(errors.slug)}
+              {...register('slug', { onChange: () => setSlugTouched(true) })}
+            />
+            {slugStatus === 'checking' && (
+              <p className="mt-1.5 text-xs text-ink-400">Vérification de l’existence de l’appartement…</p>
+            )}
             <FieldError message={errors.slug?.message} />
           </div>
           <div>
@@ -355,7 +402,13 @@ export function PropertyForm({
       </FormSection>
 
       <div className="sticky bottom-2 z-20 flex justify-end rounded-2xl bg-sand-100/90 p-2 backdrop-blur sm:bottom-4 sm:bg-transparent sm:p-0">
-        <Button type="submit" size="lg" isLoading={isPending} className="w-full shadow-lifted sm:w-auto">
+        <Button
+          type="submit"
+          size="lg"
+          isLoading={isPending}
+          disabled={isPending || slugStatus === 'checking' || slugStatus === 'taken'}
+          className="w-full shadow-lifted sm:w-auto"
+        >
           <Save className="h-4.5 w-4.5" />
           {mode === 'create' ? 'Créer le bien' : 'Enregistrer les modifications'}
         </Button>
