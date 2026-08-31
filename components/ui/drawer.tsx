@@ -45,7 +45,7 @@ export function Drawer({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 flex h-full w-full max-w-sm flex-col bg-white shadow-lifted sm:max-w-md"
+            className="relative z-10 flex h-[100dvh] w-full max-w-sm flex-col bg-white shadow-lifted sm:max-w-md"
           >
             <div className="flex items-center justify-between border-b border-ink-100 px-5 py-4">
               {title && <h2 className="text-base font-bold text-ink-900">{title}</h2>}
@@ -58,7 +58,7 @@ export function Drawer({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-5">{children}</div>
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5">{children}</div>
           </motion.div>
         </div>
       )}

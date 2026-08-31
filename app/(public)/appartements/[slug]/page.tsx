@@ -75,10 +75,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     <div className="container-app py-5 sm:py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <nav className="mb-5 flex items-center gap-1.5 text-sm text-ink-400">
-        <Link href="/" className="hover:text-ink-700">Accueil</Link>
+      <nav className="mb-5 flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-ink-400 sm:text-sm">
+        <Link href="/" className="shrink-0 hover:text-ink-700">Accueil</Link>
         <span>/</span>
-        <Link href="/appartements" className="hover:text-ink-700">Chalets & villas</Link>
+        <Link href="/appartements" className="shrink-0 hover:text-ink-700">Chalets & villas</Link>
         <span>/</span>
         <span className="truncate text-ink-600">{property.title}</span>
       </nav>
@@ -91,7 +91,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
           <FadeIn delay={0.05} className="mt-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-sand-200 px-2.5 py-1 text-xs font-semibold text-ink-700">
                     <StatusDot colorClass={statusMeta.colorClass} />
@@ -99,7 +99,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   </span>
                   <Badge variant="outline">{property.neighborhood ?? property.city}</Badge>
                 </div>
-                <h1 className="mt-2 text-3xl font-extrabold leading-tight text-ink-900 sm:text-display-md">
+                <h1 className="mt-2 break-words text-2xl font-extrabold leading-tight text-ink-900 min-[400px]:text-3xl sm:text-display-md">
                   {property.title}
                 </h1>
                 <p className="mt-1 text-ink-500">

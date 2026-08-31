@@ -91,7 +91,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 xl:flex">
+        <div className="hidden items-center gap-1 min-[1400px]:flex">
           {NAV_LINKS.slice(0, 4).map((link) => (
             <Link
               key={link.href}
@@ -124,7 +124,7 @@ export function Navbar() {
               Découvrir nos biens
             </Link>
           </Button>
-          <div ref={tabletMenuRef} className="relative xl:hidden">
+          <div ref={tabletMenuRef} className="relative min-[1400px]:hidden">
             <button
               type="button"
               onClick={() => setTabletOpen((open) => !open)}
@@ -171,7 +171,7 @@ export function Navbar() {
               transition={{ duration: 0.2 }}
               role="menu"
               aria-label="Navigation principale"
-              className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-ink-100 bg-white shadow-lifted md:hidden"
+              className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-ink-100 bg-white shadow-lifted md:hidden"
             >
               <div className="container-app py-3">
                 {NAV_LINKS.map((link, i) => (
