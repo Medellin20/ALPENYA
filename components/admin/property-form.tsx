@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Wand2, Save } from 'lucide-react';
+import { CircleAlert, Wand2, Save } from 'lucide-react';
 import { propertySchema, type PropertyInput } from '@/lib/validations/property';
 import { checkPropertySlugAvailability, createProperty, updateProperty } from '@/actions/admin-properties';
 import { Input } from '@/components/ui/input';
@@ -129,7 +129,7 @@ export function PropertyForm({
 
   const title = watch('title');
   const slug = watch('slug');
-  const debouncedSlug = useDebouncedValue(slug, 450);
+  const debouncedSlug = useDebouncedValue(slug, 250);
 
   React.useEffect(() => {
     if (!slugTouched && title) {
@@ -196,6 +196,16 @@ export function PropertyForm({
             <Label htmlFor="title">Titre</Label>
             <Input id="title" placeholder="Ex : Chalet familial avec sauna à La Clusaz" {...register('title')} />
             <FieldError message={errors.title?.message} />
+            {slugStatus === 'taken' && (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="mt-2 flex items-center gap-2 rounded-lg border border-brick-500/30 bg-brick-500/10 px-3 py-2 text-sm font-semibold text-brick-500"
+              >
+                <CircleAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Cet appartement existe déjà.
+              </div>
+            )}
           </div>
           <div className="sm:col-span-2">
             <Label htmlFor="description">Présentation complète</Label>
@@ -234,7 +244,9 @@ export function PropertyForm({
             {slugStatus === 'checking' && (
               <p className="mt-1.5 text-xs text-ink-400">Vérification de l’existence de l’appartement…</p>
             )}
-            <FieldError message={errors.slug?.message} />
+            {slugStatus !== 'taken' && (
+              <FieldError message={errors.slug?.message} />
+            )}
           </div>
           <div>
             <Label htmlFor="propertyType">Catégorie</Label>
