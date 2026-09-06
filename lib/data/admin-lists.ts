@@ -1,5 +1,6 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { RESERVATION_STATUS_LABELS, VIEWING_STATUS_LABELS } from '@/lib/utils/constants';
 
 export async function getAllViewingsAdmin(params: { status?: string; date?: string } = {}) {
   const supabase = createAdminClient();
@@ -8,7 +9,7 @@ export async function getAllViewingsAdmin(params: { status?: string; date?: stri
     .select('*, properties(title, slug, city), clients(first_name, last_name, email, phone)')
     .order('created_at', { ascending: false });
 
-  if (params.status) query = query.eq('status', params.status);
+  if (params.status && params.status in VIEWING_STATUS_LABELS) query = query.eq('status', params.status);
   if (params.date) query = query.eq('requested_date', params.date);
 
   const { data, error } = await query;
@@ -23,7 +24,7 @@ export async function getAllReservationsAdmin(params: { status?: string; scope?:
     .select('*, properties(title, slug, city), clients(first_name, last_name, email, phone)')
     .order('created_at', { ascending: false });
 
-  if (params.status) query = query.eq('status', params.status);
+  if (params.status && params.status in RESERVATION_STATUS_LABELS) query = query.eq('status', params.status);
   if (params.scope === 'pending') query = query.in('status', ['submitted', 'under_review']);
 
   const { data, error } = await query;

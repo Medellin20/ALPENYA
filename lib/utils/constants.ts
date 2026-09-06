@@ -1,3 +1,5 @@
+import type { GuaranteeStatus, RefundStatus, ReservationStatus, ViewingStatus } from '@/types/database';
+
 export const DESTINATION_CITIES = [
   'La Clusaz',
   'Chamonix-Mont-Blanc',
@@ -27,23 +29,27 @@ export const PROPERTY_STATUS_LABELS: Record<string, { label: string; colorClass:
   unavailable: { label: 'Indisponible', colorClass: 'bg-status-draft' },
 };
 
-export const VIEWING_STATUS_LABELS: Record<string, string> = {
+export const VIEWING_STATUS_LABELS: Record<string, string> & Record<ViewingStatus, string> = {
   pending: 'En attente',
+  payment_pending: 'Paiement en attente',
+  paid: 'Payée',
   confirmed: 'Confirmée',
   cancelled: 'Annulée',
   completed: 'Terminée',
 };
 
-export const RESERVATION_STATUS_LABELS: Record<string, string> = {
+export const RESERVATION_STATUS_LABELS: Record<string, string> & Record<ReservationStatus, string> = {
   submitted: 'Envoyée',
   under_review: 'En cours d’examen',
   accepted: 'Acceptée',
   rejected: 'Refusée',
+  awaiting_guarantee: 'En attente de garantie',
+  guarantee_paid: 'Garantie reçue',
   confirmed: 'Confirmée',
   cancelled: 'Annulée',
 };
 
-export const GUARANTEE_STATUS_LABELS: Record<string, string> = {
+export const GUARANTEE_STATUS_LABELS: Record<string, string> & Record<GuaranteeStatus, string> = {
   awaiting_payment: 'En attente de virement',
   payment_declared: 'Virement déclaré',
   payment_received: 'Virement reçu',
@@ -54,7 +60,7 @@ export const GUARANTEE_STATUS_LABELS: Record<string, string> = {
   cancelled: 'Annulée',
 };
 
-export const REFUND_STATUS_LABELS: Record<string, string> = {
+export const REFUND_STATUS_LABELS: Record<string, string> & Record<RefundStatus, string> = {
   requested: 'Demandé',
   approved: 'Approuvé',
   processing: 'En cours de traitement',

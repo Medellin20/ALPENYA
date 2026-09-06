@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { recordStatusChange, logAdminAction } from '@/lib/data/history';
+import { RESERVATION_STATUS_LABELS } from '@/lib/utils/constants';
 import type { ActionResult } from '@/types';
 import type { ReservationStatus } from '@/types/database';
 
@@ -12,6 +13,10 @@ export async function updateReservationStatus(
   status: ReservationStatus,
   adminNotes?: string
 ): Promise<ActionResult> {
+  if (!(status in RESERVATION_STATUS_LABELS)) {
+    return { success: false, message: 'Statut de réservation invalide.' };
+  }
+
   const supabase = createAdminClient();
 
   const { data: reservation } = await supabase

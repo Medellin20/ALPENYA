@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { recordStatusChange, logAdminAction } from '@/lib/data/history';
+import { VIEWING_STATUS_LABELS } from '@/lib/utils/constants';
 import type { ActionResult } from '@/types';
 import type { ViewingStatus } from '@/types/database';
 
@@ -11,6 +12,10 @@ export async function updateViewingStatus(
   status: ViewingStatus,
   adminNotes?: string
 ): Promise<ActionResult> {
+  if (!(status in VIEWING_STATUS_LABELS)) {
+    return { success: false, message: 'Statut de visite invalide.' };
+  }
+
   const supabase = createAdminClient();
 
   const { data: current } = await supabase.from('viewing_requests').select('status').eq('id', id).maybeSingle();
