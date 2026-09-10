@@ -3,32 +3,34 @@
 import { useState } from 'react';
 import { formatPrice } from '@/lib/utils/format';
 
-type Period = 'lowSeason' | 'holidays' | 'winter';
+type Period = 'summer' | 'earlySummer' | 'september' | 'lateSpring';
 
 interface SeasonalPriceSelectorProps {
-  lowSeasonPrice: number;
-  holidayPrice: number;
-  winterPrice: number;
-  cleaningFee: number;
+  summerPrice: number;
+  earlySummerPrice: number;
+  septemberPrice: number;
+  lateSpringPrice: number;
 }
 
 const PERIOD_LABELS: Record<Period, string> = {
-  lowSeason: 'Hors saison',
-  holidays: 'Noël et Nouvel An',
-  winter: 'De janvier à mars',
+  summer: 'Juillet – août',
+  earlySummer: 'Mi-juin – début juillet',
+  september: 'Septembre',
+  lateSpring: 'Mai – début juin',
 };
 
 export function SeasonalPriceSelector({
-  lowSeasonPrice,
-  holidayPrice,
-  winterPrice,
-  cleaningFee,
+  summerPrice,
+  earlySummerPrice,
+  septemberPrice,
+  lateSpringPrice,
 }: SeasonalPriceSelectorProps) {
-  const [period, setPeriod] = useState<Period>('lowSeason');
+  const [period, setPeriod] = useState<Period>('summer');
   const prices: Record<Period, number> = {
-    lowSeason: lowSeasonPrice,
-    holidays: holidayPrice,
-    winter: winterPrice,
+    summer: summerPrice,
+    earlySummer: earlySummerPrice,
+    september: septemberPrice,
+    lateSpring: lateSpringPrice,
   };
   const selectedPrice = prices[period];
 
@@ -58,11 +60,6 @@ export function SeasonalPriceSelector({
           </span>
           {selectedPrice > 0 && <span className="text-sm text-ink-400">/ semaine</span>}
         </div>
-        {cleaningFee > 0 && (
-          <p className="mt-3 border-t border-ink-100 pt-3 text-sm text-ink-500">
-            Forfait ménage : <strong className="font-bold text-ink-800">{formatPrice(cleaningFee)}</strong>
-          </p>
-        )}
       </div>
     </div>
   );

@@ -138,7 +138,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               <h2 className="text-lg font-bold text-ink-900">Détails du logement</h2>
               <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                 <DetailRow label="Offert depuis" value={formatDate(property.created_at)} />
-                <DetailRow label="Forfait ménage" value={property.service_charges > 0 ? formatPrice(property.service_charges) : 'Inclus'} />
                 <DetailRow label="Type de contrat" value={property.contract_type} />
                 <DetailRow label="Intérieur" value={property.interior_type} />
                 <DetailRow label="État d’entretien" value={property.maintenance_condition} />
@@ -184,10 +183,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           <FadeIn delay={0.1} className="lg:sticky lg:top-24">
             <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-card sm:p-6">
               <SeasonalPriceSelector
-                lowSeasonPrice={property.monthly_price}
-                holidayPrice={property.deposit_amount}
-                winterPrice={property.viewing_fee}
-                cleaningFee={property.service_charges}
+                summerPrice={property.monthly_price}
+                earlySummerPrice={property.deposit_amount}
+                septemberPrice={property.viewing_fee}
+                lateSpringPrice={property.service_charges}
               />
               {isBookable ? (
                 <div className="mt-5 space-y-2.5">

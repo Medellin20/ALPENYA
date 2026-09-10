@@ -297,25 +297,25 @@ export function PropertyForm({
       <FormSection title="Tarifs de location">
         <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="monthlyPrice" className="min-h-5">Hors saison</Label>
+            <Label htmlFor="monthlyPrice" className="min-h-5">Juillet – août</Label>
             <Input id="monthlyPrice" type="number" inputMode="decimal" min="0" step="1" {...register('monthlyPrice')} />
             <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
             <FieldError message={errors.monthlyPrice?.message} />
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="depositAmount" className="min-h-5">Noël – Nouvel An</Label>
+            <Label htmlFor="depositAmount" className="min-h-5">Mi-juin – début juillet</Label>
             <Input id="depositAmount" type="number" inputMode="decimal" min="0" step="1" {...register('depositAmount')} />
             <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="viewingFee" className="min-h-5">Janvier – Mars</Label>
+            <Label htmlFor="viewingFee" className="min-h-5">Septembre</Label>
             <Input id="viewingFee" type="number" inputMode="decimal" min="0" step="1" {...register('viewingFee')} />
             <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="serviceCharges" className="min-h-5">Forfait ménage</Label>
+            <Label htmlFor="serviceCharges" className="min-h-5">Mai – début juin</Label>
             <Input id="serviceCharges" type="number" inputMode="decimal" min="0" step="1" {...register('serviceCharges')} />
-            <p className="mt-1.5 text-xs text-ink-400">€ par séjour</p>
+            <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
           </div>
         </div>
         <p className="mt-3 text-xs text-ink-400">Indiquez les montants à la semaine. Mettez 0 uniquement lorsqu’un tarif n’est pas proposé.</p>
