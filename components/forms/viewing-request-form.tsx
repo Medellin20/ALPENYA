@@ -206,7 +206,7 @@ export function ViewingRequestForm({
           </Button>
 
           {step < STEPS.length - 1 ? (
-            <Button type="button" onClick={goNext} className="w-full sm:w-auto">
+            <Button type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />
             </Button>

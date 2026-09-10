@@ -28,7 +28,7 @@ export async function createReservation(input: ReservationInput, propertySlug: s
 
   const { data: property, error: propertyError } = await supabase
     .from('properties')
-    .select('id, is_published, status')
+    .select('id, title, is_published, status')
     .eq('id', parsed.data.propertyId)
     .maybeSingle();
 
@@ -94,6 +94,7 @@ export async function createReservation(input: ReservationInput, propertySlug: s
 
   await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
     Référence: reference,
+    Logement: property.title,
     Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
     Email: parsed.data.email,
     Téléphone: parsed.data.phone,
