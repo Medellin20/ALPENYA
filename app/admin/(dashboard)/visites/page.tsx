@@ -85,7 +85,8 @@ export default async function AdminViewingsPage({ searchParams }: { searchParams
                 <StatusSelect
                   value={viewing.status as ViewingStatus}
                   options={STATUS_OPTIONS}
-                  onUpdate={(status) => updateViewingStatus(viewing.id, status)}
+                  entityId={viewing.id}
+                  onUpdate={updateViewingStatus}
                 />
               </div>
             </div>

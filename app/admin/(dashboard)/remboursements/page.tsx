@@ -68,7 +68,8 @@ export default async function AdminRefundsPage({ searchParams }: { searchParams:
                 <StatusSelect
                   value={refund.status as RefundStatus}
                   options={STATUS_OPTIONS}
-                  onUpdate={(status) => updateRefundStatus(refund.id, status)}
+                  entityId={refund.id}
+                  onUpdate={updateRefundStatus}
                 />
               </div>
             </div>

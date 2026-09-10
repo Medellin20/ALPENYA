@@ -76,7 +76,8 @@ export default async function AdminGuaranteesPage({ searchParams }: { searchPara
                 <StatusSelect
                   value={guarantee.status as GuaranteeStatus}
                   options={STATUS_OPTIONS}
-                  onUpdate={(status) => updateGuaranteeStatus(guarantee.id, status)}
+                  entityId={guarantee.id}
+                  onUpdate={updateGuaranteeStatus}
                 />
               </div>
             </div>

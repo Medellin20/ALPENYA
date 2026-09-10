@@ -9,11 +9,13 @@ import type { ActionResult } from '@/types';
 export function StatusSelect<T extends string>({
   value,
   options,
+  entityId,
   onUpdate,
 }: {
   value: T;
   options: { value: T; label: string }[];
-  onUpdate: (newStatus: T) => Promise<ActionResult>;
+  entityId: string;
+  onUpdate: (id: string, newStatus: T) => Promise<ActionResult>;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
@@ -21,7 +23,7 @@ export function StatusSelect<T extends string>({
   function handleChange(newStatus: T) {
     startTransition(async () => {
       try {
-        const result = await onUpdate(newStatus);
+        const result = await onUpdate(entityId, newStatus);
         if (result.success) {
           toast.success(result.message);
           router.refresh();
