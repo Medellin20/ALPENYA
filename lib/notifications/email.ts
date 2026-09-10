@@ -11,9 +11,10 @@ function escapeHtml(value: string) {
 
 /** Envoie une alerte sans jamais bloquer la création d'un dossier client. */
 export async function sendAdminAlert(subject: string, details: AlertDetails): Promise<boolean> {
-  const user = process.env.GMAIL_USER;
-  const appPassword = process.env.GMAIL_APP_PASSWORD;
-  const recipient = process.env.ALERT_EMAIL;
+  const user = process.env.GMAIL_USER?.trim();
+  // Google affiche parfois les mots de passe d'application par groupes de caractères.
+  const appPassword = process.env.GMAIL_APP_PASSWORD?.replace(/[\s-]/g, '');
+  const recipient = process.env.ALERT_EMAIL?.trim();
 
   if (!user || !appPassword || !recipient) {
     console.error('Alerte e-mail non envoyée : configuration Gmail incomplète.');
@@ -29,9 +30,9 @@ export async function sendAdminAlert(subject: string, details: AlertDetails): Pr
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: { user, pass: appPassword },
-      connectionTimeout: 3000,
-      greetingTimeout: 3000,
-      socketTimeout: 5000,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
 
     await transporter.sendMail({
