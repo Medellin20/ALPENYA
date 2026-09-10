@@ -10,12 +10,15 @@ function escapeHtml(value: string) {
 }
 
 /** Envoie une alerte sans jamais bloquer la création d'un dossier client. */
-export async function sendAdminAlert(subject: string, details: AlertDetails) {
+export async function sendAdminAlert(subject: string, details: AlertDetails): Promise<boolean> {
   const user = process.env.GMAIL_USER;
   const appPassword = process.env.GMAIL_APP_PASSWORD;
   const recipient = process.env.ALERT_EMAIL;
 
-  if (!user || !appPassword || !recipient) return;
+  if (!user || !appPassword || !recipient) {
+    console.error('Alerte e-mail non envoyée : configuration Gmail incomplète.');
+    return false;
+  }
 
   const rows = Object.entries(details)
     .filter(([, value]) => value !== undefined && value !== null)
@@ -38,7 +41,9 @@ export async function sendAdminAlert(subject: string, details: AlertDetails) {
       text: Object.entries(details).map(([label, value]) => `${label}: ${value ?? '—'}`).join('\n'),
       html: `<div style="font-family:Arial,sans-serif;color:#263238"><h2>${escapeHtml(subject)}</h2><table>${rows}</table><p style="margin-top:20px">Connectez-vous à l’espace administrateur pour traiter cette demande.</p></div>`,
     });
+    return true;
   } catch (error) {
     console.error('Échec de l’envoi de l’alerte Gmail :', error);
+    return false;
   }
 }

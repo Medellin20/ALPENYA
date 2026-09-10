@@ -6,6 +6,7 @@ import { recordStatusChange } from '@/lib/data/history';
 import { refundRequestSchema, type RefundRequestInput } from '@/lib/validations/refund';
 import { generateRefundReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
+import { sendAdminAlert } from '@/lib/notifications/email';
 
 /**
  * Le client demande le remboursement de sa garantie. Ceci crée une DEMANDE
@@ -29,7 +30,7 @@ export async function requestGuaranteeRefund(input: RefundRequestInput): Promise
 
   const { data: guarantee, error: fetchError } = await supabase
     .from('guarantee_payments')
-    .select('*, reservations(reference)')
+    .select('*, clients(first_name, last_name, email, phone), reservations(reference)')
     .eq('id', parsed.data.guaranteePaymentId)
     .maybeSingle();
 
@@ -76,6 +77,15 @@ export async function requestGuaranteeRefund(input: RefundRequestInput): Promise
     fromStatus: null,
     toStatus: 'requested',
     changedBy: 'client',
+  });
+
+  await sendAdminAlert(`Nouvelle demande de remboursement — ${reference}`, {
+    Référence: reference,
+    Réservation: reservationReference,
+    Client: `${(guarantee as any).clients?.first_name ?? ''} ${(guarantee as any).clients?.last_name ?? ''}`.trim(),
+    Email: (guarantee as any).clients?.email,
+    Montant: `${guarantee.amount} €`,
+    Motif: parsed.data.reason || null,
   });
 
   revalidatePath('/admin/remboursements');
