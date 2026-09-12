@@ -182,12 +182,23 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         <div className="lg:col-span-1">
           <FadeIn delay={0.1} className="lg:sticky lg:top-24">
             <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-card sm:p-6">
-              <SeasonalPriceSelector
-                summerPrice={property.monthly_price}
-                earlySummerPrice={property.deposit_amount}
-                septemberPrice={property.viewing_fee}
-                lateSpringPrice={property.service_charges}
-              />
+              {property.property_type === 'villa' ? (
+                <SeasonalPriceSelector
+                  propertyType="villa"
+                  summerPrice={property.monthly_price}
+                  earlySummerPrice={property.deposit_amount}
+                  septemberPrice={property.viewing_fee}
+                  lateSpringPrice={property.service_charges}
+                />
+              ) : (
+                <SeasonalPriceSelector
+                  propertyType="chalet"
+                  lowSeasonPrice={property.monthly_price}
+                  holidayPrice={property.deposit_amount}
+                  winterPrice={property.viewing_fee}
+                  cleaningFee={property.service_charges}
+                />
+              )}
               {isBookable ? (
                 <div className="mt-5 space-y-2.5">
                   <Button asChild className="w-full" size="lg">
