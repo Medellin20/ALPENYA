@@ -216,7 +216,7 @@ export function PropertyForm({
               {...register('description')}
             />
             <p className="mt-1.5 text-xs text-ink-400">
-              Structure conseillée : présentation, capacité et couchages, équipements, emplacement, puis tarifs par saison. Entourez un passage de **deux astérisques** pour l’afficher en gras.
+              La présentation accepte le gras, l’italique, le souligné, le texte barré, les titres et les listes. Les marqueurs de mise en forme ne sont pas affichés sur la page publique.
             </p>
             <FieldError message={errors.description?.message} />
           </div>

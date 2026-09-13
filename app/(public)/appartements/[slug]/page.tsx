@@ -265,7 +265,7 @@ function PropertyPresentation({ description }: { description: string }) {
                 ? 'text-xl font-extrabold leading-tight text-ink-900 sm:text-2xl'
                 : 'pt-2 text-lg font-bold text-ink-900'}
             >
-              {formatBoldText(markdownHeading[2])}
+              {formatInlineText(markdownHeading[2])}
             </h3>
           );
         }
@@ -273,7 +273,7 @@ function PropertyPresentation({ description }: { description: string }) {
         if (isHeading) {
           return (
             <h3 key={blockIndex} className="pt-2 text-base font-extrabold uppercase tracking-wide text-ink-900">
-              {formatBoldText(lines[0])}
+              {formatInlineText(lines[0])}
             </h3>
           );
         }
@@ -284,7 +284,7 @@ function PropertyPresentation({ description }: { description: string }) {
               {lines.map((line, lineIndex) => (
                 <li key={lineIndex} className="flex gap-3">
                   <span aria-hidden="true" className="font-bold text-canal-600">•</span>
-                  <span>{formatBoldText(line.replace(/^[•*-]\s+/, ''))}</span>
+                  <span>{formatInlineText(line.replace(/^[•*-]\s+/, ''))}</span>
                 </li>
               ))}
             </ul>
@@ -296,7 +296,7 @@ function PropertyPresentation({ description }: { description: string }) {
             {lines.map((line, lineIndex) => (
               <span key={lineIndex}>
                 {lineIndex > 0 && <br />}
-                {formatBoldText(line)}
+                {formatInlineText(line)}
               </span>
             ))}
           </p>
@@ -306,12 +306,30 @@ function PropertyPresentation({ description }: { description: string }) {
   );
 }
 
-function formatBoldText(text: string) {
-  return text.split(/(\*\*.+?\*\*)/g).map((part, index) =>
-    part.startsWith('**') && part.endsWith('**') ? (
-      <strong key={index} className="font-bold text-ink-900">{part.slice(2, -2)}</strong>
-    ) : part
-  );
+function formatInlineText(text: string) {
+  const tokenPattern = /(\*\*.+?\*\*|__.+?__|~~.+?~~|`.+?`|\*[^*\n]+\*|_[^_\n]+_)/g;
+
+  return text.split(tokenPattern).map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index} className="font-bold text-ink-900">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('__') && part.endsWith('__')) {
+      return <strong key={index} className="font-bold underline decoration-canal-400 underline-offset-2">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('~~') && part.endsWith('~~')) {
+      return <del key={index} className="text-ink-400">{part.slice(2, -2)}</del>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={index} className="rounded bg-ink-100 px-1.5 py-0.5 font-mono text-[0.9em] text-ink-800">{part.slice(1, -1)}</code>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={index} className="italic text-ink-800">{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('_') && part.endsWith('_')) {
+      return <em key={index} className="italic text-ink-800">{part.slice(1, -1)}</em>;
+    }
+    return part.replace(/[#*]/g, '');
+  });
 }
 
 function Feature({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
