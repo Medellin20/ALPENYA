@@ -1,3 +1,5 @@
+import { PaymentStep } from '@/components/forms/payment-step';
+import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, Home } from 'lucide-react';
@@ -5,6 +7,8 @@ import { getReservationByReference } from '@/lib/data/dossier';
 import { Button } from '@/components/ui/button';
 import { RESERVATION_STATUS_LABELS } from '@/lib/utils/constants';
 import { formatDate } from '@/lib/utils/format';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = { title: 'Demande de réservation envoyée' };
 
@@ -30,7 +34,6 @@ export default async function ReservationConfirmationPage({
 
         <p className="mt-2 text-sm text-ink-500">
           Notre équipe va examiner votre dossier et vous contactera pour organiser manuellement la suite.
-          Aucun paiement ni justificatif bancaire n’est demandé sur le site.
         </p>
 
         <p className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-relaxed text-red-700">
@@ -47,6 +50,11 @@ export default async function ReservationConfirmationPage({
           <Row label="Durée" value={`${reservation.duration_months} jour${reservation.duration_months > 1 ? 's' : ''}`} />
           <Row label="Statut" value={RESERVATION_STATUS_LABELS[reservation.status] ?? reservation.status} />
         </div>
+
+        <div className="mt-6 text-left">
+          <ReservationPaymentNotice />
+        </div>
+        <PaymentStep reference={reservation.reference} />
 
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
           <Button asChild className="w-full flex-1"><Link href="/mon-compte">Suivre mon dossier</Link></Button>

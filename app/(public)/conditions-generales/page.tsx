@@ -26,6 +26,14 @@ export default function ConditionsGeneralesPage() {
         organise directement avec le client les éventuelles formalités ultérieures.
       </p>
 
+      <h2>Étape de paiement</h2>
+      <p>
+        Après l’enregistrement de la demande de visite ou de réservation, une dernière étape
+        présente le lien de paiement lorsqu’il est disponible. Après le paiement, le client envoie
+        une capture d’écran justificative à contacts@alpenia-residences.com avec la référence
+        de sa demande. ALPENIA vérifie le justificatif avant de confirmer la suite du dossier.
+      </p>
+
       <h2>Responsabilité</h2>
       <p>
         ALPENIA agit en tant qu’intermédiaire entre locataires et propriétaires ou

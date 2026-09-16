@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { TIME_SLOTS } from '@/lib/utils/constants';
 import { cn } from '@/lib/utils/cn';
 
-const STEPS = ['Date & créneau', 'Vos coordonnées', 'Confirmation'] as const;
+const STEPS = ['Date & créneau', 'Vos coordonnées', 'Confirmation', 'Paiement'] as const;
 
 export function ViewingRequestForm({
   propertyId,
@@ -49,7 +49,7 @@ export function ViewingRequestForm({
       ['firstName', 'lastName', 'email', 'phone'],
     ];
     const valid = await trigger(fieldsByStep[step]);
-    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 2));
   }
 
   function onSubmit(data: ViewingRequestInput) {
@@ -81,7 +81,7 @@ export function ViewingRequestForm({
               >
                 {i + 1}
               </span>
-              <span className={cn('hidden text-sm font-medium sm:block', i === step ? 'text-ink-900' : 'text-ink-400')}>
+              <span className={cn('hidden text-sm font-medium lg:block', i === step ? 'text-ink-900' : 'text-ink-400')}>
                 {label}
               </span>
             </div>
@@ -186,9 +186,14 @@ export function ViewingRequestForm({
                 <Row label="Téléphone" value={values.phone || '—'} />
               </div>
 
+              <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-relaxed text-red-700">
+                Les frais de visite de 50 € sont exigibles avant la visite. Ils vous seront
+                remboursés si le bien ne vous convient pas.
+              </p>
+
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
-                Aucun paiement n’est demandé en ligne. Notre équipe vous contactera pour confirmer
-                le créneau et organiser manuellement la suite.
+                Après l’envoi de votre demande, vous accéderez à la dernière étape avec le lien de
+                paiement et les instructions pour envoyer votre justificatif par e-mail.
               </p>
             </motion.div>
           )}
@@ -205,14 +210,14 @@ export function ViewingRequestForm({
             Retour
           </Button>
 
-          {step < STEPS.length - 1 ? (
+          {step < STEPS.length - 2 ? (
             <Button type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
             <Button type="submit" isLoading={isPending} className="w-full sm:w-auto">
-              Envoyer la demande de visite
+              Envoyer et accéder au paiement
             </Button>
           )}
         </div>

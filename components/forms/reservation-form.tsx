@@ -14,8 +14,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label, FieldError } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils/cn';
+import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
 
-const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif'] as const;
+const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif', 'Paiement'] as const;
 
 export function ReservationForm({
   propertyId,
@@ -54,7 +55,7 @@ export function ReservationForm({
       ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets'],
     ];
     const valid = await trigger(fieldsByStep[step]);
-    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 2));
   }
 
   function onSubmit(data: ReservationInput) {
@@ -80,7 +81,7 @@ export function ReservationForm({
               >
                 {i + 1}
               </span>
-              <span className={cn('hidden text-sm font-medium sm:block', i === step ? 'text-ink-900' : 'text-ink-400')}>
+              <span className={cn('hidden text-sm font-medium lg:block', i === step ? 'text-ink-900' : 'text-ink-400')}>
                 {label}
               </span>
             </div>
@@ -90,6 +91,9 @@ export function ReservationForm({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-6">
+          <ReservationPaymentNotice />
+        </div>
         <AnimatePresence mode="wait">
           {step === 0 && (
             <motion.div
@@ -193,8 +197,8 @@ export function ReservationForm({
                 <Row label="Animaux de compagnie" value={values.hasPets ? 'Oui' : 'Non'} />
               </div>
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
-                Cette étape transmet uniquement votre demande de réservation. Aucun paiement ni
-                justificatif bancaire n’est demandé sur le site. L’agence vous contactera pour la suite.
+                Après l’envoi de votre demande, vous accéderez à la dernière étape avec le lien de
+                paiement et les instructions pour envoyer votre justificatif par e-mail.
               </p>
             </motion.div>
           )}
@@ -211,14 +215,14 @@ export function ReservationForm({
             Retour
           </Button>
 
-          {step < STEPS.length - 1 ? (
+          {step < STEPS.length - 2 ? (
             <Button type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
             <Button type="submit" isLoading={isPending} className="w-full sm:w-auto">
-              Envoyer la demande de réservation
+              Envoyer et accéder au paiement
             </Button>
           )}
         </div>

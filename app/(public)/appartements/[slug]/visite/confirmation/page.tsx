@@ -1,3 +1,4 @@
+import { PaymentStep } from '@/components/forms/payment-step';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, Home } from 'lucide-react';
@@ -5,6 +6,8 @@ import { getViewingByReference } from '@/lib/data/dossier';
 import { Button } from '@/components/ui/button';
 import { VIEWING_STATUS_LABELS } from '@/lib/utils/constants';
 import { formatDate } from '@/lib/utils/format';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = { title: 'Demande de visite envoyée' };
 
@@ -42,12 +45,13 @@ export default async function ViewingConfirmationPage({
 
         <p className="mt-4 text-sm text-ink-500">
           Notre équipe va examiner votre demande et vous contactera pour confirmer le rendez-vous.
-          Aucun paiement ni justificatif bancaire n’est demandé sur le site.
         </p>
 
         <p className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-relaxed text-red-700">
           Si vous ne recevez pas une confirmation par mail ou par WhatsApp en moins de 24 h, sachez que votre dossier a été rejeté.
         </p>
+
+        <PaymentStep reference={viewing.reference} />
 
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
           <Button asChild variant="outline" className="w-full flex-1"><Link href="/mon-compte">Suivre mon dossier</Link></Button>

@@ -19,7 +19,7 @@ const CATEGORIES = [
       {
         question: 'Dois-je payer pour envoyer une demande ?',
         answer:
-          'Non. Aucun paiement ni justificatif bancaire n’est demandé sur le site pour transmettre une demande de visite.',
+          'Votre demande est enregistrée avant le paiement. Une dernière étape affiche le lien de paiement configuré par l’agence. Après le paiement, envoyez une capture justificative à contacts@alpenia-residences.com en précisant votre référence.',
       },
       {
         question: 'Puis-je changer la date de ma visite ?',

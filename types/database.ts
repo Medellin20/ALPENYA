@@ -184,6 +184,12 @@ export interface RefundRequest {
   updated_at: string;
 }
 
+export interface PaymentSettings {
+  id: number;
+  payment_url: string;
+  updated_at: string;
+}
+
 export interface BankSettings {
   id: number;
   beneficiary_name: string;
@@ -251,6 +257,7 @@ export interface Database {
       reservations: { Row: Reservation; Insert: Partial<Reservation>; Update: Partial<Reservation> };
       guarantee_payments: { Row: GuaranteePayment; Insert: Partial<GuaranteePayment>; Update: Partial<GuaranteePayment> };
       refund_requests: { Row: RefundRequest; Insert: Partial<RefundRequest>; Update: Partial<RefundRequest> };
+      payment_settings: { Row: PaymentSettings; Insert: Partial<PaymentSettings>; Update: Partial<PaymentSettings> };
       bank_settings: { Row: BankSettings; Insert: Partial<BankSettings>; Update: Partial<BankSettings> };
       contact_messages: { Row: ContactMessage; Insert: Partial<ContactMessage>; Update: Partial<ContactMessage> };
       admin_logs: { Row: AdminLog; Insert: Partial<AdminLog>; Update: Partial<AdminLog> };

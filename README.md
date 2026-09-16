@@ -288,3 +288,7 @@ npm start
 ## Licence
 
 Projet propriétaire — Real Estate NL. Tous droits réservés.
+
+### Lien de paiement des visites et réservations
+
+Appliquer `supabase/migrations/20260916_payment_settings.sql` dans Supabase, puis saisir le lien HTTPS dans **Admin → Paramètres → Paiement**. Le lien est commun aux deux parcours et peut être modifié ou retiré à tout moment. Les pages de confirmation lisent la configuration à chaque requête et affichent la quatrième et dernière étape après l’enregistrement de la demande. Sans lien configuré, elles invitent le client à contacter l’équipe. Les captures de paiement sont envoyées par e-mail à `contacts@alpenia-residences.com`, avec la référence du dossier ; le paiement n’est pas automatiquement marqué comme confirmé.
