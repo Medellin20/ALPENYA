@@ -24,6 +24,7 @@ function toDbPayload(data: PropertyInput) {
     bedrooms: data.bedrooms,
     bathrooms: data.bathrooms,
     rooms: data.rooms ?? null,
+    floor: data.floor ?? null,
     contract_type: data.contractType,
     interior_type: data.interiorType,
     maintenance_condition: data.maintenanceCondition,

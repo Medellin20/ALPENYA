@@ -281,3 +281,21 @@ test('New property page renders a retry message on database failure and the form
     }
   }
 });
+
+test('Floor count accepts zero and integers, preserves unspecified values, and rejects invalid counts', () => {
+  for (const [input, expected] of [['0', 0], ['2', 2], ['', null], [null, null], [undefined, undefined]]) {
+    assert.equal(propertySchema.parse({ ...validCreation, floor: input }).floor, expected);
+  }
+  for (const floor of ['-1', '1.5', 'abc']) {
+    assert.equal(propertySchema.safeParse({ ...validCreation, floor }).success, false);
+  }
+});
+
+test('Floor count is saved on creation and can be cleared on edit', async () => {
+  const created = actions([{ data: null }, { data: { id: 'new-id' } }, { data: [] }, { error: null }], propertySchema);
+  assert.equal((await created.api.createProperty({ ...validCreation, floor: '2' })).success, true);
+  assert.equal(created.calls.find(call => call.table === 'properties' && call.method === 'insert').args[0].floor, 2);
+  const edited = actions([{ data: null }, { data: { id: 'id' } }, { data: [] }, { error: null }], propertySchema);
+  assert.equal((await edited.api.updateProperty('id', { ...validCreation, floor: '' })).success, true);
+  assert.equal(edited.calls.find(call => call.table === 'properties' && call.method === 'update').args[0].floor, null);
+});

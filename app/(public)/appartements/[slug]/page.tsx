@@ -124,8 +124,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               )}
               <Feature
                 icon={Building}
-                label="Étage"
-                value={property.floor != null ? `${property.floor}${property.floor === 0 ? ' (RDC)' : ''}` : '—'}
+                label="Nombre d’étages"
+                value={property.floor != null ? (property.floor === 0 ? 'Plain-pied' : String(property.floor)) : '—'}
               />
             </div>
 

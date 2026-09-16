@@ -21,6 +21,10 @@ export const propertySchema = z.object({
   bedrooms: z.coerce.number().int('Le nombre de chambres doit être entier.').min(0, 'Le nombre de chambres ne peut pas être négatif.'),
   bathrooms: z.coerce.number().int('Le nombre de salles de bain doit être entier.').min(0, 'Le nombre de salles de bain ne peut pas être négatif.'),
   rooms: z.coerce.number().int().min(0).optional(),
+  floor: z.union([
+    z.literal('').transform(() => null),
+    z.coerce.number().int('Le nombre d’étages doit être entier.').min(0, 'Le nombre d’étages ne peut pas être négatif.').nullable(),
+  ]).optional(),
   contractType: z.string().trim().min(2),
   interiorType: z.string().trim().min(2),
   maintenanceCondition: z.string().trim().min(2),

@@ -47,6 +47,7 @@ function propertyToFormValues(property: Property, amenityIds: string[], amenitie
     bedrooms: property.bedrooms,
     bathrooms: property.bathrooms,
     rooms: property.rooms ?? undefined,
+    floor: property.floor ?? undefined,
     contractType: property.contract_type,
     interiorType: property.interior_type,
     maintenanceCondition: property.maintenance_condition,
@@ -354,6 +355,12 @@ export function PropertyForm({
             <Label htmlFor="bathrooms">Salles de bain</Label>
             <Input id="bathrooms" type="number" {...register('bathrooms')} />
             <FieldError message={errors.bathrooms?.message} />
+          </div>
+          <div>
+            <Label htmlFor="floor">Nombre d’étages</Label>
+            <Input id="floor" type="number" min={0} step={1} placeholder="Non renseigné" {...register('floor')} />
+            <FieldError message={errors.floor?.message} />
+            <p className="mt-1.5 text-xs text-ink-400">0 pour un bien de plain-pied.</p>
           </div>
           <div>
             <Label htmlFor="rooms">Pièces / espaces</Label>
