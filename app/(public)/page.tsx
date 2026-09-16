@@ -101,20 +101,20 @@ export default async function HomePage() {
             />
             <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collection 01 — 02</p>
           </FadeIn>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-            <FadeIn delay={0.05}>
-              <Link href="/appartements?type=chalet" className="group relative flex min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-5 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
-                <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-45" />
+          <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-6">
+            <FadeIn delay={0.05} className="min-w-0">
+              <Link href="/appartements?type=chalet" className="group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+                <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 1024px) 50vw, 34vw" className="object-cover opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-45" />
                 <div className="relative mt-auto">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><MountainSnow className="h-5 w-5" /></span>
                   <h3 className="mt-4 text-2xl font-extrabold sm:text-3xl">Chalets</h3>
                   <p className="mt-1 max-w-sm text-sm text-white/80 sm:text-base">Montagne, neige, cheminée et séjours chaleureux en famille ou entre amis.</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">Découvrir les chalets <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les chalets <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
                 </div>
               </Link>
             </FadeIn>
-            <FadeIn delay={0.1}>
-              <Link href="/appartements?type=villa" className="group relative flex min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-5 text-white shadow-card min-[400px]:min-h-80 sm:mt-14 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+            <FadeIn delay={0.1} className="min-w-0">
+              <Link href="/appartements?type=villa" className="group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-canal-500/30 via-transparent to-ink-950/70" />
                 <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" />
                 <div className="absolute -right-4 top-12 h-36 w-36 rounded-full border border-white/10" />
@@ -122,7 +122,7 @@ export default async function HomePage() {
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><Palmtree className="h-5 w-5" /></span>
                   <h3 className="mt-4 text-2xl font-extrabold sm:text-3xl">Villas</h3>
                   <p className="mt-1 max-w-sm text-sm text-white/80 sm:text-base">Littoral, jardin, piscine et espaces privilégiés pour vous retrouver.</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">Découvrir les villas <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les villas <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
                 </div>
               </Link>
             </FadeIn>
