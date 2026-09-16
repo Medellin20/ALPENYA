@@ -1,4 +1,5 @@
 import 'server-only';
+import type { Amenity } from '@/types/database';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function getAllPropertiesAdmin(params: { search?: string; status?: string; city?: string; propertyType?: string; page?: number } = {}) {
@@ -46,9 +47,24 @@ export async function getPropertyByIdAdmin(id: string) {
   return data;
 }
 
-export async function getAllAmenities() {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase.from('amenities').select('*').order('label_fr');
-  if (error) throw new Error('Impossible de charger le catalogue des équipements.');
-  return data ?? [];
+export async function getAllAmenities(): Promise<{ amenities: Amenity[]; error: string | null }> {
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('amenities').select('*').order('label_fr');
+    if (error) {
+      console.error('getAllAmenities error:', error.code);
+      return {
+        amenities: [],
+        error: error.code === 'PGRST205'
+          ? 'Le catalogue des équipements est introuvable dans la base configurée. Vérifiez le projet Supabase et initialisez ses tables avant d’ajouter un bien.'
+          : 'Impossible de charger les équipements. Vérifiez la connexion et les accès à la base de données, puis réessayez.',
+      };
+    }
+    return { amenities: data ?? [], error: null };
+  } catch {
+    return {
+      amenities: [],
+      error: 'La connexion à la base de données est indisponible. Vérifiez la configuration Supabase du site, puis réessayez.',
+    };
+  }
 }

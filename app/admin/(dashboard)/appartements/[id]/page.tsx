@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getPropertyByIdAdmin, getAllAmenities } from '@/lib/data/admin-properties';
+import { PropertyDataError } from '@/components/admin/property-data-error';
 import { PropertyForm } from '@/components/admin/property-form';
 import { ImageUploader } from '@/components/admin/image-uploader';
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = { title: 'Modifier un bien' };
 export const dynamic = 'force-dynamic';
 
 export default async function EditPropertyPage({ params }: { params: { id: string } }) {
-  const [property, amenities] = await Promise.all([getPropertyByIdAdmin(params.id), getAllAmenities()]);
+  const [property, { amenities, error }] = await Promise.all([getPropertyByIdAdmin(params.id), getAllAmenities()]);
   if (!property) notFound();
 
   const currentAmenityIds = (property.property_amenities ?? []).map((pa: any) => pa.amenity_id);
@@ -45,13 +46,15 @@ export default async function EditPropertyPage({ params }: { params: { id: strin
           <ImageUploader propertyId={property.id} initialImages={property.property_images ?? []} />
         </div>
 
-        <PropertyForm
+        {error ? (
+          <PropertyDataError message={error} retryHref={`/admin/appartements/${params.id}`} />
+        ) : <PropertyForm
           mode="edit"
           propertyId={property.id}
           property={property}
           currentAmenityIds={currentAmenityIds}
           amenities={amenities}
-        />
+        />}
       </div>
     </div>
   );

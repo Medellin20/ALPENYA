@@ -47,11 +47,11 @@ export function PropertyGrid({ properties }: { properties: PropertyWithRelations
               {cityProperties.length} bien{cityProperties.length > 1 ? 's' : ''}
             </span>
           </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {cityProperties.map((property, index) => (
               <div
                 key={property.id}
-                className="animate-fade-up"
+                className="h-full motion-safe:animate-fade-up"
                 style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
               >
                 <PropertyCard property={property} />

@@ -6,7 +6,7 @@ const ts = require('typescript');
 
 function load(file, imports) {
   const source = ts.transpileModule(fs.readFileSync(file, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
   const context = { exports: {}, console: { error() {} }, require: name => {
     assert.ok(name in imports, `Unexpected import: ${name}`);
@@ -229,4 +229,55 @@ test('A partial creation preserves the new ID so the admin can fix equipment wit
   const result = await api.createProperty(validCreation);
   assert.equal(result.success, false);
   assert.equal(result.data.id, 'new-id');
+});
+
+
+test('Equipment loading distinguishes an empty catalogue from a failed request without throwing', async () => {
+  for (const response of [
+    { data: [], error: null },
+    { data: null, error: { code: 'PGRST205' } },
+    { data: null, error: { code: '42501' } },
+  ]) {
+    const db = database([response]);
+    const api = load('lib/data/admin-properties.ts', {
+      'server-only': {}, '@/lib/supabase/admin': { createAdminClient: () => db.client },
+    });
+    const result = await api.getAllAmenities();
+    assert.equal(result.amenities.length, 0);
+    assert.equal(Boolean(result.error), Boolean(response.error));
+    if (response.error?.code === 'PGRST205') assert.match(result.error, /introuvable/);
+  }
+});
+
+test('Missing configuration is shown safely without leaking the thrown error', async () => {
+  const api = load('lib/data/admin-properties.ts', {
+    'server-only': {}, '@/lib/supabase/admin': { createAdminClient: () => { throw Error('sensitive configuration'); } },
+  });
+  const result = await api.getAllAmenities();
+  assert.ok(result.error);
+  assert.equal(result.error.includes('sensitive'), false);
+});
+
+test('New property page renders a retry message on database failure and the form after recovery', async () => {
+  const React = require('react');
+  const runtime = require('react/jsx-runtime');
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const errorComponent = load('components/admin/property-data-error.tsx', { 'react/jsx-runtime': runtime });
+  for (const error of ['Catalogue introuvable', null]) {
+    const page = load('app/admin/(dashboard)/appartements/nouveau/page.tsx', {
+      'react/jsx-runtime': runtime,
+      'next/link': { default: props => React.createElement('a', props) },
+      'lucide-react': { ArrowLeft: () => null },
+      '@/components/admin/property-data-error': errorComponent,
+      '@/components/admin/property-form': { PropertyForm: () => React.createElement('form', { 'data-testid': 'property-form' }) },
+      '@/lib/data/admin-properties': { getAllAmenities: async () => ({ amenities: [], error }) },
+    });
+    const html = renderToStaticMarkup(await page.default());
+    assert.equal(html.includes('role="alert"'), Boolean(error));
+    assert.equal(html.includes('data-testid="property-form"'), !error);
+    if (error) {
+      assert.ok(html.includes('Réessayer'));
+      assert.ok(html.includes('href="/admin/appartements/nouveau"'));
+    }
+  }
 });

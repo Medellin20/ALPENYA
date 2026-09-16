@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { MapPin, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { MapPin, ArrowRight, Mountain, Sun, Compass } from 'lucide-react';
 import { PropertyGrid } from '@/components/properties/property-grid';
 import { PropertyFilters } from '@/components/properties/property-filters';
 import { Pagination } from '@/components/properties/pagination';
-import { getAvailableCities, getAvailableCityCounts, getPublishedProperties } from '@/lib/data/properties';
+import { getAvailableCities, getCityPropertySummaries, getPublishedProperties } from '@/lib/data/properties';
 import type { PropertyFilters as Filters } from '@/types';
 
 export const revalidate = 30;
@@ -29,25 +30,29 @@ interface PageProps {
 }
 
 export default async function AppartementsPage({ searchParams }: PageProps) {
-  if (!searchParams.city && !searchParams.type) {
-    const cities = await getAvailableCityCounts();
+  if (Object.values(searchParams).every(value => !value)) {
+    const cities = await getCityPropertySummaries();
     return (
       <div className="container-app py-10 sm:py-14">
-        <div className="mb-8">
-          <h1 className="text-display-sm font-extrabold text-ink-900 sm:text-display-md">Choisissez votre destination</h1>
-          <p className="mt-2 max-w-2xl text-ink-500">Explorez les destinations dans lesquelles nos chalets et villas sont disponibles.</p>
+        <CatalogueHeader />
+        <div className="mb-7 mt-12 flex flex-wrap items-end justify-between gap-3">
+          <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-canal-700">À chaque envie, une destination</p><h2 className="mt-2 text-2xl font-bold tracking-tight text-ink-950">Où souhaitez-vous vous évader ?</h2></div>
+          <span className="text-sm text-ink-700">{cities.length} destination{cities.length > 1 ? 's' : ''} à découvrir</span>
         </div>
         {cities.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cities.map(({ city, count }) => (
-              <Link key={city} href={`/appartements?city=${encodeURIComponent(city)}`} className="group flex items-center gap-4 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-canal-300 hover:shadow-card">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-canal-50 text-canal-600"><MapPin className="h-6 w-6" /></span>
-                <span className="min-w-0 flex-1"><span className="block text-lg font-bold text-ink-900">{city}</span><span className="text-sm text-ink-400">{count} bien{count > 1 ? 's' : ''}</span></span>
-                <ArrowRight className="h-5 w-5 text-ink-300 transition-transform group-hover:translate-x-1 group-hover:text-canal-600" />
+            {cities.map(({ city, count, imageUrl }) => (
+              <Link key={city} href={`/appartements?city=${encodeURIComponent(city)}`} className="group relative isolate flex min-h-[300px] items-end overflow-hidden rounded-3xl bg-ink-900 p-6 text-white shadow-soft transition-shadow hover:shadow-lifted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-canal-600 focus-visible:ring-offset-4">
+                {imageUrl ? <Image src={imageUrl} alt={`Séjour à ${city}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="-z-20 object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" /> : <div className="absolute inset-0 -z-20 bg-gradient-to-br from-canal-700 to-ink-950"><Mountain aria-hidden="true" className="absolute right-6 top-6 h-28 w-28 stroke-1 text-white/15" /></div>}
+                <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-950/95 via-ink-950/20 to-transparent" />
+                <div className="flex w-full items-end justify-between gap-4">
+                  <div><span className="mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-white/80"><MapPin className="h-3.5 w-3.5" aria-hidden="true" />France</span><h3 className="text-3xl font-bold tracking-tight">{city}</h3><p className="mt-2 text-sm text-white/85">{count} séjour{count > 1 ? 's' : ''} à découvrir</p></div>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 transition-colors group-hover:bg-white group-hover:text-ink-950"><ArrowRight className="h-5 w-5" aria-hidden="true" /></span>
+                </div>
               </Link>
             ))}
           </div>
-        ) : <p className="rounded-2xl bg-sand-100 p-6 text-ink-500">Le catalogue est en cours de préparation. Les premiers chalets et villas apparaîtront ici dès leur publication.</p>}
+        ) : <p className="rounded-3xl border border-ink-100 bg-white p-8 text-ink-700">Le catalogue est en cours de préparation. Les premiers chalets et villas apparaîtront ici dès leur publication.</p>}
       </div>
     );
   }
@@ -71,26 +76,11 @@ export default async function AppartementsPage({ searchParams }: PageProps) {
 
   return (
     <div className="container-app py-10 sm:py-14">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-ink-900 sm:text-display-md">
-          {filters.city
-            ? `Chalets et villas à ${filters.city}`
-            : filters.propertyType === 'chalet'
-              ? 'Tous nos chalets'
-              : filters.propertyType === 'villa'
-                ? 'Toutes nos villas'
-                : 'Chalets et villas'}
-        </h1>
-        <p className="mt-2 max-w-2xl text-ink-500">
-          {filters.city
-            ? `Découvrez tous nos biens disponibles à ${filters.city}, en France.`
-            : 'Affinez votre recherche par destination, budget, capacité ou équipements.'}
-        </p>
-      </div>
-
-      <Link href="/appartements" className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-canal-700 hover:underline">← Toutes les catégories</Link>
+      <CatalogueHeader city={filters.city} propertyType={filters.propertyType} />
+      <div className="mt-10 rounded-2xl border border-ink-100 bg-white px-4 pb-0 pt-5 sm:px-6">
       <PropertyFilters resultCount={total} cities={cities} />
-      <PropertyGrid properties={properties} />
+      </div>
+      <div className="mt-8"><PropertyGrid properties={properties} /></div>
       <Pagination
         currentPage={page}
         totalPages={totalPages}
@@ -98,5 +88,30 @@ export default async function AppartementsPage({ searchParams }: PageProps) {
         searchParams={searchParams}
       />
     </div>
+  );
+}
+
+
+function CatalogueHeader({ city, propertyType }: { city?: string; propertyType?: string }) {
+  const categories = [
+    { label: 'Toutes les destinations', type: '', icon: Compass },
+    { label: 'Nos chalets', type: 'chalet', icon: Mountain },
+    { label: 'Nos villas', type: 'villa', icon: Sun },
+  ];
+  return (
+    <header className="relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-10 text-white sm:px-10 sm:py-12">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[60px] border-white/[0.04]" />
+      <p className="relative text-xs font-semibold uppercase tracking-[0.24em] text-canal-200">La collection ALPENIA</p>
+      <h1 className="relative mt-5 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
+        {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
+      </h1>
+      <p className="relative mt-5 max-w-xl text-sm leading-7 text-white/75 sm:text-base">{city ? 'Trouvez le chalet ou la villa qui vous ressemble, et prenez le temps de découvrir votre prochaine escapade.' : 'Un chalet au grand air ou une villa pour les beaux jours. Trouvez votre prochaine adresse en France.'}</p>
+      <nav aria-label="Collections de logements" className="relative mt-8 flex flex-wrap gap-2">
+        {categories.map(({ label, type, icon: Icon }) => {
+          const active = !city && (propertyType ?? '') === type;
+          return <Link key={label} href={type ? `/appartements?type=${type}` : '/appartements'} aria-current={active ? 'page' : undefined} className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-canal-200 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${active ? 'border-white bg-white text-ink-950' : 'border-white/25 text-white hover:border-white/60 hover:bg-white/10'}`}><Icon className="h-4 w-4" aria-hidden="true" />{label}</Link>;
+        })}
+      </nav>
+    </header>
   );
 }
