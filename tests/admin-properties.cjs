@@ -35,7 +35,7 @@ function database(responses) {
   return { client, calls };
 }
 
-function actions(responses) {
+function actions(responses, schema) {
   const db = database(responses);
   const paths = [];
   const api = load('actions/admin-properties.ts', {
@@ -43,7 +43,7 @@ function actions(responses) {
     'next/cache': { revalidatePath: path => paths.push(path) },
     '@/lib/supabase/admin': { createAdminClient: () => db.client },
     '@/lib/data/history': { logAdminAction: async () => {} },
-    '@/lib/validations/property': { propertySchema: { safeParse: data => ({ success: true, data }) } },
+    '@/lib/validations/property': { propertySchema: schema ?? { safeParse: data => ({ success: true, data }) } },
   });
   return { ...db, api, paths };
 }
@@ -171,4 +171,62 @@ test('Equipment save follows checked features and removes unchecked associations
 test('Equipment removal failure cannot be reported as success', async () => {
   const { api } = actions([{ data: null }, { data: { id: 'id' } }, { data: [] }, { error: { message: 'offline' } }]);
   assert.equal((await api.updateProperty('id', { slug: 'chalet', amenityIds: [] })).success, false);
+});
+
+
+const { propertySchema } = load('lib/validations/property.ts', { zod: require('zod') });
+const validCreation = {
+  title: 'Chalet de test', slug: 'chalet-de-test',
+  description: 'Un chalet spacieux avec jardin et cuisine équipée pour un séjour à la montagne.',
+  propertyType: 'chalet', city: 'Chamonix', monthlyPrice: '1806',
+  bedrooms: '3', bathrooms: '2', contractType: 'Location saisonnière à la semaine',
+  interiorType: 'Meublé', maintenanceCondition: 'Bien', status: 'draft',
+  minimumStayMonths: '1', amenityIds: [],
+};
+
+test('Admin creation validates actual form values and returns the ID for the photo page', async () => {
+  const { api, calls } = actions([{ data: null }, { data: { id: 'new-id' } }, { data: [] }, { error: null }], propertySchema);
+  const result = await api.createProperty(validCreation);
+  assert.equal(result.success, true);
+  assert.equal(result.data.id, 'new-id');
+  const saved = calls.find(call => call.table === 'properties' && call.method === 'insert').args[0];
+  assert.equal(saved.monthly_price, 1806);
+  assert.equal(saved.bedrooms, 3);
+  assert.equal(saved.status, 'draft');
+  assert.equal(saved.is_published, false);
+  assert.equal(saved.surface_m2, 1);
+});
+
+test('Invalid creation reports field errors without touching the database', async () => {
+  const { api, calls } = actions([], propertySchema);
+  const result = await api.createProperty({ ...validCreation, monthlyPrice: 0, minimumStayMonths: 0 });
+  assert.equal(result.success, false);
+  assert.ok(result.fieldErrors.monthlyPrice);
+  assert.ok(result.fieldErrors.minimumStayMonths);
+  assert.equal(calls.length, 0);
+});
+
+test('An unavailable database stops creation before insert', async () => {
+  const { api, calls } = actions([{ error: { code: 'PGRST205' }, data: null }], propertySchema);
+  assert.equal((await api.createProperty(validCreation)).success, false);
+  assert.equal(calls.some(call => call.method === 'insert'), false);
+});
+
+test('Existing slugs and concurrent duplicate inserts return a field error', async () => {
+  for (const responses of [
+    [{ data: { id: 'existing' } }],
+    [{ data: null }, { data: null, error: { code: '23505' } }],
+  ]) {
+    const { api } = actions(responses, propertySchema);
+    const result = await api.createProperty(validCreation);
+    assert.equal(result.success, false);
+    assert.ok(result.fieldErrors.slug);
+  }
+});
+
+test('A partial creation preserves the new ID so the admin can fix equipment without duplicating the property', async () => {
+  const { api } = actions([{ data: null }, { data: { id: 'new-id' } }, { error: { code: 'PGRST205' } }], propertySchema);
+  const result = await api.createProperty(validCreation);
+  assert.equal(result.success, false);
+  assert.equal(result.data.id, 'new-id');
 });

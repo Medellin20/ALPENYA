@@ -107,11 +107,15 @@ export async function createProperty(input: PropertyInput): Promise<ActionResult
 
   const supabase = createAdminClient();
 
-  const { data: existingSlug } = await supabase
+  const { data: existingSlug, error: slugError } = await supabase
     .from('properties')
     .select('id')
     .eq('slug', parsed.data.slug)
     .maybeSingle();
+
+  if (slugError) {
+    return { success: false, message: 'Impossible de vérifier le logement. Vérifiez que la base est configurée et accessible, puis réessayez.' };
+  }
 
   if (existingSlug) {
     return {
@@ -128,6 +132,10 @@ export async function createProperty(input: PropertyInput): Promise<ActionResult
     .insert({ ...toDbPayload(parsed.data), surface_m2: 1 })
     .select('id')
     .single();
+
+  if (error?.code === '23505') {
+    return { success: false, message: 'Ce slug est déjà utilisé par un autre logement.', fieldErrors: { slug: ['Ce slug est déjà utilisé.'] } };
+  }
 
   if (error || !property) {
     return { success: false, message: 'Une erreur est survenue lors de la création du logement.' };
@@ -152,12 +160,16 @@ export async function updateProperty(id: string, input: PropertyInput): Promise<
 
   const supabase = createAdminClient();
 
-  const { data: existingSlug } = await supabase
+  const { data: existingSlug, error: slugError } = await supabase
     .from('properties')
     .select('id')
     .eq('slug', parsed.data.slug)
     .neq('id', id)
     .maybeSingle();
+
+  if (slugError) {
+    return { success: false, message: 'Impossible de vérifier le logement. Vérifiez que la base est configurée et accessible, puis réessayez.' };
+  }
 
   if (existingSlug) {
     return {

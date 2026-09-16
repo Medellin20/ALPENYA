@@ -13,13 +13,13 @@ export const propertySchema = z.object({
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
 
-  monthlyPrice: z.coerce.number().positive('Le prix mensuel doit être positif.'),
-  serviceCharges: z.coerce.number().min(0).default(0),
-  depositAmount: z.coerce.number().min(0).default(0),
-  viewingFee: z.coerce.number().min(0).default(0),
+  monthlyPrice: z.coerce.number().positive('Le tarif principal à la semaine doit être supérieur à 0.'),
+  serviceCharges: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
+  depositAmount: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
+  viewingFee: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
 
-  bedrooms: z.coerce.number().int().min(0),
-  bathrooms: z.coerce.number().int().min(0),
+  bedrooms: z.coerce.number().int('Le nombre de chambres doit être entier.').min(0, 'Le nombre de chambres ne peut pas être négatif.'),
+  bathrooms: z.coerce.number().int('Le nombre de salles de bain doit être entier.').min(0, 'Le nombre de salles de bain ne peut pas être négatif.'),
   rooms: z.coerce.number().int().min(0).optional(),
   contractType: z.string().trim().min(2),
   interiorType: z.string().trim().min(2),
@@ -34,7 +34,7 @@ export const propertySchema = z.object({
   isFurnished: z.boolean().default(false),
 
   availableFrom: z.string().optional().or(z.literal('')),
-  minimumStayMonths: z.coerce.number().int().min(1).default(12),
+  minimumStayMonths: z.coerce.number().int('Le séjour minimum doit être un nombre entier.').min(1, 'Le séjour minimum doit être d’au moins 1 semaine.').default(12),
 
   status: z.enum(['draft', 'available', 'reserved', 'rented', 'unavailable']),
   isPublished: z.boolean().default(false),
