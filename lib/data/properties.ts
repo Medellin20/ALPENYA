@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import type { Amenity, Property, PropertyImage, PropertyWithRelations } from '@/types/database';
 import type { PropertyFilters } from '@/types';
-import { LA_CLUSAZ_PREVIEW } from '@/lib/data/la-clusaz-preview';
+
+import { getPropertyAmenities } from '@/lib/utils/property-amenities';
 
 const PAGE_SIZE = 9;
 
@@ -13,7 +14,7 @@ function mapRelations(row: any): PropertyWithRelations {
     .map((pa: any) => pa.amenities)
     .filter(Boolean);
 
-  return { ...row, property_images: images, amenities };
+  return { ...row, property_images: images, amenities: getPropertyAmenities(row, amenities) };
 }
 
 /** Liste paginée + filtrée des biens PUBLIÉS pour le catalogue public. */
@@ -63,12 +64,7 @@ export async function getPublishedProperties(filters: PropertyFilters = {}) {
 
   if (error) {
     console.error('getPublishedProperties error:', error.message);
-    const matches = (!filters.city || filters.city === LA_CLUSAZ_PREVIEW.city)
-      && (!filters.propertyType || filters.propertyType === 'chalet')
-      && (!filters.minPrice || LA_CLUSAZ_PREVIEW.monthly_price >= filters.minPrice)
-      && (!filters.maxPrice || LA_CLUSAZ_PREVIEW.monthly_price <= filters.maxPrice)
-      && (!filters.bedrooms || LA_CLUSAZ_PREVIEW.bedrooms >= filters.bedrooms);
-    return { properties: matches ? [LA_CLUSAZ_PREVIEW] : [], total: matches ? 1 : 0, page, pageSize: PAGE_SIZE };
+    return { properties: [], total: 0, page, pageSize: PAGE_SIZE };
   }
 
   return {
@@ -91,7 +87,7 @@ export async function getPropertyBySlug(slug: string): Promise<PropertyWithRelat
     .neq('status', 'draft')
     .maybeSingle();
 
-  if (error || !data) return slug === LA_CLUSAZ_PREVIEW.slug ? LA_CLUSAZ_PREVIEW : null;
+  if (error || !data) return null;
   return mapRelations(data);
 }
 
@@ -123,7 +119,7 @@ export async function getAvailableCities(): Promise<string[]> {
 
   const { data, error } = await query;
 
-  if (error || !data) return [LA_CLUSAZ_PREVIEW.city];
+  if (error || !data) return [];
   return Array.from(new Set(data.map((r) => r.city))).sort();
 }
 
@@ -136,7 +132,7 @@ export async function getAvailableCityCounts(): Promise<{ city: string; count: n
     .eq('is_published', true)
     .neq('status', 'draft');
 
-  if (error || !data) return [{ city: LA_CLUSAZ_PREVIEW.city, count: 1 }];
+  if (error || !data) return [];
   const counts = new Map<string, number>();
   for (const row of data) counts.set(row.city, (counts.get(row.city) ?? 0) + 1);
   return Array.from(counts, ([city, count]) => ({ city, count }))
@@ -160,12 +156,7 @@ export async function getCityPropertySummaries(): Promise<CityPropertySummary[]>
     .neq('status', 'draft')
     .order('city', { ascending: true });
 
-  if (error || !data) return [{
-    city: LA_CLUSAZ_PREVIEW.city,
-    count: 1,
-    averagePrice: LA_CLUSAZ_PREVIEW.monthly_price,
-    imageUrl: LA_CLUSAZ_PREVIEW.property_images[0].url,
-  }];
+  if (error || !data) return [];
 
   const summaries = new Map<string, { count: number; total: number; imageUrl: string | null }>();
   for (const property of data as any[]) {
@@ -200,7 +191,7 @@ export async function getFeaturedProperties(limit = 6) {
     .order('created_at', { ascending: false })
     .limit(limit);
 
-  if (error) return [LA_CLUSAZ_PREVIEW].slice(0, limit);
+  if (error) return [];
   return (data ?? []).map(mapRelations);
 }
 
@@ -213,6 +204,6 @@ export async function getAllPublishedSlugs(): Promise<{ slug: string; updated_at
     .eq('is_published', true)
     .neq('status', 'draft');
 
-  if (error || !data) return [{ slug: LA_CLUSAZ_PREVIEW.slug, updated_at: LA_CLUSAZ_PREVIEW.updated_at }];
+  if (error || !data) return [];
   return data;
 }

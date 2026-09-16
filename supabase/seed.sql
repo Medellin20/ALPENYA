@@ -21,7 +21,13 @@ insert into amenities (key, label_fr, icon) values
   ('garden', 'Jardin', 'Trees'),
   ('cellar', 'Cave', 'Warehouse'),
   ('bike_storage', 'Local à vélos', 'Bike'),
-  ('air_conditioning', 'Climatisation', 'Wind')
+  ('air_conditioning', 'Climatisation', 'Wind'),
+  ('terrace', 'Terrasse', 'Sun'),
+  ('garage', 'Garage', 'Warehouse'),
+  ('sauna', 'Sauna', 'Waves'),
+  ('fireplace', 'Cheminée', 'Flame'),
+  ('linen', 'Draps et linge fournis', 'BedDouble'),
+  ('dryer', 'Sèche-linge', 'Wind')
 on conflict (key) do nothing;
 
 -- -----------------------------------------------------------------------------

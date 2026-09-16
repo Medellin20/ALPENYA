@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { usePendingAction } from '@/hooks/use-pending-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
@@ -16,6 +17,7 @@ export function ConfirmDeleteButton({
   label = 'Supprimer',
   size = 'sm',
   className,
+  disabled,
 }: {
   action: () => Promise<ActionResult>;
   confirmTitle: string;
@@ -23,13 +25,14 @@ export function ConfirmDeleteButton({
   label?: string;
   size?: 'sm' | 'md';
   className?: string;
+  disabled?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, runAction] = usePendingAction();
 
   function handleConfirm() {
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await action();
         if (result.success) {
@@ -45,14 +48,14 @@ export function ConfirmDeleteButton({
 
   return (
     <>
-      <Button variant="destructive" size={size} className={cn(className)} onClick={() => setOpen(true)}>
+      <Button variant="destructive" size={size} className={cn(className)} disabled={disabled || isPending} onClick={() => setOpen(true)}>
         <Trash2 className="h-3.5 w-3.5" />
         {label}
       </Button>
-      <Modal open={open} onClose={() => setOpen(false)} title={confirmTitle}>
+      <Modal open={open} onClose={() => { if (!isPending) setOpen(false); }} title={confirmTitle}>
         <p className="text-sm text-ink-500">{confirmDescription}</p>
         <div className="mt-6 flex flex-col-reverse gap-2.5 sm:flex-row">
-          <Button variant="outline" className="w-full flex-1" onClick={() => setOpen(false)}>
+          <Button variant="outline" disabled={isPending} className="w-full flex-1" onClick={() => setOpen(false)}>
             Annuler
           </Button>
           <Button variant="destructive" className="w-full flex-1" isLoading={isPending} onClick={handleConfirm}>

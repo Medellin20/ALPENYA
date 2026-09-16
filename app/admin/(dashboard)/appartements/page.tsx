@@ -21,7 +21,7 @@ export default async function AdminPropertiesPage({
 }: {
   searchParams: { search?: string; status?: string; city?: string; type?: string; page?: string };
 }) {
-  const { properties, total, page, pageSize } = await getAllPropertiesAdmin({
+  const { properties, total, page, pageSize, error } = await getAllPropertiesAdmin({
     search: searchParams.search,
     status: searchParams.status,
     city: searchParams.city,
@@ -35,7 +35,7 @@ export default async function AdminPropertiesPage({
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-ink-900">Chalets et villas</h1>
-          <p className="mt-1 text-sm text-ink-500">{total} bien(s) au total.</p>
+          <p className="mt-1 text-sm text-ink-500">{error ? 'Catalogue indisponible.' : `${total} bien(s) au total.`}</p>
         </div>
         <Button asChild className="w-full sm:w-auto">
           <Link href="/admin/appartements/nouveau">
@@ -74,7 +74,12 @@ export default async function AdminPropertiesPage({
         </Button>
       </form>
 
-      {properties.length === 0 ? (
+      {error ? (
+        <div role="alert" className="rounded-xl border border-brick-500/30 bg-brick-500/10 p-5 text-sm text-brick-500">
+          <p>{error}</p>
+          <a href="/admin/appartements" className="mt-3 inline-block font-semibold underline">Réessayer</a>
+        </div>
+      ) : properties.length === 0 ? (
         <EmptyState title="Aucun bien trouvé" description="Ajoutez votre premier chalet ou votre première villa pour commencer." />
       ) : (
         <>

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { usePendingAction } from '@/hooks/use-pending-action';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { UploadCloud, Star, Trash2, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
@@ -22,7 +23,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   const [isUploading, setIsUploading] = React.useState(false);
   const [pendingCount, setPendingCount] = React.useState(0);
   const [imageToDelete, setImageToDelete] = React.useState<PropertyImage | null>(null);
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, runAction] = usePendingAction();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   async function handleFiles(fileList: FileList | null) {
@@ -56,7 +57,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
     const previousImages = images;
     setImageToDelete(null);
 
-    startTransition(async () => {
+    runAction(async () => {
       const wasPrimary = previousImages.find((i) => i.id === imageId)?.is_primary;
       const remaining = previousImages.filter((i) => i.id !== imageId);
       setImages(wasPrimary && remaining[0] ? remaining.map((img, i) => (i === 0 ? { ...img, is_primary: true } : img)) : remaining);
@@ -79,7 +80,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   function handleSetPrimary(imageId: string) {
     const previousImages = images;
     setImages((prev) => prev.map((img) => ({ ...img, is_primary: img.id === imageId })));
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await setPrimaryPropertyImage(propertyId, imageId);
         if (!result.success) {
@@ -100,7 +101,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
     const previousImages = images;
     [next[index], next[newIndex]] = [next[newIndex], next[index]];
     setImages(next);
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await reorderPropertyImages(propertyId, next.map((i) => i.id));
         if (!result.success) {

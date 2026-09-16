@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { usePendingAction } from '@/hooks/use-pending-action';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -21,10 +22,10 @@ export function PropertyRowActions({
   status: PropertyStatus;
 }) {
   const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, runAction] = usePendingAction();
 
   function handleTogglePublish() {
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await togglePropertyPublish(id, !isPublished);
         if (result.success) {
@@ -38,7 +39,7 @@ export function PropertyRowActions({
   }
 
   function handleStatusChange(newStatus: PropertyStatus) {
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await updatePropertyStatus(id, newStatus);
         if (result.success) {
@@ -82,6 +83,7 @@ export function PropertyRowActions({
       </Button>
 
       <ConfirmDeleteButton
+        disabled={isPending}
         action={() => deleteProperty(id)}
         confirmTitle="Supprimer ce bien ?"
         confirmDescription="Cette action est irréversible et supprimera également toutes les photos associées."

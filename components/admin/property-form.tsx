@@ -1,6 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import { PROPERTY_AMENITY_FIELDS } from '@/lib/utils/property-amenities';
+import { usePendingAction } from '@/hooks/use-pending-action';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +31,7 @@ const BOOLEAN_FIELDS: { key: keyof PropertyInput; label: string }[] = [
   { key: 'isFurnished', label: 'Meublé' },
 ];
 
-function propertyToFormValues(property: Property, amenityIds: string[]): PropertyInput {
+function propertyToFormValues(property: Property, amenityIds: string[], amenities: Amenity[]): PropertyInput {
   return {
     title: property.title,
     description: property.description,
@@ -48,12 +50,12 @@ function propertyToFormValues(property: Property, amenityIds: string[]): Propert
     contractType: property.contract_type,
     interiorType: property.interior_type,
     maintenanceCondition: property.maintenance_condition,
-    hasElevator: property.has_elevator,
-    hasBalcony: property.has_balcony,
-    hasTerrace: property.has_terrace,
-    hasParking: property.has_parking,
-    hasGarage: property.has_garage,
-    hasGarden: property.has_garden,
+    hasElevator: property.has_elevator || amenities.some(a => a.key === 'elevator' && amenityIds.includes(a.id)),
+    hasBalcony: property.has_balcony || amenities.some(a => a.key === 'balcony' && amenityIds.includes(a.id)),
+    hasTerrace: property.has_terrace || amenities.some(a => a.key === 'terrace' && amenityIds.includes(a.id)),
+    hasParking: property.has_parking || amenities.some(a => a.key === 'parking' && amenityIds.includes(a.id)),
+    hasGarage: property.has_garage || amenities.some(a => a.key === 'garage' && amenityIds.includes(a.id)),
+    hasGarden: property.has_garden || amenities.some(a => a.key === 'garden' && amenityIds.includes(a.id)),
     isFurnished: property.is_furnished,
     availableFrom: property.available_from ?? '',
     minimumStayMonths: property.minimum_stay_months ?? 12,
@@ -78,7 +80,7 @@ export function PropertyForm({
   amenities: Amenity[];
 }) {
   const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, runAction] = usePendingAction();
   const [slugTouched, setSlugTouched] = React.useState(mode === 'edit');
   const [slugStatus, setSlugStatus] = React.useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
   const slugCheckId = React.useRef(0);
@@ -96,7 +98,7 @@ export function PropertyForm({
     resolver: zodResolver(propertySchema),
     defaultValues:
       mode === 'edit' && property
-        ? propertyToFormValues(property, currentAmenityIds ?? [])
+        ? propertyToFormValues(property, currentAmenityIds ?? [], amenities)
         : {
             title: '',
             description: '',
@@ -166,11 +168,13 @@ export function PropertyForm({
 
       setSlugStatus(result.available ? 'available' : 'idle');
       if (result.available) clearErrors('slug');
+    }).catch(() => {
+      if (checkId === slugCheckId.current) setSlugStatus('idle');
     });
   }, [debouncedSlug, propertyId, setError, clearErrors]);
 
   function onSubmit(data: PropertyInput) {
-    startTransition(async () => {
+    runAction(async () => {
       const result =
         mode === 'create' ? await createProperty(data) : await updateProperty(propertyId!, data);
 
@@ -183,6 +187,7 @@ export function PropertyForm({
         }
       } else {
         toast.error(result.message);
+        if (mode === 'create' && result.data?.id) router.push(`/admin/appartements/${result.data.id}`);
       }
     });
   }
@@ -388,12 +393,14 @@ export function PropertyForm({
 
       {/* ÉQUIPEMENTS */}
       <FormSection title="Équipements">
+        <p className="mb-4 text-sm text-ink-500">Balcon, terrasse, parking, garage, jardin et ascenseur se cochent dans les caractéristiques ci-dessus.</p>
+        {amenities.length === 0 && <p role="alert" className="mb-4 text-sm text-brick-500">Le catalogue d’équipements est vide. Il doit être initialisé avant de sélectionner les équipements.</p>}
         <Controller
           control={control}
           name="amenityIds"
           render={({ field }) => (
             <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3">
-              {amenities.map((amenity) => {
+              {amenities.filter(amenity => !PROPERTY_AMENITY_FIELDS.some(item => item.key === amenity.key)).map((amenity) => {
                 const checked = field.value?.includes(amenity.id);
                 return (
                   <label key={amenity.id} className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">

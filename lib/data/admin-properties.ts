@@ -29,7 +29,7 @@ export async function getAllPropertiesAdmin(params: { search?: string; status?: 
   const { data, error, count } = await query.range(from, to);
   if (error) {
     console.error('getAllPropertiesAdmin error:', error.message);
-    return { properties: [], total: 0, page, pageSize };
+    return { properties: [], total: 0, page, pageSize, error: 'Impossible de charger les logements. Vérifiez la connexion à la base de données puis réessayez.' };
   }
   return { properties: data ?? [], total: count ?? 0, page, pageSize };
 }
@@ -48,6 +48,7 @@ export async function getPropertyByIdAdmin(id: string) {
 
 export async function getAllAmenities() {
   const supabase = createAdminClient();
-  const { data } = await supabase.from('amenities').select('*').order('label_fr');
+  const { data, error } = await supabase.from('amenities').select('*').order('label_fr');
+  if (error) throw new Error('Impossible de charger le catalogue des équipements.');
   return data ?? [];
 }

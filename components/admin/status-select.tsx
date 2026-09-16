@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { usePendingAction } from '@/hooks/use-pending-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Select } from '@/components/ui/select';
@@ -18,10 +19,10 @@ export function StatusSelect<T extends string>({
   onUpdate: (id: string, newStatus: T) => Promise<ActionResult>;
 }) {
   const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, runAction] = usePendingAction();
 
   function handleChange(newStatus: T) {
-    startTransition(async () => {
+    runAction(async () => {
       try {
         const result = await onUpdate(entityId, newStatus);
         if (result.success) {

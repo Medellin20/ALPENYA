@@ -118,7 +118,7 @@ for (const [index, imageName] of imageNames.entries()) {
   if (imageError) throw new Error(`Référencement de ${imageName} impossible : ${imageError.message}`);
 }
 
-const { data: amenities } = await supabase.from('amenities').select('id,key').in('key', ['wifi', 'heating', 'equipped_kitchen', 'dishwasher', 'balcony', 'elevator']);
+const { data: amenities } = await supabase.from('amenities').select('id,key').in('key', ['wifi', 'heating', 'equipped_kitchen', 'dishwasher', 'balcony', 'elevator', 'linen']);
 if (amenities?.length) {
   await supabase.from('property_amenities').delete().eq('property_id', property.id);
   await supabase.from('property_amenities').insert(amenities.map((amenity) => ({ property_id: property.id, amenity_id: amenity.id })));

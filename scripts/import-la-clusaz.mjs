@@ -121,7 +121,7 @@ for (const [index, imageName] of imageNames.entries()) {
 const { data: amenities } = await supabase
   .from('amenities')
   .select('id,key')
-  .in('key', ['wifi', 'heating', 'equipped_kitchen', 'dishwasher', 'parking', 'balcony', 'garden']);
+  .in('key', ['wifi', 'heating', 'equipped_kitchen', 'dishwasher', 'parking', 'balcony', 'garden', 'sauna', 'fireplace', 'linen', 'garage', 'terrace']);
 
 if (amenities?.length) {
   await supabase.from('property_amenities').delete().eq('property_id', property.id);
