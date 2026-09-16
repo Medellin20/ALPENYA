@@ -53,6 +53,7 @@ export function ViewingRequestForm({
   }
 
   function onSubmit(data: ViewingRequestInput) {
+    if (step !== 2 || isPending) return;
     startTransition(async () => {
       const result = await createViewingRequest(data, propertySlug);
       // Si l'action n'a pas redirigé (ex: erreur de validation serveur), on informe l'utilisateur.
@@ -90,7 +91,7 @@ export function ViewingRequestForm({
         ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={(event) => event.preventDefault()}>
         <AnimatePresence mode="wait">
           {step === 0 && (
             <motion.div
@@ -203,6 +204,7 @@ export function ViewingRequestForm({
           <Button
             type="button"
             variant="outline"
+            disabled={isPending}
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             className={cn('w-full sm:w-auto', step === 0 && 'hidden sm:inline-flex sm:invisible')}
           >
@@ -211,12 +213,12 @@ export function ViewingRequestForm({
           </Button>
 
           {step < STEPS.length - 2 ? (
-            <Button type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
+            <Button key="continue" type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" isLoading={isPending} className="w-full sm:w-auto">
+            <Button key="send-request" type="button" onClick={handleSubmit(onSubmit)} isLoading={isPending} className="w-full sm:w-auto">
               Envoyer et accéder au paiement
             </Button>
           )}
