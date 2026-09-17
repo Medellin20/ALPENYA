@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { PROPERTY_TYPES } from '@/lib/utils/constants';
 import { slugify } from '@/lib/utils/format';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
-import type { Amenity, Property } from '@/types/database';
+import type { Amenity, Property, PropertyType } from '@/types/database';
 
 const BOOLEAN_FIELDS: { key: keyof PropertyInput; label: string }[] = [
   { key: 'hasElevator', label: 'Ascenseur' },
@@ -38,6 +38,7 @@ function propertyToFormValues(property: Property, amenityIds: string[], amenitie
     slug: property.slug,
     propertyType: property.property_type,
     city: property.city,
+    surfaceM2: property.surface_m2,
     latitude: property.latitude ?? undefined,
     longitude: property.longitude ?? undefined,
     monthlyPrice: property.monthly_price,
@@ -73,12 +74,14 @@ export function PropertyForm({
   property,
   currentAmenityIds,
   amenities,
+  initialType = 'chalet',
 }: {
   mode: 'create' | 'edit';
   propertyId?: string;
   property?: Property;
   currentAmenityIds?: string[];
   amenities: Amenity[];
+  initialType?: PropertyType;
 }) {
   const router = useRouter();
   const [isPending, runAction] = usePendingAction();
@@ -104,7 +107,7 @@ export function PropertyForm({
             title: '',
             description: '',
             slug: '',
-            propertyType: 'chalet',
+            propertyType: initialType,
             city: '',
             monthlyPrice: 0,
             serviceCharges: 0,
@@ -112,8 +115,8 @@ export function PropertyForm({
             viewingFee: 0,
             bedrooms: 1,
             bathrooms: 1,
-            contractType: 'Location saisonnière à la semaine',
-            interiorType: 'Meublé',
+            contractType: initialType === 'unfurnished_apartment' ? 'Location au mois' : 'Location saisonnière à la semaine',
+            interiorType: initialType === 'unfurnished_apartment' ? 'Non meublé' : 'Meublé',
             maintenanceCondition: 'Bien',
             hasElevator: false,
             hasBalcony: false,
@@ -121,7 +124,7 @@ export function PropertyForm({
             hasParking: false,
             hasGarage: false,
             hasGarden: false,
-            isFurnished: true,
+            isFurnished: initialType !== 'unfurnished_apartment',
             minimumStayMonths: 1,
             status: 'draft',
             isPublished: false,
@@ -130,7 +133,20 @@ export function PropertyForm({
           },
   });
 
-  const isVilla = watch('propertyType') === 'villa';
+  const propertyType = watch('propertyType');
+  const isVilla = propertyType === 'villa';
+  const isApartment = propertyType === 'unfurnished_apartment';
+  const isSimplePricing = isApartment || propertyType === 'mobile_home';
+  const previousType = React.useRef(propertyType);
+  React.useEffect(() => {
+    if (previousType.current === propertyType) return;
+    previousType.current = propertyType;
+    setValue('isFurnished', !isApartment);
+    setValue('interiorType', isApartment ? 'Non meublé' : 'Meublé');
+    setValue('contractType', isApartment ? 'Location au mois' : 'Location saisonnière à la semaine');
+    // Les anciens tarifs saisonniers ne deviennent pas des charges ou une caution.
+    for (const field of ['monthlyPrice', 'depositAmount', 'serviceCharges', 'viewingFee'] as const) setValue(field, 0);
+  }, [propertyType, isApartment, setValue]);
   const title = watch('title');
   const slug = watch('slug');
   const debouncedSlug = useDebouncedValue(slug, 250);
@@ -164,7 +180,7 @@ export function PropertyForm({
 
       if (!result.available && !result.error) {
         setSlugStatus('taken');
-        setError('slug', { type: 'duplicate', message: 'Cet appartement existe déjà (ce slug est déjà utilisé).' });
+        setError('slug', { type: 'duplicate', message: 'Ce bien existe déjà (ce slug est déjà utilisé).' });
         return;
       }
 
@@ -212,7 +228,7 @@ export function PropertyForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Label htmlFor="title">Titre</Label>
-            <Input id="title" placeholder="Ex : Chalet familial avec sauna à La Clusaz" {...register('title')} />
+            <Input id="title" placeholder={isApartment ? 'Ex : Appartement non meublé de 3 pièces à Annecy' : propertyType === 'mobile_home' ? 'Ex : Mobil-home avec terrasse près de la mer' : 'Ex : Chalet familial avec sauna à La Clusaz'} {...register('title')} />
             <FieldError message={errors.title?.message} />
             {slugStatus === 'taken' && (
               <div
@@ -221,7 +237,7 @@ export function PropertyForm({
                 className="mt-2 flex items-center gap-2 rounded-lg border border-brick-500/30 bg-brick-500/10 px-3 py-2 text-sm font-semibold text-brick-500"
               >
                 <CircleAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
-                Cet appartement existe déjà.
+                Ce bien existe déjà.
               </div>
             )}
           </div>
@@ -261,7 +277,7 @@ export function PropertyForm({
             />
             {slugStatus === 'error' && <p role="status" className="mt-1.5 text-xs text-brick-500">La disponibilité du slug n’a pas pu être vérifiée. Une nouvelle vérification sera faite à l’enregistrement.</p>}
             {slugStatus === 'checking' && (
-              <p className="mt-1.5 text-xs text-ink-400">Vérification de l’existence de l’appartement…</p>
+              <p className="mt-1.5 text-xs text-ink-400">Vérification de l’existence du bien…</p>
             )}
             {slugStatus !== 'taken' && (
               <FieldError message={errors.slug?.message} />
@@ -276,6 +292,8 @@ export function PropertyForm({
                 </option>
               ))}
             </Select>
+            <FieldError message={errors.propertyType?.message} />
+            <p className="mt-1.5 text-xs text-ink-400">Changer de catégorie réinitialise les tarifs pour éviter de mélanger loyers et prix saisonniers.</p>
           </div>
           <div>
             <Label htmlFor="status">Statut</Label>
@@ -316,36 +334,41 @@ export function PropertyForm({
       <FormSection title="Tarifs de location">
         <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="monthlyPrice" className="min-h-5">{isVilla ? 'Juillet – août' : 'Hors saison'}</Label>
+            <Label htmlFor="monthlyPrice" className="min-h-5">{isApartment ? 'Loyer hors charges' : propertyType === 'mobile_home' ? 'Tarif de location' : isVilla ? 'Juillet – août' : 'Hors saison'}</Label>
             <Input id="monthlyPrice" type="number" inputMode="decimal" min="0" step="1" {...register('monthlyPrice')} />
-            <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
+            <p className="mt-1.5 text-xs text-ink-400">{isApartment ? '€ par mois' : '€ par semaine'}</p>
             <FieldError message={errors.monthlyPrice?.message} />
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="depositAmount" className="min-h-5">{isVilla ? 'Mi-juin – début juillet' : 'Noël et Nouvel An'}</Label>
+            <Label htmlFor="depositAmount" className="min-h-5">{isSimplePricing ? 'Dépôt de garantie' : isVilla ? 'Mi-juin – début juillet' : 'Noël et Nouvel An'}</Label>
             <Input id="depositAmount" type="number" inputMode="decimal" min="0" step="1" {...register('depositAmount')} />
             <FieldError message={errors.depositAmount?.message} />
-            <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
+            <p className="mt-1.5 text-xs text-ink-400">{isSimplePricing ? '€' : '€ par semaine'}</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="viewingFee" className="min-h-5">{isVilla ? 'Septembre' : 'De janvier à mars'}</Label>
+            <Label htmlFor="viewingFee" className="min-h-5">{isSimplePricing ? 'Frais de visite' : isVilla ? 'Septembre' : 'De janvier à mars'}</Label>
             <Input id="viewingFee" type="number" inputMode="decimal" min="0" step="1" {...register('viewingFee')} />
             <FieldError message={errors.viewingFee?.message} />
-            <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
+            <p className="mt-1.5 text-xs text-ink-400">{isSimplePricing ? '€' : '€ par semaine'}</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
-            <Label htmlFor="serviceCharges" className="min-h-5">{isVilla ? 'Mai – début juin' : 'Forfait ménage'}</Label>
+            <Label htmlFor="serviceCharges" className="min-h-5">{isApartment ? 'Charges mensuelles' : isVilla ? 'Mai – début juin' : 'Forfait ménage'}</Label>
             <Input id="serviceCharges" type="number" inputMode="decimal" min="0" step="1" {...register('serviceCharges')} />
             <FieldError message={errors.serviceCharges?.message} />
-            <p className="mt-1.5 text-xs text-ink-400">€ par semaine</p>
+            <p className="mt-1.5 text-xs text-ink-400">{isApartment ? '€ par mois' : isVilla ? '€ par semaine' : '€ par séjour'}</p>
           </div>
         </div>
-        <p className="mt-3 text-xs text-ink-400">Indiquez les montants à la semaine. Le premier tarif doit être supérieur à 0. Les autres peuvent rester à 0 lorsqu’ils ne sont pas proposés.</p>
+        <p className="mt-3 text-xs text-ink-400">{isSimplePricing ? 'Le dépôt de garantie et les frais sont des montants distincts du loyer. Renseignez 0 si non applicable.' : 'Indiquez les montants à la semaine. Le premier tarif doit être supérieur à 0. Les autres peuvent rester à 0 lorsqu’ils ne sont pas proposés.'}</p>
       </FormSection>
 
       {/* CARACTÉRISTIQUES */}
       <FormSection title="Caractéristiques">
         <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 sm:grid-cols-4">
+          <div>
+            <Label htmlFor="surfaceM2">Surface (m²)</Label>
+            <Input id="surfaceM2" type="number" min="0.1" step="0.1" {...register('surfaceM2', { setValueAs: value => value === '' ? undefined : Number(value) })} />
+            <FieldError message={errors.surfaceM2?.message} />
+          </div>
           <div>
             <Label htmlFor="bedrooms">Chambres</Label>
             <Input id="bedrooms" type="number" {...register('bedrooms')} />
@@ -357,10 +380,10 @@ export function PropertyForm({
             <FieldError message={errors.bathrooms?.message} />
           </div>
           <div>
-            <Label htmlFor="floor">Nombre d’étages</Label>
+            <Label htmlFor="floor">{isApartment ? 'Étage du logement' : 'Nombre d’étages'}</Label>
             <Input id="floor" type="number" min={0} step={1} placeholder="Non renseigné" {...register('floor')} />
             <FieldError message={errors.floor?.message} />
-            <p className="mt-1.5 text-xs text-ink-400">0 pour un bien de plain-pied.</p>
+            <p className="mt-1.5 text-xs text-ink-400">{isApartment ? '0 pour le rez-de-chaussée.' : '0 pour un bien de plain-pied.'}</p>
           </div>
           <div>
             <Label htmlFor="rooms">Pièces / espaces</Label>
@@ -373,14 +396,14 @@ export function PropertyForm({
             <FieldError message={errors.availableFrom?.message} />
           </div>
           <div>
-            <Label htmlFor="minimumStayMonths">Séjour minimum (semaines)</Label>
+            <Label htmlFor="minimumStayMonths">{isApartment ? 'Durée minimale (mois)' : 'Séjour minimum (semaines)'}</Label>
             <Input id="minimumStayMonths" type="number" {...register('minimumStayMonths')} />
             <FieldError message={errors.minimumStayMonths?.message} />
           </div>
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3">
-          {BOOLEAN_FIELDS.map((field) => (
+          {BOOLEAN_FIELDS.filter(field => !isApartment || field.key !== 'isFurnished').map((field) => (
             <label key={field.key} className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">
               <Checkbox {...register(field.key as any)} />
               {field.label}
@@ -394,18 +417,22 @@ export function PropertyForm({
           <div>
             <Label htmlFor="contractType">Type de contrat</Label>
             <Select id="contractType" {...register('contractType')}>
+              {isApartment ? <option value="Location au mois">Location au mois</option> : <>
               <option value="Location saisonnière à la semaine">Location à la semaine</option>
-              <option value="Location saisonnière au week-end">Location au week-end</option>
-              <option value="Location temporaire">Location temporaire</option>
+              {propertyType !== 'mobile_home' && <><option value="Location saisonnière au week-end">Location au week-end</option>
+              <option value="Location temporaire">Location temporaire</option></>}
+              </>}
             </Select>
+            <FieldError message={errors.contractType?.message} />
           </div>
           <div>
             <Label htmlFor="interiorType">Intérieur</Label>
             <Select id="interiorType" {...register('interiorType')}>
               <option value="Non meublé">Non meublé</option>
-              <option value="Semi-meublé">Semi-meublé</option>
-              <option value="Meublé">Meublé</option>
+              {!isApartment && <><option value="Semi-meublé">Semi-meublé</option>
+              <option value="Meublé">Meublé</option></>}
             </Select>
+            <FieldError message={errors.interiorType?.message} />
           </div>
           <div>
             <Label htmlFor="maintenanceCondition">État d’entretien</Label>

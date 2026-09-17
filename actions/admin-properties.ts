@@ -15,6 +15,7 @@ function toDbPayload(data: PropertyInput) {
     slug: data.slug,
     property_type: data.propertyType,
     city: data.city,
+    ...(data.surfaceM2 !== undefined ? { surface_m2: data.surfaceM2 } : {}),
     latitude: data.latitude ?? null,
     longitude: data.longitude ?? null,
     monthly_price: data.monthlyPrice,
@@ -128,9 +129,9 @@ export async function createProperty(input: PropertyInput): Promise<ActionResult
 
   const { data: property, error } = await supabase
     .from('properties')
-    // `surface_m2` est encore obligatoire dans le schéma historique, mais le
-    // champ n’est plus demandé dans l’administration.
-    .insert({ ...toDbPayload(parsed.data), surface_m2: 1 })
+    // Préserve la compatibilité des chalets et villas sans surface renseignée.
+    // Le schéma exige une surface pour les deux nouvelles catégories.
+    .insert({ surface_m2: 1, ...toDbPayload(parsed.data) })
     .select('id')
     .single();
 

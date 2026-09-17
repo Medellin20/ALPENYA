@@ -105,7 +105,7 @@ export function HeroSearchBar() {
 
       <Button type="submit" size="lg" className="mt-3 w-full">
         <Search className="h-4.5 w-4.5" />
-        Voir les chalets et villas
+        Voir les biens
       </Button>
     </form>
   );

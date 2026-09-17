@@ -3,7 +3,7 @@ import { Facebook, Home, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 
 const COLUMN_LINKS = [
   { href: '/', label: 'Accueil' },
-  { href: '/appartements', label: 'Chalets & villas' },
+  { href: '/appartements', label: 'Nos biens' },
   { href: '/comment-ca-marche', label: 'Comment ça marche' },
   { href: '/a-propos', label: 'À propos' },
   { href: '/contact', label: 'Contact' },
@@ -32,7 +32,7 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-sand-300">
-            Votre sélection de chalets et villas d’exception en France — de la découverte
+            Votre sélection de chalets, villas, appartements non meublés et mobil-homes en France — de la découverte
             du bien jusqu’à la remise des clés.
           </p>
           <div className="mt-5 flex items-center gap-3">
@@ -114,7 +114,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container-app flex flex-col items-center justify-between gap-3 py-5 text-xs text-sand-400 sm:flex-row">
           <p>© {year} ALPENIA. Tous droits réservés.</p>
-          <p>Location de chalets et villas en France</p>
+          <p>Location de biens en France</p>
         </div>
       </div>
     </footer>

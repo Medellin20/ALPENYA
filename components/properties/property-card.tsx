@@ -1,17 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, BedDouble, Bath, MapPin, Mountain, Sun, Camera } from 'lucide-react';
+import { ArrowUpRight, BedDouble, Bath, MapPin, Mountain, Sun, Camera, Building2, Caravan } from 'lucide-react';
 import type { PropertyWithRelations } from '@/types/database';
 import { StatusDot } from '@/components/ui/badge';
 import { FavoriteButton } from '@/components/properties/favorite-button';
-import { PROPERTY_STATUS_LABELS } from '@/lib/utils/constants';
+import { PROPERTY_STATUS_LABELS, PROPERTY_TYPES } from '@/lib/utils/constants';
 import { formatPrice } from '@/lib/utils/format';
 
 export function PropertyCard({ property }: { property: PropertyWithRelations }) {
   const primaryImage = property.property_images.find(img => img.is_primary) ?? property.property_images[0];
   const statusMeta = PROPERTY_STATUS_LABELS[property.status];
   const isVilla = property.property_type === 'villa';
-  const TypeIcon = isVilla ? Sun : Mountain;
+  const isApartment = property.property_type === 'unfurnished_apartment';
+  const TypeIcon = isApartment ? Building2 : property.property_type === 'mobile_home' ? Caravan : isVilla ? Sun : Mountain;
   const highlights = property.amenities.slice(0, 2);
 
   return (
@@ -34,7 +35,7 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-ink-950/10" />
         <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink-900">
           <TypeIcon className="h-3.5 w-3.5" aria-hidden="true" />
-          {isVilla ? 'Villa' : 'Chalet'}
+          {PROPERTY_TYPES.find(type => type.value === property.property_type)?.label ?? 'Logement'}
         </span>
         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 text-white">
           <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold">
@@ -63,8 +64,8 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
         </div>
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-ink-100 pt-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-700">{isVilla ? 'Juillet – août' : 'Hors saison'}</p>
-            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-extrabold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ semaine</span>}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-700">{isApartment ? 'Loyer hors charges' : property.property_type === 'mobile_home' ? 'Location' : isVilla ? 'Juillet – août' : 'Hors saison'}</p>
+            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-extrabold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ {isApartment ? 'mois' : 'semaine'}</span>}</p>
           </div>
           <span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-950 text-white transition-colors group-hover:bg-brick-500"><ArrowUpRight className="h-5 w-5" /></span>
         </div>

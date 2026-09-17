@@ -78,7 +78,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
       <nav className="mb-5 flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-ink-400 sm:text-sm">
         <Link href="/" className="shrink-0 hover:text-ink-700">Accueil</Link>
         <span>/</span>
-        <Link href="/appartements" className="shrink-0 hover:text-ink-700">Chalets & villas</Link>
+        <Link href="/appartements" className="shrink-0 hover:text-ink-700">Nos biens</Link>
         <span>/</span>
         <span className="truncate text-ink-600">{property.title}</span>
       </nav>
@@ -124,8 +124,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               )}
               <Feature
                 icon={Building}
-                label="Nombre d’étages"
-                value={property.floor != null ? (property.floor === 0 ? 'Plain-pied' : String(property.floor)) : '—'}
+                label={property.property_type === 'unfurnished_apartment' ? 'Étage du logement' : 'Nombre d’étages'}
+                value={property.floor != null ? (property.floor === 0 ? (property.property_type === 'unfurnished_apartment' ? 'Rez-de-chaussée' : 'Plain-pied') : String(property.floor)) : '—'}
               />
             </div>
 
@@ -151,7 +151,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 />
                 <DetailRow
                   label="Durée minimale de location"
-                  value={property.contract_type.includes('semaine') ? '1 semaine' : `${property.minimum_stay_months ?? 12} mois`}
+                  value={property.property_type === 'unfurnished_apartment' ? `${property.minimum_stay_months ?? 1} mois` : property.contract_type.includes('semaine') ? `${property.minimum_stay_months ?? 1} semaine(s)` : property.contract_type.includes('week-end') ? '1 week-end' : `${property.minimum_stay_months ?? 12} mois`}
                 />
                 <DetailRow label="Parking" value={property.has_parking ? 'Oui' : 'Non'} />
                 <DetailRow label="Garage" value={property.has_garage ? 'Oui' : 'Non'} />
@@ -182,7 +182,15 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         <div className="lg:col-span-1">
           <FadeIn delay={0.1} className="lg:sticky lg:top-24">
             <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-card sm:p-6">
-              {property.property_type === 'villa' ? (
+              {property.property_type === 'unfurnished_apartment' || property.property_type === 'mobile_home' ? (
+                <div className="rounded-xl bg-sand-100 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">{property.property_type === 'unfurnished_apartment' ? 'Loyer hors charges' : 'Tarif de location'}</p>
+                  <p className="mt-2 text-3xl font-extrabold text-ink-900">{formatPrice(property.monthly_price)} <span className="text-sm font-normal">/ {property.property_type === 'unfurnished_apartment' ? 'mois' : 'semaine'}</span></p>
+                  {property.service_charges > 0 && <p className="mt-3 text-sm text-ink-600">{property.property_type === 'unfurnished_apartment' ? 'Charges mensuelles' : 'Forfait ménage'} : {formatPrice(property.service_charges)}</p>}
+                  {property.deposit_amount > 0 && <p className="mt-2 text-sm text-ink-600">Dépôt de garantie : {formatPrice(property.deposit_amount)}</p>}
+                  {property.viewing_fee > 0 && <p className="mt-2 text-sm text-ink-600">Frais de visite : {formatPrice(property.viewing_fee)}</p>}
+                </div>
+              ) : property.property_type === 'villa' ? (
                 <SeasonalPriceSelector
                   propertyType="villa"
                   summerPrice={property.monthly_price}

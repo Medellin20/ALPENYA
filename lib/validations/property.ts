@@ -7,13 +7,14 @@ export const propertySchema = z.object({
     .trim()
     .min(5, 'Le slug doit contenir au moins 5 caractères.')
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Le slug ne doit contenir que des minuscules, chiffres et tirets.'),
-  propertyType: z.enum(['chalet', 'villa']),
+  propertyType: z.enum(['chalet', 'villa', 'unfurnished_apartment', 'mobile_home']),
 
+  surfaceM2: z.coerce.number().positive('La surface doit être supérieure à 0.').optional(),
   city: z.string().trim().min(2, 'Merci d’indiquer la ville du bien.'),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
 
-  monthlyPrice: z.coerce.number().positive('Le tarif principal à la semaine doit être supérieur à 0.'),
+  monthlyPrice: z.coerce.number().positive('Le tarif principal doit être supérieur à 0.'),
   serviceCharges: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
   depositAmount: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
   viewingFee: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
@@ -38,13 +39,25 @@ export const propertySchema = z.object({
   isFurnished: z.boolean().default(false),
 
   availableFrom: z.string().optional().or(z.literal('')),
-  minimumStayMonths: z.coerce.number().int('Le séjour minimum doit être un nombre entier.').min(1, 'Le séjour minimum doit être d’au moins 1 semaine.').default(12),
+  minimumStayMonths: z.coerce.number().int('Le séjour minimum doit être un nombre entier.').min(1, 'La durée minimale doit être supérieure ou égale à 1.').default(12),
 
   status: z.enum(['draft', 'available', 'reserved', 'rented', 'unavailable']),
   isPublished: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
 
   amenityIds: z.array(z.string().uuid()).default([]),
+}).superRefine((data, ctx) => {
+  if (data.propertyType === 'unfurnished_apartment') {
+    if (data.isFurnished) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['isFurnished'], message: 'Un appartement non meublé ne peut pas être déclaré meublé.' });
+    if (data.interiorType !== 'Non meublé') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['interiorType'], message: 'Sélectionnez un intérieur non meublé.' });
+    if (data.contractType !== 'Location au mois') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['contractType'], message: 'Sélectionnez une location au mois.' });
+  }
+  if (data.propertyType === 'mobile_home' && data.contractType !== 'Location saisonnière à la semaine') {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['contractType'], message: 'Sélectionnez une location à la semaine.' });
+  }
+  if (['unfurnished_apartment', 'mobile_home'].includes(data.propertyType) && !data.surfaceM2) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['surfaceM2'], message: 'Indiquez la surface du bien.' });
+  }
 });
 
 export type PropertyInput = z.infer<typeof propertySchema>;

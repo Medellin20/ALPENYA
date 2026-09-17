@@ -22,7 +22,7 @@ import { LanguageTranslator } from '@/components/layout/language-translator';
 
 const NAV_LINKS = [
   { href: '/', label: 'Accueil', icon: Home },
-  { href: '/appartements', label: 'Chalets & villas', icon: Building2 },
+  { href: '/appartements', label: 'Nos biens', icon: Building2 },
   { href: '/comment-ca-marche', label: 'Comment ça marche', icon: Workflow },
   { href: '/a-propos', label: 'À propos', icon: Info },
   { href: '/contact', label: 'Contact', icon: Mail },

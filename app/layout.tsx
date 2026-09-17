@@ -16,14 +16,16 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'ALPENIA — Chalets et villas d’exception',
+    default: 'ALPENIA — Biens à louer en France',
     template: '%s | ALPENIA',
   },
   description:
-    'Découvrez, visitez et réservez des chalets et villas soigneusement sélectionnés en France avec ALPENIA.',
+    'Découvrez nos chalets, villas, appartements non meublés et mobil-homes à louer en France.',
   keywords: [
     'location chalet France',
     'location villa France',
+    'location appartement non meublé',
+    'location mobil-home',
     'chalet Alpes',
     'villa Côte d’Azur',
     'ALPENIA',
@@ -32,15 +34,15 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     siteName: 'ALPENIA',
-    title: 'ALPENIA — Chalets et villas d’exception',
+    title: 'ALPENIA — Biens à louer en France',
     description:
-      'Recherchez, visitez et réservez votre prochain chalet ou votre prochaine villa en toute confiance.',
+      'Recherchez, visitez et réservez votre prochain logement en toute confiance.',
     url: siteUrl,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ALPENIA — Chalets et villas d’exception',
-    description: 'Trouvez votre prochain chalet ou votre prochaine villa en France.',
+    title: 'ALPENIA — Biens à louer en France',
+    description: 'Trouvez votre prochain logement en France.',
   },
   robots: {
     index: true,

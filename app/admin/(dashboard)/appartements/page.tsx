@@ -13,7 +13,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { DESTINATION_CITIES, PROPERTY_STATUS_LABELS, PROPERTY_TYPES } from '@/lib/utils/constants';
 import { formatPrice } from '@/lib/utils/format';
 
-export const metadata: Metadata = { title: 'Chalets et villas' };
+export const metadata: Metadata = { title: 'Tous les biens' };
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPropertiesPage({
@@ -34,7 +34,7 @@ export default async function AdminPropertiesPage({
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-ink-900">Chalets et villas</h1>
+          <h1 className="text-2xl font-extrabold text-ink-900">Tous les biens</h1>
           <p className="mt-1 text-sm text-ink-500">{error ? 'Catalogue indisponible.' : `${total} bien(s) au total.`}</p>
         </div>
         <Button asChild className="w-full sm:w-auto">
@@ -51,7 +51,7 @@ export default async function AdminPropertiesPage({
           <Input name="search" placeholder="Rechercher un titre, une ville, un slug..." defaultValue={searchParams.search} className="pl-10" />
         </div>
         <Select name="type" defaultValue={searchParams.type}>
-          <option value="">Chalets et villas</option>
+          <option value="">Tous les biens</option>
           {PROPERTY_TYPES.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}
         </Select>
         <Select name="status" defaultValue={searchParams.status}>
@@ -80,7 +80,7 @@ export default async function AdminPropertiesPage({
           <a href="/admin/appartements" className="mt-3 inline-block font-semibold underline">Réessayer</a>
         </div>
       ) : properties.length === 0 ? (
-        <EmptyState title="Aucun bien trouvé" description="Ajoutez votre premier chalet ou votre première villa pour commencer." />
+        <EmptyState title="Aucun bien trouvé" description="Ajoutez un chalet, une villa, un appartement non meublé ou un mobil-home pour commencer." />
       ) : (
         <>
           {/* Vue tableau — desktop */}
@@ -119,7 +119,7 @@ export default async function AdminPropertiesPage({
                         </div>
                       </td>
                       <td className="px-4 py-3 text-ink-600"><span className="line-clamp-2">{property.city}</span></td>
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-ink-800">{formatPrice(property.monthly_price)}</td>
+                      <td className="whitespace-nowrap px-4 py-3 font-medium text-ink-800">{formatPrice(property.monthly_price)} / {property.property_type === 'unfurnished_apartment' ? 'mois' : 'semaine'}</td>
                       <td className="px-4 py-3">
                         <Badge variant={property.is_published ? 'available' : 'default'}>
                           {property.is_published ? 'Publié' : 'Brouillon'}
@@ -150,7 +150,7 @@ export default async function AdminPropertiesPage({
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold text-ink-900">{property.title}</p>
                       <p className="text-xs text-ink-400">{property.city}</p>
-                      <p className="mt-0.5 text-sm font-medium text-ink-700">{formatPrice(property.monthly_price)}</p>
+                      <p className="mt-0.5 text-sm font-medium text-ink-700">{formatPrice(property.monthly_price)} / {property.property_type === 'unfurnished_apartment' ? 'mois' : 'semaine'}</p>
                     </div>
                     <Badge className="shrink-0" variant={property.is_published ? 'available' : 'default'}>
                       {property.is_published ? 'Publié' : 'Brouillon'}

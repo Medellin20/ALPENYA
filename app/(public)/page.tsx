@@ -1,27 +1,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { ArrowRight, ShieldCheck, KeyRound, CalendarCheck, Building2, Quote, Star, MapPin, MountainSnow, Palmtree } from 'lucide-react';
+import { ArrowRight, ShieldCheck, KeyRound, CalendarCheck, Building2, Quote, Star, MapPin, MountainSnow, Palmtree, Caravan } from 'lucide-react';
 import { FadeIn } from '@/components/ui/fade-in';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { getCityPropertySummaries } from '@/lib/data/properties';
-import { formatPrice } from '@/lib/utils/format';
 import { FRENCH_TESTIMONIALS } from '@/lib/data/testimonials';
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'ALPENIA — Chalets et villas d’exception en France',
+  title: 'ALPENIA — Biens à louer en France',
   description:
-    "Découvrez des chalets et villas soigneusement sélectionnés en France. Visites, réservation et suivi réunis sur une plateforme claire.",
+    "Découvrez des chalets, villas, appartements non meublés et mobil-homes en France. Visites, réservation et suivi réunis sur une plateforme claire.",
 };
 
 const STEPS = [
   {
     icon: Building2,
     title: 'Découvrez nos propriétés',
-    description: 'Choisissez entre chalets et villas, puis filtrez par destination, budget et capacité.',
+    description: 'Choisissez votre type de logement, puis filtrez par destination, budget et capacité.',
   },
   {
     icon: CalendarCheck,
@@ -62,7 +61,7 @@ export default async function HomePage() {
                 <span className="block font-light italic text-canal-300">autrement.</span>
               </h1>
               <p className="mt-8 max-w-md text-base leading-relaxed text-sand-200 sm:text-lg">
-                Des chalets et villas singuliers, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
+                Des chalets, villas, appartements non meublés et mobil-homes, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
               </p>
             </div>
             <div className="mt-10 flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap sm:mt-12">
@@ -95,12 +94,12 @@ export default async function HomePage() {
           <FadeIn>
             <SectionHeading
               eyebrow="Nos collections"
-              title="Deux façons de prendre le large."
-              description="L’altitude ou le grand air : choisissez le décor, nous vous présentons les lieux qui ont une âme."
+              title="Quatre façons de se sentir chez soi."
+              description="Un séjour à la montagne, une villa, un appartement à aménager ou une pause en plein air : trouvez votre lieu."
             />
-            <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collection 01 — 02</p>
+            <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collections 01 — 04</p>
           </FadeIn>
-          <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-6">
+          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
             <FadeIn delay={0.05} className="min-w-0">
               <Link href="/appartements?type=chalet" className="group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
                 <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 1024px) 50vw, 34vw" className="object-cover opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-45" />
@@ -125,6 +124,21 @@ export default async function HomePage() {
                 </div>
               </Link>
             </FadeIn>
+            {[
+              { type: 'unfurnished_apartment', title: 'Appartements non meublés', description: 'Un espace à aménager à votre image, pour vous installer durablement.', icon: Building2, color: 'bg-sand-200 text-ink-950', action: 'Trouver mon appartement' },
+              { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, color: 'bg-canal-100 text-canal-900', action: 'Découvrir les mobil-homes' },
+            ].map(({ type, title, description, icon: Icon, color, action }) => (
+              <FadeIn key={type} className="min-w-0">
+                <Link href={`/appartements?type=${type}`} className={`group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[350px] sm:rounded-[2rem] sm:p-8 ${color}`}>
+                  <Icon className="mb-8 h-12 w-12 stroke-1" aria-hidden="true" />
+                  <div className="mt-auto">
+                    <h3 className="break-words text-2xl font-extrabold xl:text-3xl">{title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed sm:text-base">{description}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">{action}<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" /></span>
+                  </div>
+                </Link>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
@@ -137,7 +151,7 @@ export default async function HomePage() {
               <SectionHeading
                 eyebrow="France"
                 title="Une France à habiter"
-                description="Choisissez une destination pour découvrir les chalets et villas disponibles."
+                description="Choisissez une destination pour découvrir les biens disponibles."
                 className="[&_h2]:text-white [&_p]:text-sand-300"
               />
               <Button asChild variant="secondary">
@@ -158,7 +172,7 @@ export default async function HomePage() {
                 >
                   <div className="absolute inset-0 bg-ink-900">
                     {summary.imageUrl ? (
-                      <Image src={summary.imageUrl} alt={`Chalet ou villa à ${summary.city}`} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover opacity-65 transition duration-500 group-hover:scale-105 group-hover:opacity-50" />
+                      <Image src={summary.imageUrl} alt={`Logement à ${summary.city}`} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover opacity-65 transition duration-500 group-hover:scale-105 group-hover:opacity-50" />
                     ) : (
                       <span className="flex h-full items-center justify-center text-canal-500"><MapPin className="h-7 w-7" /></span>
                     )}
@@ -167,7 +181,7 @@ export default async function HomePage() {
                   <div className="relative mt-auto min-w-0 flex-1">
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-canal-200">{summary.count} bien{summary.count > 1 ? 's' : ''}</p>
                     <h3 className="mt-2 truncate text-2xl font-extrabold text-white sm:text-3xl">{summary.city}</h3>
-                    <p className="mt-1 text-sm text-white/70">Dès {formatPrice(summary.averagePrice)} / semaine</p>
+                    <p className="mt-1 text-sm text-white/70">Découvrir les logements</p>
                   </div>
                   <ArrowRight className="relative mt-auto h-6 w-6 shrink-0 text-white transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -266,7 +280,7 @@ export default async function HomePage() {
               </p>
               <Button asChild variant="secondary" size="lg" className="mt-7 h-auto min-h-13 w-full whitespace-normal px-4 py-3 leading-snug sm:w-auto sm:px-7">
                 <Link href="/appartements">
-                  Voir les chalets et villas disponibles
+                  Voir les biens disponibles
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

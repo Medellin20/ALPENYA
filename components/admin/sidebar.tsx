@@ -24,7 +24,7 @@ import { logoutAdmin } from '@/actions/admin-auth';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { href: '/admin/appartements', label: 'Chalets & villas', icon: Building2 },
+  { href: '/admin/appartements', label: 'Nos biens', icon: Building2 },
   { href: '/admin/appartements/nouveau', label: 'Ajouter un bien', icon: PlusCircle },
   { href: '/admin/visites', label: 'Visites', icon: CalendarClock },
   { href: '/admin/reservations', label: 'Réservations', icon: FileText },

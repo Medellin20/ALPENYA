@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, ArrowRight, Mountain, Sun, Compass } from 'lucide-react';
+import { MapPin, ArrowRight, Mountain, Sun, Compass, Building2, Caravan } from 'lucide-react';
 import { PropertyGrid } from '@/components/properties/property-grid';
 import { PropertyFilters } from '@/components/properties/property-filters';
 import { Pagination } from '@/components/properties/pagination';
@@ -11,9 +11,9 @@ import type { PropertyFilters as Filters } from '@/types';
 export const revalidate = 30;
 
 export const metadata: Metadata = {
-  title: 'Chalets et villas à louer en France',
+  title: 'Biens à louer en France',
   description:
-    'Parcourez nos chalets et villas à louer en France. Filtrez par destination, budget, capacité et type de bien.',
+    'Découvrez nos chalets, villas, appartements non meublés et mobil-homes à louer en France. Filtrez par destination, budget, capacité et type de bien.',
 };
 
 interface PageProps {
@@ -52,7 +52,7 @@ export default async function AppartementsPage({ searchParams }: PageProps) {
               </Link>
             ))}
           </div>
-        ) : <p className="rounded-3xl border border-ink-100 bg-white p-8 text-ink-700">Le catalogue est en cours de préparation. Les premiers chalets et villas apparaîtront ici dès leur publication.</p>}
+        ) : <p className="rounded-3xl border border-ink-100 bg-white p-8 text-ink-700">Le catalogue est en cours de préparation. Les premiers biens apparaîtront ici dès leur publication.</p>}
       </div>
     );
   }
@@ -97,15 +97,17 @@ function CatalogueHeader({ city, propertyType }: { city?: string; propertyType?:
     { label: 'Toutes les destinations', type: '', icon: Compass },
     { label: 'Nos chalets', type: 'chalet', icon: Mountain },
     { label: 'Nos villas', type: 'villa', icon: Sun },
+    { label: 'Appartements non meublés', type: 'unfurnished_apartment', icon: Building2 },
+    { label: 'Mobil-homes', type: 'mobile_home', icon: Caravan },
   ];
   return (
     <header className="relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-10 text-white sm:px-10 sm:py-12">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[60px] border-white/[0.04]" />
       <p className="relative text-xs font-semibold uppercase tracking-[0.24em] text-canal-200">La collection ALPENIA</p>
       <h1 className="relative mt-5 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-        {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
+        {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : propertyType === 'unfurnished_apartment' ? <>Un appartement à vous.<br /><span className="font-serif font-normal italic text-canal-200">À aménager selon vos envies.</span></> : propertyType === 'mobile_home' ? <>L’esprit plein air.<br /><span className="font-serif font-normal italic text-canal-200">Découvrez nos mobil-homes.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
       </h1>
-      <p className="relative mt-5 max-w-xl text-sm leading-7 text-white/75 sm:text-base">{city ? 'Trouvez le chalet ou la villa qui vous ressemble, et prenez le temps de découvrir votre prochaine escapade.' : 'Un chalet au grand air ou une villa pour les beaux jours. Trouvez votre prochaine adresse en France.'}</p>
+      <p className="relative mt-5 max-w-xl text-sm leading-7 text-white/75 sm:text-base">{city ? 'Trouvez le logement qui vous ressemble dans cette destination.' : 'Chalets, villas, appartements non meublés et mobil-homes : trouvez votre prochaine adresse en France.'}</p>
       <nav aria-label="Collections de logements" className="relative mt-8 flex flex-wrap gap-2">
         {categories.map(({ label, type, icon: Icon }) => {
           const active = !city && (propertyType ?? '') === type;
