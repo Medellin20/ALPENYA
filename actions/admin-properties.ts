@@ -8,6 +8,15 @@ import { propertySchema, type PropertyInput } from '@/lib/validations/property';
 import type { ActionResult } from '@/types';
 import type { PropertyStatus } from '@/types/database';
 
+function categoryMigrationError(error: { code?: string; message?: string } | null): Omit<ActionResult, 'data'> | null {
+  if (error?.code !== '22P02' || !error.message?.includes('property_type')) return null;
+  return {
+    success: false,
+    message: 'Cette catégorie n’est pas encore configurée dans la base. Appliquez les migrations Supabase 20260917_add_property_categories.sql puis 20260917_replace_unfurnished_with_studio.sql, puis réessayez.',
+    fieldErrors: { propertyType: ['La base de données doit être mise à jour pour accepter cette catégorie.'] },
+  };
+}
+
 function toDbPayload(data: PropertyInput) {
   return {
     title: data.title,
@@ -140,7 +149,7 @@ export async function createProperty(input: PropertyInput): Promise<ActionResult
   }
 
   if (error || !property) {
-    return { success: false, message: 'Une erreur est survenue lors de la création du logement.' };
+    return categoryMigrationError(error) ?? { success: false, message: 'Une erreur est survenue lors de la création du logement.' };
   }
 
   const amenitiesSaved = await syncAmenities(property.id, parsed.data);
@@ -184,7 +193,7 @@ export async function updateProperty(id: string, input: PropertyInput): Promise<
   const { data: updated, error } = await supabase.from('properties').update(toDbPayload(parsed.data)).eq('id', id).select('id').single();
 
   if (error || !updated) {
-    return { success: false, message: 'Impossible de modifier ce logement. Vérifiez qu’il existe encore et que la base est accessible.' };
+    return categoryMigrationError(error) ?? { success: false, message: 'Impossible de modifier ce logement. Vérifiez qu’il existe encore et que la base est accessible.' };
   }
 
   const amenitiesSaved = await syncAmenities(id, parsed.data);

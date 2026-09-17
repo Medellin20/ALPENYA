@@ -48,6 +48,32 @@ function actions(responses, schema) {
   return { ...db, api, paths };
 }
 
+for (const operation of ['create', 'update']) {
+  test(`Studio ${operation} identifies the missing database migration`, async () => {
+    const { api, calls } = actions([
+      { data: null, error: null },
+      { data: null, error: { code: '22P02', message: 'invalid input value for enum property_type: "furnished_studio"' } },
+    ]);
+    const input = { slug: 'studio-annecy', propertyType: 'furnished_studio' };
+    const result = operation === 'create' ? await api.createProperty(input) : await api.updateProperty('id', input);
+    assert.equal(result.success, false);
+    assert.match(result.message, /20260917_replace_unfurnished_with_studio\.sql/);
+    assert.ok(result.fieldErrors.propertyType.length);
+    assert.equal(calls.some(call => call.table === 'property_amenities'), false);
+  });
+}
+
+test('Other invalid database values are not reported as missing category migrations', async () => {
+  const { api } = actions([
+    { data: null, error: null },
+    { data: null, error: { code: '22P02', message: 'invalid input syntax for type numeric' } },
+  ]);
+  const result = await api.createProperty({ slug: 'studio-annecy' });
+  assert.equal(result.success, false);
+  assert.equal(result.fieldErrors, undefined);
+  assert.doesNotMatch(result.message, /migration/);
+});
+
 for (const response of [{ error: { message: 'offline' }, data: null }, { error: null, data: null }]) {
   test(`No hardcoded chalet when database returns ${response.error ? 'an error' : 'no matching property'}`, async () => {
     const db = database(Array.from({ length: 7 }, () => response));
