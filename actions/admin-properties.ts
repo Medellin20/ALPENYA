@@ -81,11 +81,12 @@ async function syncAmenities(propertyId: string, input: PropertyInput): Promise<
   return !error;
 }
 
-function revalidatePublicPaths(slug?: string) {
+function revalidatePublicPaths(slug?: string, propertyId?: string) {
   revalidatePath('/admin');
   revalidatePath('/appartements');
   revalidatePath('/');
   revalidatePath('/admin/appartements');
+  if (propertyId) revalidatePath(`/admin/appartements/${propertyId}`);
   if (slug) revalidatePath(`/appartements/${slug}`);
 }
 
@@ -154,7 +155,7 @@ export async function createProperty(input: PropertyInput): Promise<ActionResult
 
   const amenitiesSaved = await syncAmenities(property.id, parsed.data);
   await logAdminAction({ action: 'property.create', entityType: 'property', entityId: property.id });
-  revalidatePublicPaths(parsed.data.slug);
+  revalidatePublicPaths(parsed.data.slug, property.id);
 
   return { success: amenitiesSaved, message: amenitiesSaved ? 'Bien ajouté avec succès.' : 'Bien créé, mais les équipements n’ont pas tous été enregistrés. Vérifiez-les sur la fiche et réessayez.', data: { id: property.id } };
 }
@@ -198,7 +199,7 @@ export async function updateProperty(id: string, input: PropertyInput): Promise<
 
   const amenitiesSaved = await syncAmenities(id, parsed.data);
   await logAdminAction({ action: 'property.update', entityType: 'property', entityId: id });
-  revalidatePublicPaths(parsed.data.slug);
+  revalidatePublicPaths(parsed.data.slug, id);
 
   return { success: amenitiesSaved, message: amenitiesSaved ? 'Bien mis à jour avec succès.' : 'Le logement a été modifié, mais les équipements n’ont pas tous été enregistrés. Vérifiez-les et réessayez.' };
 }

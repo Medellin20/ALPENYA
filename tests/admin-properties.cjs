@@ -210,6 +210,35 @@ const validCreation = {
   minimumStayMonths: '1', amenityIds: [],
 };
 
+test('Editing prices preserves cents in all four amounts and refreshes public prices', async () => {
+  const { api, calls, paths } = actions([
+    { data: null }, { data: { id: 'id' } }, { data: [] }, { error: null },
+  ], propertySchema);
+  const result = await api.updateProperty('id', {
+    ...validCreation,
+    monthlyPrice: '1806.50', depositAmount: '2156.25',
+    viewingFee: '2338.75', serviceCharges: '150.99',
+  });
+  assert.equal(result.success, true);
+  const saved = calls.find(call => call.table === 'properties' && call.method === 'update').args[0];
+  assert.equal(saved.monthly_price, 1806.5);
+  assert.equal(saved.deposit_amount, 2156.25);
+  assert.equal(saved.viewing_fee, 2338.75);
+  assert.equal(saved.service_charges, 150.99);
+  for (const path of ['/', '/appartements', '/appartements/chalet-de-test', '/admin/appartements']) {
+    assert.ok(paths.includes(path));
+  }
+});
+
+test('Price display preserves cents while keeping whole euro amounts compact', () => {
+  const { formatPrice } = load('lib/utils/format.ts', {});
+  const formatted = amount => formatPrice(amount).replace(/[\u00a0\u202f]/g, ' ');
+  assert.equal(formatted(1806.5), '1 806,5 €');
+  assert.equal(formatted(150.99), '150,99 €');
+  assert.equal(formatted(1806), '1 806 €');
+  assert.equal(formatted(0), '0 €');
+});
+
 test('Admin creation validates actual form values and returns the ID for the photo page', async () => {
   const { api, calls } = actions([{ data: null }, { data: { id: 'new-id' } }, { data: [] }, { error: null }], propertySchema);
   const result = await api.createProperty(validCreation);

@@ -1,6 +1,7 @@
 import 'server-only';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
+import { fetchNoStore } from './fetch-no-store';
 
 // Client Supabase "admin" — utilise la SUPABASE_SERVICE_ROLE_KEY et
 // CONTOURNE la Row Level Security.
@@ -24,5 +25,6 @@ export function createAdminClient() {
 
   return createSupabaseClient<Database>(url, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },
+    global: { fetch: fetchNoStore },
   });
 }

@@ -97,9 +97,15 @@ export function PropertyForm({
     setValue,
     setError,
     clearErrors,
+    reset,
     formState: { errors },
   } = useForm<PropertyInput>({
     resolver: zodResolver(propertySchema),
+    // router.refresh() conserve le composant : defaultValues seul garde les anciens tarifs.
+    values: mode === 'edit' && property
+      ? propertyToFormValues(property, currentAmenityIds ?? [], amenities)
+      : undefined,
+    resetOptions: { keepDirtyValues: true },
     defaultValues:
       mode === 'edit' && property
         ? propertyToFormValues(property, currentAmenityIds ?? [], amenities)
@@ -197,6 +203,7 @@ export function PropertyForm({
         mode === 'create' ? await createProperty(data) : await updateProperty(propertyId!, data);
 
       if (result.success) {
+        reset(data);
         toast.success(result.message);
         if (mode === 'create' && result.data?.id) {
           router.push(`/admin/appartements/${result.data.id}`);
@@ -215,6 +222,7 @@ export function PropertyForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit, () => toast.error('Merci de corriger les champs indiqués.'))} className="space-y-8">
+      <fieldset disabled={isPending} className="contents">
       {Object.keys(errors).length > 0 && (
         <div role="alert" className="rounded-xl border border-brick-500/30 bg-brick-500/10 p-4 text-sm text-brick-500">
           <p className="font-semibold">Le bien n’a pas été enregistré. Vérifiez les champs suivants :</p>
@@ -335,25 +343,25 @@ export function PropertyForm({
         <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
             <Label htmlFor="monthlyPrice" className="min-h-5">{isStudio ? 'Loyer hors charges' : propertyType === 'mobile_home' ? 'Tarif de location' : isVilla ? 'Juillet – août' : 'Hors saison'}</Label>
-            <Input id="monthlyPrice" type="number" inputMode="decimal" min="0" step="1" {...register('monthlyPrice')} />
+            <Input id="monthlyPrice" type="number" inputMode="decimal" min="0" step="0.01" {...register('monthlyPrice')} />
             <p className="mt-1.5 text-xs text-ink-400">{isStudio ? '€ par mois' : '€ par semaine'}</p>
             <FieldError message={errors.monthlyPrice?.message} />
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
             <Label htmlFor="depositAmount" className="min-h-5">{isSimplePricing ? 'Dépôt de garantie' : isVilla ? 'Mi-juin – début juillet' : 'Noël et Nouvel An'}</Label>
-            <Input id="depositAmount" type="number" inputMode="decimal" min="0" step="1" {...register('depositAmount')} />
+            <Input id="depositAmount" type="number" inputMode="decimal" min="0" step="0.01" {...register('depositAmount')} />
             <FieldError message={errors.depositAmount?.message} />
             <p className="mt-1.5 text-xs text-ink-400">{isSimplePricing ? '€' : '€ par semaine'}</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
             <Label htmlFor="viewingFee" className="min-h-5">{isSimplePricing ? 'Frais de visite' : isVilla ? 'Septembre' : 'De janvier à mars'}</Label>
-            <Input id="viewingFee" type="number" inputMode="decimal" min="0" step="1" {...register('viewingFee')} />
+            <Input id="viewingFee" type="number" inputMode="decimal" min="0" step="0.01" {...register('viewingFee')} />
             <FieldError message={errors.viewingFee?.message} />
             <p className="mt-1.5 text-xs text-ink-400">{isSimplePricing ? '€' : '€ par semaine'}</p>
           </div>
           <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
             <Label htmlFor="serviceCharges" className="min-h-5">{isStudio ? 'Charges mensuelles' : isVilla ? 'Mai – début juin' : 'Forfait ménage'}</Label>
-            <Input id="serviceCharges" type="number" inputMode="decimal" min="0" step="1" {...register('serviceCharges')} />
+            <Input id="serviceCharges" type="number" inputMode="decimal" min="0" step="0.01" {...register('serviceCharges')} />
             <FieldError message={errors.serviceCharges?.message} />
             <p className="mt-1.5 text-xs text-ink-400">{isStudio ? '€ par mois' : isVilla ? '€ par semaine' : '€ par séjour'}</p>
           </div>
@@ -487,6 +495,7 @@ export function PropertyForm({
           {mode === 'create' ? 'Créer le bien' : 'Enregistrer les modifications'}
         </Button>
       </div>
+      </fieldset>
     </form>
   );
 }
