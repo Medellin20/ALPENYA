@@ -76,11 +76,11 @@ export default async function HomePage() {
           </FadeIn>
 
           <FadeIn delay={0.08} className="relative min-h-[360px] overflow-hidden rounded-2xl min-[400px]:min-h-[440px] sm:min-h-[560px] sm:rounded-[2rem] lg:min-h-[620px]">
-            <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet sélectionné par ALPENIA à La Clusaz" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+            <Image src="/properties/grand-bornand/IMG_4225.jpeg" alt="Salon lumineux en bois au Grand-Bornand, ouvert sur les montagnes verdoyantes" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-transparent" />
             <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3 rounded-xl border border-white/20 bg-white/10 p-4 text-white backdrop-blur-md sm:inset-x-7 sm:bottom-7 sm:gap-4 sm:rounded-2xl sm:p-6">
-              <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">À la une</p><p className="mt-1 text-xl font-bold sm:text-2xl">La Clusaz</p></div>
-              <Link href="/appartements/chalet-la-clusaz-haute-savoie" aria-label="Voir le chalet de La Clusaz" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-950 transition-transform hover:rotate-[-12deg]"><ArrowRight className="h-5 w-5" /></Link>
+              <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Une pause au vert</p><p className="mt-1 text-xl font-bold sm:text-2xl">Le Grand-Bornand</p></div>
+              <Link href="/appartements/appartement-centre-grand-bornand" aria-label="Voir l’appartement au Grand-Bornand" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink-950 transition-transform hover:rotate-[-12deg]"><ArrowRight className="h-5 w-5" /></Link>
             </div>
           </FadeIn>
         </div>
