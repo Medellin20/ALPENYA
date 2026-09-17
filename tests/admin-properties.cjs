@@ -225,7 +225,7 @@ test('Editing prices preserves cents in all four amounts and refreshes public pr
   assert.equal(saved.deposit_amount, 2156.25);
   assert.equal(saved.viewing_fee, 2338.75);
   assert.equal(saved.service_charges, 150.99);
-  for (const path of ['/', '/appartements', '/appartements/chalet-de-test', '/admin/appartements']) {
+  for (const path of ['/', '/appartements', '/appartements/chalet-de-test', '/admin/appartements', '/admin/appartements/id']) {
     assert.ok(paths.includes(path));
   }
 });

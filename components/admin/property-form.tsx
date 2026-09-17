@@ -203,7 +203,8 @@ export function PropertyForm({
         mode === 'create' ? await createProperty(data) : await updateProperty(propertyId!, data);
 
       if (result.success) {
-        reset(data);
+        // Après confirmation, ces valeurs sont enregistrées, plus des saisies à préserver.
+        reset(data, { keepDirtyValues: false });
         toast.success(result.message);
         if (mode === 'create' && result.data?.id) {
           router.push(`/admin/appartements/${result.data.id}`);
@@ -222,7 +223,7 @@ export function PropertyForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit, () => toast.error('Merci de corriger les champs indiqués.'))} className="space-y-8">
-      <fieldset disabled={isPending} className="contents">
+      <fieldset disabled={isPending} className="min-w-0 space-y-8">
       {Object.keys(errors).length > 0 && (
         <div role="alert" className="rounded-xl border border-brick-500/30 bg-brick-500/10 p-4 text-sm text-brick-500">
           <p className="font-semibold">Le bien n’a pas été enregistré. Vérifiez les champs suivants :</p>

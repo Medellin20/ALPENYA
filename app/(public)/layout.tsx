@@ -1,6 +1,6 @@
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
-import { RefreshOnReturn } from '@/components/properties/refresh-on-return';
+import { RefreshOnReturn } from '@/components/layout/refresh-on-return';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
