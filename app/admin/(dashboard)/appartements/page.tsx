@@ -80,7 +80,7 @@ export default async function AdminPropertiesPage({
           <a href="/admin/appartements" className="mt-3 inline-block font-semibold underline">Réessayer</a>
         </div>
       ) : properties.length === 0 ? (
-        <EmptyState title="Aucun bien trouvé" description="Ajoutez un chalet, une villa, un appartement non meublé ou un mobil-home pour commencer." />
+        <EmptyState title="Aucun bien trouvé" description="Ajoutez un chalet, une villa, un studio meublé ou un mobil-home pour commencer." />
       ) : (
         <>
           {/* Vue tableau — desktop */}
@@ -119,7 +119,7 @@ export default async function AdminPropertiesPage({
                         </div>
                       </td>
                       <td className="px-4 py-3 text-ink-600"><span className="line-clamp-2">{property.city}</span></td>
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-ink-800">{formatPrice(property.monthly_price)} / {property.property_type === 'unfurnished_apartment' ? 'mois' : 'semaine'}</td>
+                      <td className="whitespace-nowrap px-4 py-3 font-medium text-ink-800">{formatPrice(property.monthly_price)} / {property.property_type === 'furnished_studio' ? 'mois' : 'semaine'}</td>
                       <td className="px-4 py-3">
                         <Badge variant={property.is_published ? 'available' : 'default'}>
                           {property.is_published ? 'Publié' : 'Brouillon'}
@@ -150,7 +150,7 @@ export default async function AdminPropertiesPage({
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold text-ink-900">{property.title}</p>
                       <p className="text-xs text-ink-400">{property.city}</p>
-                      <p className="mt-0.5 text-sm font-medium text-ink-700">{formatPrice(property.monthly_price)} / {property.property_type === 'unfurnished_apartment' ? 'mois' : 'semaine'}</p>
+                      <p className="mt-0.5 text-sm font-medium text-ink-700">{formatPrice(property.monthly_price)} / {property.property_type === 'furnished_studio' ? 'mois' : 'semaine'}</p>
                     </div>
                     <Badge className="shrink-0" variant={property.is_published ? 'available' : 'default'}>
                       {property.is_published ? 'Publié' : 'Brouillon'}

@@ -32,7 +32,7 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-sand-300">
-            Votre sélection de chalets, villas, appartements non meublés et mobil-homes en France — de la découverte
+            Votre sélection de chalets, villas, studios meublés et mobil-homes en France — de la découverte
             du bien jusqu’à la remise des clés.
           </p>
           <div className="mt-5 flex items-center gap-3">

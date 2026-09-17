@@ -7,7 +7,7 @@ export const propertySchema = z.object({
     .trim()
     .min(5, 'Le slug doit contenir au moins 5 caractères.')
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Le slug ne doit contenir que des minuscules, chiffres et tirets.'),
-  propertyType: z.enum(['chalet', 'villa', 'unfurnished_apartment', 'mobile_home']),
+  propertyType: z.enum(['chalet', 'villa', 'furnished_studio', 'mobile_home']),
 
   surfaceM2: z.coerce.number().positive('La surface doit être supérieure à 0.').optional(),
   city: z.string().trim().min(2, 'Merci d’indiquer la ville du bien.'),
@@ -47,15 +47,15 @@ export const propertySchema = z.object({
 
   amenityIds: z.array(z.string().uuid()).default([]),
 }).superRefine((data, ctx) => {
-  if (data.propertyType === 'unfurnished_apartment') {
-    if (data.isFurnished) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['isFurnished'], message: 'Un appartement non meublé ne peut pas être déclaré meublé.' });
-    if (data.interiorType !== 'Non meublé') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['interiorType'], message: 'Sélectionnez un intérieur non meublé.' });
+  if (data.propertyType === 'furnished_studio') {
+    if (!data.isFurnished) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['isFurnished'], message: 'Un studio meublé doit être déclaré meublé.' });
+    if (data.interiorType !== 'Meublé') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['interiorType'], message: 'Sélectionnez un intérieur meublé.' });
     if (data.contractType !== 'Location au mois') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['contractType'], message: 'Sélectionnez une location au mois.' });
   }
   if (data.propertyType === 'mobile_home' && data.contractType !== 'Location saisonnière à la semaine') {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['contractType'], message: 'Sélectionnez une location à la semaine.' });
   }
-  if (['unfurnished_apartment', 'mobile_home'].includes(data.propertyType) && !data.surfaceM2) {
+  if (['furnished_studio', 'mobile_home'].includes(data.propertyType) && !data.surfaceM2) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['surfaceM2'], message: 'Indiquez la surface du bien.' });
   }
 });

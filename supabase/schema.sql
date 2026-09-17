@@ -12,7 +12,7 @@
     -- -----------------------------------------------------------------------------
 
     create type property_status as enum ('draft', 'available', 'reserved', 'rented', 'unavailable');
-    create type property_type as enum ('chalet', 'villa', 'unfurnished_apartment', 'mobile_home');
+    create type property_type as enum ('chalet', 'villa', 'furnished_studio', 'mobile_home');
 
     create type viewing_status as enum (
       'pending', 'payment_pending', 'paid', 'confirmed', 'cancelled', 'completed'

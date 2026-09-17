@@ -269,10 +269,14 @@ test('New property page renders a retry message on database failure and the form
       'next/link': { default: props => React.createElement('a', props) },
       'lucide-react': { ArrowLeft: () => null },
       '@/components/admin/property-data-error': errorComponent,
+      '@/lib/utils/constants': load('lib/utils/constants.ts', {}),
       '@/components/admin/property-form': { PropertyForm: () => React.createElement('form', { 'data-testid': 'property-form' }) },
       '@/lib/data/admin-properties': { getAllAmenities: async () => ({ amenities: [], error }) },
     });
-    const html = renderToStaticMarkup(await page.default());
+    const html = renderToStaticMarkup(await page.default({ searchParams: { type: 'furnished_studio' } }));
+    assert.ok(html.includes('Studio meublé'));
+    assert.ok(html.includes('type=furnished_studio'));
+    assert.equal(html.includes('non meublé'), false);
     assert.equal(html.includes('role="alert"'), Boolean(error));
     assert.equal(html.includes('data-testid="property-form"'), !error);
     if (error) {

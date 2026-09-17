@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     template: '%s | ALPENIA',
   },
   description:
-    'Découvrez nos chalets, villas, appartements non meublés et mobil-homes à louer en France.',
+    'Découvrez nos chalets, villas, studios meublés et mobil-homes à louer en France.',
   keywords: [
     'location chalet France',
     'location villa France',
-    'location appartement non meublé',
+    'location studio meublé',
     'location mobil-home',
     'chalet Alpes',
     'villa Côte d’Azur',

@@ -32,12 +32,12 @@ const base = {
   minimumStayMonths: 1,
   status: 'draft',
 };
-const apartment = {
+const studio = {
   ...base,
-  propertyType: 'unfurnished_apartment',
+  propertyType: 'furnished_studio',
   contractType: 'Location au mois',
-  interiorType: 'Non meublé',
-  isFurnished: false,
+  interiorType: 'Meublé',
+  isFurnished: true,
 };
 
 for (const propertyType of ['chalet', 'villa']) {
@@ -47,23 +47,23 @@ for (const propertyType of ['chalet', 'villa']) {
   });
 }
 
-test('Un appartement non meublé conserve son loyer, ses charges et sa caution', () => {
-  const result = propertySchema.parse(apartment);
-  assert.equal(result.propertyType, 'unfurnished_apartment');
-  assert.equal(result.isFurnished, false);
+test('Un studio meublé conserve son loyer, ses charges et sa caution', () => {
+  const result = propertySchema.parse(studio);
+  assert.equal(result.propertyType, 'furnished_studio');
+  assert.equal(result.isFurnished, true);
   assert.equal(result.monthlyPrice, 900);
   assert.equal(result.serviceCharges, 80);
   assert.equal(result.depositAmount, 900);
   assert.equal(result.isPublished, false);
 });
 
-test('Le serveur refuse un appartement déclaré meublé ou saisonnier', () => {
+test('Le serveur refuse un studio déclaré non meublé ou saisonnier', () => {
   for (const override of [
-    { isFurnished: true },
-    { interiorType: 'Meublé' },
+    { isFurnished: false },
+    { interiorType: 'Non meublé' },
     { contractType: 'Location saisonnière à la semaine' },
   ]) {
-    const result = propertySchema.safeParse({ ...apartment, ...override });
+    const result = propertySchema.safeParse({ ...studio, ...override });
     assert.equal(result.success, false);
     assert.ok(result.error.issues.some(issue => issue.path[0] === Object.keys(override)[0]));
   }
@@ -81,9 +81,9 @@ test('Le mobil-home ne peut pas annoncer un contrat mensuel avec un prix hebdoma
   assert.equal(propertySchema.safeParse({ ...base, propertyType: 'mobile_home', contractType: 'Location au mois' }).success, false);
 });
 
-for (const propertyType of ['unfurnished_apartment', 'mobile_home']) {
+for (const propertyType of ['furnished_studio', 'mobile_home']) {
   test(`${propertyType} exige une surface, un tarif et une durée valides`, () => {
-    const values = propertyType === 'unfurnished_apartment' ? apartment : { ...base, propertyType };
+    const values = propertyType === 'furnished_studio' ? studio : { ...base, propertyType };
     for (const override of [
       { surfaceM2: undefined }, { surfaceM2: 0 }, { monthlyPrice: 0 },
       { minimumStayMonths: 0 }, { depositAmount: -1 }, { serviceCharges: -1 },
@@ -93,4 +93,8 @@ for (const propertyType of ['unfurnished_apartment', 'mobile_home']) {
 
 test('Une catégorie inconnue est refusée', () => {
   assert.equal(propertySchema.safeParse({ ...base, propertyType: 'unknown' }).success, false);
+});
+
+test('L’ancienne catégorie non meublée est refusée', () => {
+  assert.equal(propertySchema.safeParse({ ...studio, propertyType: 'unfurnished_apartment' }).success, false);
 });

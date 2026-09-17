@@ -294,13 +294,13 @@ Projet propriétaire — Real Estate NL. Tous droits réservés.
 Appliquer `supabase/migrations/20260916_payment_settings.sql` dans Supabase, puis saisir le lien HTTPS dans **Admin → Paramètres → Paiement**. Le lien est commun aux deux parcours et peut être modifié ou retiré à tout moment. Les pages de confirmation lisent la configuration à chaque requête et affichent la quatrième et dernière étape après l’enregistrement de la demande. Sans lien configuré, elles invitent le client à contacter l’équipe. Les captures de paiement sont envoyées par e-mail à `contacts@alpenia-residences.com`, avec la référence du dossier ; le paiement n’est pas automatiquement marqué comme confirmé.
 
 
-### Appartements non meublés et mobil-homes
+### Studios meublés et mobil-homes
 
-Pour une base existante, exécuter `supabase/migrations/20260917_add_property_categories.sql` dans le SQL Editor Supabase avant d'ajouter les nouveaux biens. Cette migration ajoute deux valeurs à l'enum, sans modifier les annonces existantes. Une installation neuve les inclut dans `supabase/schema.sql`.
+Pour une base existante, exécuter `supabase/migrations/20260917_add_property_categories.sql` dans le SQL Editor Supabase avant d'ajouter les nouveaux biens. Exécuter ensuite `supabase/migrations/20260917_replace_unfurnished_with_studio.sql` pour remplacer l’ancienne catégorie par « Studio meublé » et mettre à jour son statut meublé, sans supprimer les annonces ni leurs relations. Une installation neuve inclut directement les catégories finales dans `supabase/schema.sql`.
 
 Dans **Admin → Nos biens → Ajouter un bien**, choisir la catégorie, renseigner les caractéristiques et tarifs, puis créer le brouillon. Ajouter les photos sur la fiche obtenue, cocher **Publié** et enregistrer pour rendre l'annonce visible. Les collections de l'accueil et du catalogue affichent les biens publiés dans la catégorie correspondante.
 
-- Appartement non meublé : surface obligatoire, loyer et charges au mois, dépôt de garantie distinct, intérieur non meublé imposé.
+- Studio meublé : surface obligatoire, loyer et charges au mois, dépôt de garantie distinct, intérieur meublé imposé.
 - Mobil-home : surface obligatoire, tarif à la semaine, dépôt de garantie et forfait ménage distincts.
 - Les champs historiques `monthly_price`, `service_charges`, `deposit_amount`, `viewing_fee` et `minimum_stay_months` sont conservés ; leur signification dépend de la catégorie. Les chalets et villas conservent leurs tarifs saisonniers.
 - Un changement de catégorie dans le formulaire réinitialise les tarifs, afin de ne pas transformer un tarif saisonnier en caution ou charges.

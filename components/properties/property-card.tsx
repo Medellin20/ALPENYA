@@ -11,8 +11,8 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
   const primaryImage = property.property_images.find(img => img.is_primary) ?? property.property_images[0];
   const statusMeta = PROPERTY_STATUS_LABELS[property.status];
   const isVilla = property.property_type === 'villa';
-  const isApartment = property.property_type === 'unfurnished_apartment';
-  const TypeIcon = isApartment ? Building2 : property.property_type === 'mobile_home' ? Caravan : isVilla ? Sun : Mountain;
+  const isStudio = property.property_type === 'furnished_studio';
+  const TypeIcon = isStudio ? Building2 : property.property_type === 'mobile_home' ? Caravan : isVilla ? Sun : Mountain;
   const highlights = property.amenities.slice(0, 2);
 
   return (
@@ -64,8 +64,8 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
         </div>
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-ink-100 pt-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-700">{isApartment ? 'Loyer hors charges' : property.property_type === 'mobile_home' ? 'Location' : isVilla ? 'Juillet – août' : 'Hors saison'}</p>
-            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-extrabold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ {isApartment ? 'mois' : 'semaine'}</span>}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-700">{isStudio ? 'Loyer hors charges' : property.property_type === 'mobile_home' ? 'Location' : isVilla ? 'Juillet – août' : 'Hors saison'}</p>
+            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-extrabold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ {isStudio ? 'mois' : 'semaine'}</span>}</p>
           </div>
           <span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-950 text-white transition-colors group-hover:bg-brick-500"><ArrowUpRight className="h-5 w-5" /></span>
         </div>

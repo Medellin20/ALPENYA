@@ -13,7 +13,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'ALPENIA — Biens à louer en France',
   description:
-    "Découvrez des chalets, villas, appartements non meublés et mobil-homes en France. Visites, réservation et suivi réunis sur une plateforme claire.",
+    "Découvrez des chalets, villas, studios meublés et mobil-homes en France. Visites, réservation et suivi réunis sur une plateforme claire.",
 };
 
 const STEPS = [
@@ -61,7 +61,7 @@ export default async function HomePage() {
                 <span className="block font-light italic text-canal-300">autrement.</span>
               </h1>
               <p className="mt-8 max-w-md text-base leading-relaxed text-sand-200 sm:text-lg">
-                Des chalets, villas, appartements non meublés et mobil-homes, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
+                Des chalets, villas, studios meublés et mobil-homes, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
               </p>
             </div>
             <div className="mt-10 flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap sm:mt-12">
@@ -95,7 +95,7 @@ export default async function HomePage() {
             <SectionHeading
               eyebrow="Nos collections"
               title="Quatre façons de se sentir chez soi."
-              description="Un séjour à la montagne, une villa, un appartement à aménager ou une pause en plein air : trouvez votre lieu."
+              description="Un séjour à la montagne, une villa, un studio prêt à vivre ou une pause en plein air : trouvez votre lieu."
             />
             <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collections 01 — 04</p>
           </FadeIn>
@@ -125,7 +125,7 @@ export default async function HomePage() {
               </Link>
             </FadeIn>
             {[
-              { type: 'unfurnished_apartment', title: 'Appartements non meublés', description: 'Un espace à aménager à votre image, pour vous installer durablement.', icon: Building2, color: 'bg-sand-200 text-ink-950', action: 'Trouver mon appartement' },
+              { type: 'furnished_studio', title: 'Studios meublés', description: 'Un studio équipé et prêt à vivre, pour vous installer simplement.', icon: Building2, color: 'bg-sand-200 text-ink-950', action: 'Trouver mon studio' },
               { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, color: 'bg-canal-100 text-canal-900', action: 'Découvrir les mobil-homes' },
             ].map(({ type, title, description, icon: Icon, color, action }) => (
               <FadeIn key={type} className="min-w-0">

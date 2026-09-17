@@ -13,7 +13,7 @@ export const revalidate = 30;
 export const metadata: Metadata = {
   title: 'Biens à louer en France',
   description:
-    'Découvrez nos chalets, villas, appartements non meublés et mobil-homes à louer en France. Filtrez par destination, budget, capacité et type de bien.',
+    'Découvrez nos chalets, villas, studios meublés et mobil-homes à louer en France. Filtrez par destination, budget, capacité et type de bien.',
 };
 
 interface PageProps {
@@ -97,7 +97,7 @@ function CatalogueHeader({ city, propertyType }: { city?: string; propertyType?:
     { label: 'Toutes les destinations', type: '', icon: Compass },
     { label: 'Nos chalets', type: 'chalet', icon: Mountain },
     { label: 'Nos villas', type: 'villa', icon: Sun },
-    { label: 'Appartements non meublés', type: 'unfurnished_apartment', icon: Building2 },
+    { label: 'Studios meublés', type: 'furnished_studio', icon: Building2 },
     { label: 'Mobil-homes', type: 'mobile_home', icon: Caravan },
   ];
   return (
@@ -105,9 +105,9 @@ function CatalogueHeader({ city, propertyType }: { city?: string; propertyType?:
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[60px] border-white/[0.04]" />
       <p className="relative text-xs font-semibold uppercase tracking-[0.24em] text-canal-200">La collection ALPENIA</p>
       <h1 className="relative mt-5 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-        {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : propertyType === 'unfurnished_apartment' ? <>Un appartement à vous.<br /><span className="font-serif font-normal italic text-canal-200">À aménager selon vos envies.</span></> : propertyType === 'mobile_home' ? <>L’esprit plein air.<br /><span className="font-serif font-normal italic text-canal-200">Découvrez nos mobil-homes.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
+        {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : propertyType === 'furnished_studio' ? <>Un studio prêt à vivre.<br /><span className="font-serif font-normal italic text-canal-200">Meublé pour votre confort.</span></> : propertyType === 'mobile_home' ? <>L’esprit plein air.<br /><span className="font-serif font-normal italic text-canal-200">Découvrez nos mobil-homes.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
       </h1>
-      <p className="relative mt-5 max-w-xl text-sm leading-7 text-white/75 sm:text-base">{city ? 'Trouvez le logement qui vous ressemble dans cette destination.' : 'Chalets, villas, appartements non meublés et mobil-homes : trouvez votre prochaine adresse en France.'}</p>
+      <p className="relative mt-5 max-w-xl text-sm leading-7 text-white/75 sm:text-base">{city ? 'Trouvez le logement qui vous ressemble dans cette destination.' : 'Chalets, villas, studios meublés et mobil-homes : trouvez votre prochaine adresse en France.'}</p>
       <nav aria-label="Collections de logements" className="relative mt-8 flex flex-wrap gap-2">
         {categories.map(({ label, type, icon: Icon }) => {
           const active = !city && (propertyType ?? '') === type;
