@@ -21,6 +21,7 @@ interface VillaPriceSelectorProps {
   earlySummerPrice: number;
   septemberPrice: number;
   lateSpringPrice: number;
+  cleaningFee: number;
 }
 
 type SeasonalPriceSelectorProps = ChaletPriceSelectorProps | VillaPriceSelectorProps;
@@ -56,6 +57,7 @@ export function SeasonalPriceSelector(props: SeasonalPriceSelectorProps) {
       earlySummerPrice={props.earlySummerPrice}
       septemberPrice={props.septemberPrice}
       lateSpringPrice={props.lateSpringPrice}
+      cleaningFee={props.cleaningFee}
     />
   );
 }
@@ -95,6 +97,7 @@ function VillaPriceSelector({
   earlySummerPrice,
   septemberPrice,
   lateSpringPrice,
+  cleaningFee,
 }: Omit<VillaPriceSelectorProps, 'propertyType'>) {
   const [period, setPeriod] = useState<VillaPeriod>('summer');
   const prices: Record<VillaPeriod, number> = {
@@ -111,7 +114,13 @@ function VillaPriceSelector({
       labels={VILLA_PERIOD_LABELS}
       selectedPrice={selectedPrice}
       onPeriodChange={(value) => setPeriod(value as VillaPeriod)}
-    />
+    >
+      {cleaningFee > 0 && (
+        <p className="mt-3 border-t border-ink-100 pt-3 text-sm text-ink-500">
+          Forfait ménage : <strong className="font-bold text-ink-800">{formatPrice(cleaningFee)}</strong>
+        </p>
+      )}
+    </PriceSelectorLayout>
   );
 }
 

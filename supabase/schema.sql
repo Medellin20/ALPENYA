@@ -80,6 +80,7 @@
       -- Prix
       monthly_price numeric(10, 2) not null,
       service_charges numeric(10, 2) not null default 0,
+      cleaning_fee numeric(10, 2) not null default 0 check (cleaning_fee >= 0),
       deposit_amount numeric(10, 2) not null default 0,
       viewing_fee numeric(10, 2) not null default 0,
 

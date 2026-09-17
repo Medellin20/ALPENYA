@@ -43,6 +43,7 @@ function propertyToFormValues(property: Property, amenityIds: string[], amenitie
     longitude: property.longitude ?? undefined,
     monthlyPrice: property.monthly_price,
     serviceCharges: property.service_charges,
+    cleaningFee: property.cleaning_fee ?? 0,
     depositAmount: property.deposit_amount,
     viewingFee: property.viewing_fee,
     bedrooms: property.bedrooms,
@@ -117,6 +118,7 @@ export function PropertyForm({
             city: '',
             monthlyPrice: 0,
             serviceCharges: 0,
+            cleaningFee: 0,
             depositAmount: 0,
             viewingFee: 0,
             bedrooms: initialType === 'furnished_studio' ? 0 : 1,
@@ -151,7 +153,7 @@ export function PropertyForm({
     setValue('interiorType', 'Meublé');
     setValue('contractType', isStudio ? 'Location au mois' : 'Location saisonnière à la semaine');
     // Les anciens tarifs saisonniers ne deviennent pas des charges ou une caution.
-    for (const field of ['monthlyPrice', 'depositAmount', 'serviceCharges', 'viewingFee'] as const) setValue(field, 0);
+    for (const field of ['monthlyPrice', 'depositAmount', 'serviceCharges', 'viewingFee', 'cleaningFee'] as const) setValue(field, 0);
   }, [propertyType, isStudio, setValue]);
   const title = watch('title');
   const slug = watch('slug');
@@ -366,8 +368,16 @@ export function PropertyForm({
             <FieldError message={errors.serviceCharges?.message} />
             <p className="mt-1.5 text-xs text-ink-400">{isStudio ? '€ par mois' : isVilla ? '€ par semaine' : '€ par séjour'}</p>
           </div>
+          {isVilla && (
+            <div className="rounded-xl border border-canal-100 bg-canal-50/60 p-3.5">
+              <Label htmlFor="cleaningFee" className="min-h-5">Forfait ménage</Label>
+              <Input id="cleaningFee" type="number" inputMode="decimal" min="0" step="0.01" {...register('cleaningFee')} />
+              <FieldError message={errors.cleaningFee?.message} />
+              <p className="mt-1.5 text-xs text-ink-400">€ par séjour</p>
+            </div>
+          )}
         </div>
-        <p className="mt-3 text-xs text-ink-400">{isSimplePricing ? 'Le dépôt de garantie et les frais sont des montants distincts du loyer. Renseignez 0 si non applicable.' : 'Indiquez les montants à la semaine. Le premier tarif doit être supérieur à 0. Les autres peuvent rester à 0 lorsqu’ils ne sont pas proposés.'}</p>
+        <p className="mt-3 text-xs text-ink-400">{isSimplePricing ? 'Le dépôt de garantie et les frais sont des montants distincts du loyer. Renseignez 0 si non applicable.' : 'Indiquez les tarifs saisonniers à la semaine et le forfait ménage par séjour. Le premier tarif doit être supérieur à 0. Les autres peuvent rester à 0 lorsqu’ils ne sont pas proposés.'}</p>
       </FormSection>
 
       {/* CARACTÉRISTIQUES */}

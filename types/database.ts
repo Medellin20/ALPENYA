@@ -64,6 +64,7 @@ export interface Property {
   longitude: number | null;
   monthly_price: number;
   service_charges: number;
+  cleaning_fee?: number;
   deposit_amount: number;
   viewing_fee: number;
   surface_m2: number;

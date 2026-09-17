@@ -306,3 +306,5 @@ Dans **Admin → Nos biens → Ajouter un bien**, choisir la catégorie, renseig
 - Un changement de catégorie dans le formulaire réinitialise les tarifs, afin de ne pas transformer un tarif saisonnier en caution ou charges.
 
 Validation des nouveaux parcours : `node --test scripts/property-categories.test.mjs`, puis `npm run typecheck`.
+
+Pour saisir le forfait ménage des villas, appliquer `supabase/migrations/20260917_villa_cleaning_fee.sql` dans le SQL Editor Supabase. Le montant est indépendant des tarifs saisonniers et exprimé en euros par séjour.

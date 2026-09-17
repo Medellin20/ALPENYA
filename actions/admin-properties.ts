@@ -29,6 +29,7 @@ function toDbPayload(data: PropertyInput) {
     longitude: data.longitude ?? null,
     monthly_price: data.monthlyPrice,
     service_charges: data.serviceCharges,
+    ...(data.propertyType === 'villa' ? { cleaning_fee: data.cleaningFee } : {}),
     deposit_amount: data.depositAmount,
     viewing_fee: data.viewingFee,
     bedrooms: data.bedrooms,

@@ -413,3 +413,19 @@ test('A nonexistent primary photo is not reported as saved', async () => {
   const { api } = imageActions([{ data: null, error: null }]);
   assert.equal((await api.setPrimaryPropertyImage('property-id', 'missing')).success, false);
 });
+
+for (const operation of ['create', 'update']) {
+  test('Villa cleaning fee is saved separately from spring pricing on ' + operation, async () => {
+    const { api, calls } = actions([{ data: null }, { data: { id: 'id' } }, { data: [] }, { error: null }], propertySchema);
+    const input = { ...validCreation, propertyType: 'villa', serviceCharges: '1250.50', cleaningFee: '150.75' };
+    const result = operation === 'create' ? await api.createProperty(input) : await api.updateProperty('id', input);
+    assert.equal(result.success, true);
+    const saved = calls.find(call => call.table === 'properties' && call.method === (operation === 'create' ? 'insert' : 'update')).args[0];
+    assert.equal(saved.service_charges, 1250.5);
+    assert.equal(saved.cleaning_fee, 150.75);
+  });
+}
+test('Villa cleaning fee defaults to zero and rejects negative amounts', () => {
+  assert.equal(propertySchema.parse({ ...validCreation, propertyType: 'villa' }).cleaningFee, 0);
+  assert.equal(propertySchema.safeParse({ ...validCreation, propertyType: 'villa', cleaningFee: '-1' }).success, false);
+});

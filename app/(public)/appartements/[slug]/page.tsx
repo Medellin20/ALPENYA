@@ -197,6 +197,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   earlySummerPrice={property.deposit_amount}
                   septemberPrice={property.viewing_fee}
                   lateSpringPrice={property.service_charges}
+                  cleaningFee={property.cleaning_fee ?? 0}
                 />
               ) : (
                 <SeasonalPriceSelector

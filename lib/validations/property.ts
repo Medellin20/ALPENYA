@@ -15,6 +15,7 @@ export const propertySchema = z.object({
   longitude: z.coerce.number().min(-180).max(180).optional(),
 
   monthlyPrice: z.coerce.number().positive('Le tarif principal doit être supérieur à 0.'),
+  cleaningFee: z.coerce.number().min(0, 'Le forfait ménage ne peut pas être négatif.').default(0),
   serviceCharges: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
   depositAmount: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
   viewingFee: z.coerce.number().min(0, 'Le tarif ne peut pas être négatif.').default(0),
