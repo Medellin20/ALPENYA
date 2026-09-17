@@ -228,7 +228,7 @@ export function PropertyForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Label htmlFor="title">Titre</Label>
-            <Input id="title" placeholder={isStudio ? 'Ex : Studio meublé à Annecy' : propertyType === 'mobile_home' ? 'Ex : Mobil-home avec terrasse près de la mer' : 'Ex : Chalet familial avec sauna à La Clusaz'} {...register('title')} />
+            <Input id="title" placeholder={isStudio ? 'Ex : Appartement meublé à Annecy' : propertyType === 'mobile_home' ? 'Ex : Mobil-home avec terrasse près de la mer' : 'Ex : Chalet familial avec sauna à La Clusaz'} {...register('title')} />
             <FieldError message={errors.title?.message} />
             {slugStatus === 'taken' && (
               <div

@@ -24,27 +24,39 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   const [pendingCount, setPendingCount] = React.useState(0);
   const [imageToDelete, setImageToDelete] = React.useState<PropertyImage | null>(null);
   const [isPending, runAction] = usePendingAction();
+  const uploadLock = React.useRef(false);
+  const busy = isUploading || isPending;
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   async function handleFiles(fileList: FileList | null) {
-    if (!fileList || fileList.length === 0) return;
+    if (!fileList || fileList.length === 0 || uploadLock.current || isPending) return;
+    uploadLock.current = true;
     setIsUploading(true);
     setPendingCount(fileList.length);
 
-    const formData = new FormData();
-    Array.from(fileList).forEach((file) => formData.append('images', file));
-
     try {
-      const result = await uploadPropertyImages(propertyId, formData);
-      if (result.success && result.data) {
-        setImages((prev) => [...prev, ...result.data!].sort((a, b) => a.sort_order - b.sort_order));
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
+      let added = 0;
+      for (const file of Array.from(fileList)) {
+        if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type) || file.size === 0 || file.size > 10 * 1024 * 1024) {
+          toast.error(`${file.name} : choisissez une image JPG, PNG, WebP ou AVIF de 10 Mo maximum.`);
+          continue;
+        }
+        // Une requête par photo pour ne pas dépasser la limite du serveur avec un lot.
+        const formData = new FormData();
+        formData.append('images', file);
+        const result = await uploadPropertyImages(propertyId, formData);
+        if (result.success && result.data) {
+          setImages((prev) => [...prev, ...result.data!].sort((a, b) => a.sort_order - b.sort_order));
+          added += result.data.length;
+        } else {
+          toast.error(result.message);
+        }
       }
+      if (added > 0) toast.success(`${added} image(s) ajoutée(s).`);
     } catch {
-      toast.error('Connexion impossible. Aucune photo n’a été ajoutée.');
+      toast.error('Envoi interrompu. Les photos déjà ajoutées sont conservées.');
     } finally {
+      uploadLock.current = false;
       setIsUploading(false);
       setPendingCount(0);
       if (inputRef.current) inputRef.current.value = '';
@@ -52,7 +64,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   }
 
   function handleDelete() {
-    if (!imageToDelete) return;
+    if (!imageToDelete || busy || uploadLock.current) return;
     const imageId = imageToDelete.id;
     const previousImages = images;
     setImageToDelete(null);
@@ -78,6 +90,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   }
 
   function handleSetPrimary(imageId: string) {
+    if (busy || uploadLock.current) return;
     const previousImages = images;
     setImages((prev) => prev.map((img) => ({ ...img, is_primary: img.id === imageId })));
     runAction(async () => {
@@ -95,12 +108,13 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
   }
 
   function move(index: number, direction: -1 | 1) {
+    if (busy || uploadLock.current) return;
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= images.length) return;
     const next = [...images];
     const previousImages = images;
     [next[index], next[newIndex]] = [next[newIndex], next[index]];
-    setImages(next);
+    setImages(next.map((image, sort_order) => ({ ...image, sort_order })));
     runAction(async () => {
       try {
         const result = await reorderPropertyImages(propertyId, next.map((i) => i.id));
@@ -119,9 +133,14 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
     <div>
       <label
         htmlFor="property-images-input"
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => {
+          event.preventDefault();
+          void handleFiles(event.dataTransfer.files);
+        }}
         className={cn(
           'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-ink-200 bg-sand-100/50 px-4 py-8 text-center transition-colors hover:border-ink-300 hover:bg-sand-100',
-          isUploading && 'pointer-events-none opacity-70'
+          busy && 'opacity-70'
         )}
       >
         {isUploading ? (
@@ -137,7 +156,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
             <p className="text-sm font-medium text-ink-600">
               Cliquez pour sélectionner des photos, ou glissez-déposez ici
             </p>
-            <p className="text-xs text-ink-400">JPG, PNG ou WebP — 10 Mo max. par image</p>
+            <p className="text-xs text-ink-400">JPG, PNG, WebP ou AVIF — 10 Mo max. par image</p>
           </>
         )}
       </label>
@@ -146,6 +165,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
         id="property-images-input"
         type="file"
         multiple
+        disabled={busy}
         accept="image/jpeg,image/png,image/webp,image/avif"
         className="hidden"
         onChange={(e) => handleFiles(e.target.files)}
@@ -175,7 +195,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                   <button
                     type="button"
                     onClick={() => handleSetPrimary(image.id)}
-                    disabled={isPending}
+                    disabled={busy}
                     title="Définir comme image principale"
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white"
                   >
@@ -185,7 +205,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                 <button
                   type="button"
                   onClick={() => move(index, -1)}
-                  disabled={isPending || index === 0}
+                  disabled={busy || index === 0}
                   title="Déplacer vers la gauche"
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white disabled:opacity-40"
                 >
@@ -194,7 +214,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                 <button
                   type="button"
                   onClick={() => move(index, 1)}
-                  disabled={isPending || index === images.length - 1}
+                  disabled={busy || index === images.length - 1}
                   title="Déplacer vers la droite"
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white disabled:opacity-40"
                 >
@@ -203,7 +223,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                 <button
                   type="button"
                   onClick={() => setImageToDelete(image)}
-                  disabled={isPending}
+                  disabled={busy}
                   title="Supprimer"
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-brick-500 hover:bg-white"
                 >
@@ -227,7 +247,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
           <Button variant="outline" className="flex-1" onClick={() => setImageToDelete(null)}>
             Annuler
           </Button>
-          <Button variant="destructive" className="flex-1" onClick={handleDelete}>
+          <Button variant="destructive" className="flex-1" disabled={busy} onClick={handleDelete}>
             <Trash2 className="h-4 w-4" />
             Supprimer
           </Button>

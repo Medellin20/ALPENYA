@@ -300,7 +300,7 @@ test('New property page renders a retry message on database failure and the form
       '@/lib/data/admin-properties': { getAllAmenities: async () => ({ amenities: [], error }) },
     });
     const html = renderToStaticMarkup(await page.default({ searchParams: { type: 'furnished_studio' } }));
-    assert.ok(html.includes('Studio meublé'));
+    assert.ok(html.includes('Appartement meublé'));
     assert.ok(html.includes('type=furnished_studio'));
     assert.equal(html.includes('non meublé'), false);
     assert.equal(html.includes('role="alert"'), Boolean(error));
@@ -328,4 +328,59 @@ test('Floor count is saved on creation and can be cleared on edit', async () => 
   const edited = actions([{ data: null }, { data: { id: 'id' } }, { data: [] }, { error: null }], propertySchema);
   assert.equal((await edited.api.updateProperty('id', { ...validCreation, floor: '' })).success, true);
   assert.equal(edited.calls.find(call => call.table === 'properties' && call.method === 'update').args[0].floor, null);
+});
+
+for (const page of [1.5, Infinity, NaN, -1, 0, Number.MAX_VALUE]) {
+  test(`Invalid page ${page} falls back to the first page in both catalogues`, async () => {
+    for (const admin of [false, true]) {
+      const db = database([{ data: [], error: null, count: 0 }]);
+      const api = load(admin ? 'lib/data/admin-properties.ts' : 'lib/data/properties.ts', admin ? {
+        'server-only': {}, '@/lib/supabase/admin': { createAdminClient: () => db.client },
+      } : {
+        '@/lib/supabase/server': { createClient: () => db.client }, '@/lib/utils/property-amenities': amenityUtils,
+      });
+      const result = await api[admin ? 'getAllPropertiesAdmin' : 'getPublishedProperties']({ page });
+      assert.equal(result.page, 1);
+      assert.equal(db.calls.find(call => call.method === 'range').args[0], 0);
+    }
+  });
+}
+
+function imageActions(responses) {
+  const db = database(responses);
+  const paths = [];
+  const api = load('actions/admin-images.ts', {
+    'next/cache': { revalidatePath: path => paths.push(path) },
+    '@/lib/supabase/admin': { createAdminClient: () => db.client },
+    '@/lib/data/history': { logAdminAction: async () => {} },
+  });
+  return { ...db, api, paths };
+}
+
+for (const response of [{ data: null, error: { message: 'offline' } }, { data: null, error: null }]) {
+  test('Reordering photos reports failed or missing updates', async () => {
+    const { api, calls } = imageActions([response, { data: { slug: 'chalet' } }]);
+    const result = await api.reorderPropertyImages('property-id', ['photo-id']);
+    assert.equal(result.success, false);
+    assert.ok(calls.some(call => call.method === 'eq' && call.args[0] === 'property_id' && call.args[1] === 'property-id'));
+  });
+}
+
+for (const operation of ['reorder', 'primary']) {
+  test(`Photo ${operation} refreshes the public gallery, catalogue and home page`, async () => {
+    const { api, paths, calls } = imageActions([{ data: { id: 'photo-id' } }, { data: { slug: 'chalet' } }]);
+    const result = operation === 'reorder'
+      ? await api.reorderPropertyImages('property-id', ['photo-id'])
+      : await api.setPrimaryPropertyImage('property-id', 'photo-id');
+    assert.equal(result.success, true);
+    for (const path of ['/', '/appartements', '/appartements/chalet', '/admin/appartements', '/admin/appartements/property-id']) {
+      assert.ok(paths.includes(path), `Missing refresh for ${path}`);
+    }
+    assert.ok(calls.some(call => call.method === 'eq' && call.args[0] === 'property_id' && call.args[1] === 'property-id'));
+  });
+}
+
+test('A nonexistent primary photo is not reported as saved', async () => {
+  const { api } = imageActions([{ data: null, error: null }]);
+  assert.equal((await api.setPrimaryPropertyImage('property-id', 'missing')).success, false);
 });

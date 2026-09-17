@@ -80,7 +80,7 @@ export default async function AdminPropertiesPage({
           <a href="/admin/appartements" className="mt-3 inline-block font-semibold underline">Réessayer</a>
         </div>
       ) : properties.length === 0 ? (
-        <EmptyState title="Aucun bien trouvé" description="Ajoutez un chalet, une villa, un studio meublé ou un mobil-home pour commencer." />
+        <EmptyState title="Aucun bien trouvé" description="Ajoutez un chalet, une villa, un appartement meublé ou un mobil-home pour commencer." />
       ) : (
         <>
           {/* Vue tableau — desktop */}

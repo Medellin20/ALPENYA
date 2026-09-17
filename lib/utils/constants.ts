@@ -19,7 +19,7 @@ export type DestinationCity = (typeof DESTINATION_CITIES)[number];
 export const PROPERTY_TYPES = [
   { value: 'chalet', label: 'Chalet' },
   { value: 'villa', label: 'Villa' },
-  { value: 'furnished_studio', label: 'Studio meublé' },
+  { value: 'furnished_studio', label: 'Appartement meublé' },
   { value: 'mobile_home', label: 'Mobil-home' },
 ] as const;
 

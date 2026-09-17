@@ -20,7 +20,7 @@ function mapRelations(row: any): PropertyWithRelations {
 /** Liste paginée + filtrée des biens PUBLIÉS pour le catalogue public. */
 export async function getPublishedProperties(filters: PropertyFilters = {}) {
   const supabase = createClient();
-  const page = filters.page && filters.page > 0 ? filters.page : 1;
+  const page = Number.isSafeInteger(filters.page) && filters.page! > 0 ? filters.page! : 1;
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 

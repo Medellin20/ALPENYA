@@ -47,7 +47,7 @@ for (const propertyType of ['chalet', 'villa']) {
   });
 }
 
-test('Un studio meublé conserve son loyer, ses charges et sa caution', () => {
+test('Un appartement meublé conserve son loyer, ses charges et sa caution', () => {
   const result = propertySchema.parse(studio);
   assert.equal(result.propertyType, 'furnished_studio');
   assert.equal(result.isFurnished, true);
@@ -57,7 +57,7 @@ test('Un studio meublé conserve son loyer, ses charges et sa caution', () => {
   assert.equal(result.isPublished, false);
 });
 
-test('Le serveur refuse un studio déclaré non meublé ou saisonnier', () => {
+test('Le serveur refuse un appartement déclaré non meublé ou saisonnier', () => {
   for (const override of [
     { isFurnished: false },
     { interiorType: 'Non meublé' },

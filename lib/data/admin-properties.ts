@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export async function getAllPropertiesAdmin(params: { search?: string; status?: string; city?: string; propertyType?: string; page?: number } = {}) {
   const supabase = createAdminClient();
   const pageSize = 12;
-  const page = params.page && params.page > 0 ? params.page : 1;
+  const page = Number.isSafeInteger(params.page) && params.page! > 0 ? params.page! : 1;
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 

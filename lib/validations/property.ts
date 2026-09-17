@@ -48,7 +48,7 @@ export const propertySchema = z.object({
   amenityIds: z.array(z.string().uuid()).default([]),
 }).superRefine((data, ctx) => {
   if (data.propertyType === 'furnished_studio') {
-    if (!data.isFurnished) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['isFurnished'], message: 'Un studio meublé doit être déclaré meublé.' });
+    if (!data.isFurnished) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['isFurnished'], message: 'Un appartement meublé doit être déclaré meublé.' });
     if (data.interiorType !== 'Meublé') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['interiorType'], message: 'Sélectionnez un intérieur meublé.' });
     if (data.contractType !== 'Location au mois') ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['contractType'], message: 'Sélectionnez une location au mois.' });
   }

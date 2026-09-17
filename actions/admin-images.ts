@@ -97,6 +97,8 @@ export async function uploadPropertyImages(propertyId: string, formData: FormDat
   revalidatePath(`/admin/appartements/${propertyId}`);
   revalidatePath(`/appartements/${property.slug}`);
   revalidatePath('/appartements');
+  revalidatePath('/');
+  revalidatePath('/admin/appartements');
 
   return { success: true, message: `${uploaded.length} image(s) ajoutée(s).`, data: uploaded };
 }
@@ -149,6 +151,8 @@ export async function deletePropertyImage(imageId: string): Promise<ActionResult
   const slug = (image as any).properties?.slug;
   if (slug) revalidatePath(`/appartements/${slug}`);
   revalidatePath('/appartements');
+  revalidatePath('/');
+  revalidatePath('/admin/appartements');
 
   if (storageError) {
     console.error('Nettoyage Storage impossible:', storageError.message);
@@ -164,8 +168,8 @@ export async function deletePropertyImage(imageId: string): Promise<ActionResult
 export async function setPrimaryPropertyImage(propertyId: string, imageId: string): Promise<ActionResult> {
   const supabase = createAdminClient();
 
-  const { error } = await supabase.from('property_images').update({ is_primary: true }).eq('id', imageId);
-  if (error) {
+  const { data: image, error } = await supabase.from('property_images').update({ is_primary: true }).eq('id', imageId).eq('property_id', propertyId).select('id').maybeSingle();
+  if (error || !image) {
     return { success: false, message: 'Impossible de définir l’image principale.' };
   }
 
@@ -174,18 +178,30 @@ export async function setPrimaryPropertyImage(propertyId: string, imageId: strin
   revalidatePath(`/admin/appartements/${propertyId}`);
   if (property?.slug) revalidatePath(`/appartements/${property.slug}`);
 
+  revalidatePath('/appartements');
+  revalidatePath('/');
+  revalidatePath('/admin/appartements');
   return { success: true, message: 'Image principale mise à jour.' };
 }
 
 export async function reorderPropertyImages(propertyId: string, orderedImageIds: string[]): Promise<ActionResult> {
   const supabase = createAdminClient();
 
-  await Promise.all(
+  const results = await Promise.all(
     orderedImageIds.map((id, index) =>
-      supabase.from('property_images').update({ sort_order: index }).eq('id', id)
+      supabase.from('property_images').update({ sort_order: index }).eq('id', id).eq('property_id', propertyId).select('id').maybeSingle()
     )
   );
 
   revalidatePath(`/admin/appartements/${propertyId}`);
+  const { data: property } = await supabase.from('properties').select('slug').eq('id', propertyId).maybeSingle();
+  if (property?.slug) revalidatePath(`/appartements/${property.slug}`);
+  revalidatePath('/appartements');
+  revalidatePath('/');
+  revalidatePath('/admin/appartements');
+
+  if (results.some(({ data, error }) => error || !data)) {
+    return { success: false, message: 'L’ordre des photos n’a pas pu être entièrement enregistré. Réessayez.' };
+  }
   return { success: true, message: 'Ordre des photos mis à jour.' };
 }
