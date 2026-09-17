@@ -163,9 +163,9 @@ export default async function HomePage() {
             </div>
           </FadeIn>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {citySummaries.map((summary, index) => (
-              <FadeIn key={summary.city} delay={Math.min(index, 6) * 0.04}>
+              <FadeIn key={summary.city} className="min-w-0" delay={Math.min(index, 6) * 0.04}>
                 <Link
                   href={`/appartements?city=${encodeURIComponent(summary.city)}`}
                   className="group relative flex min-h-64 overflow-hidden rounded-2xl bg-ink-900 p-5 sm:min-h-80 sm:rounded-3xl sm:p-6"

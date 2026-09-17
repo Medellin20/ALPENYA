@@ -179,7 +179,7 @@ export function PropertyFilters({ resultCount, cities }: { resultCount: number; 
         <Select
           value={filters.sort}
           onChange={(e) => update('sort', e.target.value)}
-          className="!h-10 min-w-0 flex-1 text-xs sm:w-auto sm:min-w-[9.5rem]"
+          className="h-11 min-w-0 flex-1 text-base sm:text-xs sm:w-auto sm:min-w-[9.5rem]"
         >
           <option value="recent">Plus récents</option>
           <option value="price_asc">Prix croissant</option>

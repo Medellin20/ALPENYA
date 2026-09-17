@@ -152,7 +152,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
       />
 
       {images.length > 0 && (
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {images.map((image, index) => (
             <div
               key={image.id}
@@ -170,14 +170,14 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                 </span>
               )}
 
-              <div className="absolute inset-x-0 bottom-0 flex min-h-11 items-center justify-center gap-1 bg-ink-950/55 px-1.5 py-1.5 opacity-100 transition-all md:inset-0 md:bg-ink-950/0 md:opacity-0 md:group-hover:bg-ink-950/50 md:group-hover:opacity-100 md:group-focus-within:bg-ink-950/50 md:group-focus-within:opacity-100">
+              <div className="absolute inset-x-0 bottom-0 flex min-h-11 flex-wrap items-center justify-center gap-1 bg-ink-950/55 px-1.5 py-1.5 opacity-100 transition-all [@media(hover:hover)_and_(pointer:fine)]:inset-0 [@media(hover:hover)_and_(pointer:fine)]:bg-ink-950/0 [@media(hover:hover)_and_(pointer:fine)]:opacity-0 group-hover:bg-ink-950/50 group-hover:opacity-100 group-focus-within:bg-ink-950/50 group-focus-within:opacity-100">
                 {!image.is_primary && (
                   <button
                     type="button"
                     onClick={() => handleSetPrimary(image.id)}
                     disabled={isPending}
                     title="Définir comme image principale"
-                    className="rounded-full bg-white/90 p-1.5 text-ink-700 hover:bg-white"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white"
                   >
                     <Star className="h-3.5 w-3.5" />
                   </button>
@@ -187,7 +187,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                   onClick={() => move(index, -1)}
                   disabled={isPending || index === 0}
                   title="Déplacer vers la gauche"
-                  className="rounded-full bg-white/90 p-1.5 text-ink-700 hover:bg-white disabled:opacity-40"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white disabled:opacity-40"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                 </button>
@@ -196,7 +196,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                   onClick={() => move(index, 1)}
                   disabled={isPending || index === images.length - 1}
                   title="Déplacer vers la droite"
-                  className="rounded-full bg-white/90 p-1.5 text-ink-700 hover:bg-white disabled:opacity-40"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-ink-700 hover:bg-white disabled:opacity-40"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>
@@ -205,7 +205,7 @@ export function ImageUploader({ propertyId, initialImages }: { propertyId: strin
                   onClick={() => setImageToDelete(image)}
                   disabled={isPending}
                   title="Supprimer"
-                  className="rounded-full bg-white/90 p-1.5 text-brick-500 hover:bg-white"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 text-brick-500 hover:bg-white"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

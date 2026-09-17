@@ -60,7 +60,7 @@ export function PropertyRowActions({
           aria-label="Modifier le statut du bien"
           onChange={(e) => handleStatusChange(e.target.value as PropertyStatus)}
           disabled={isPending}
-          className="!h-10 w-full min-w-0 text-xs"
+          className="h-11 w-full min-w-0 text-base sm:text-xs"
         >
           <option value="draft">Brouillon</option>
           <option value="available">Disponible</option>

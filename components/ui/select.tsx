@@ -9,11 +9,11 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, error, children, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className="relative min-w-0 max-w-full">
         <select
           ref={ref}
           className={cn(
-            'h-11 w-full appearance-none rounded-xl border bg-white px-3.5 pr-9 text-sm text-ink',
+            'h-11 w-full min-w-0 max-w-full appearance-none rounded-xl border bg-white px-3.5 pr-9 text-base text-ink sm:text-sm',
             'transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-ink-700/30 focus:border-ink-700',
             error ? 'border-brick-500' : 'border-ink-200',
             'disabled:bg-sand-100 disabled:cursor-not-allowed',

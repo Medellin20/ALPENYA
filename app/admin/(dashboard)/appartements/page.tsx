@@ -45,7 +45,7 @@ export default async function AdminPropertiesPage({
         </Button>
       </div>
 
-      <form className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_12rem_12rem_12rem_auto]" action="/admin/appartements" method="get">
+      <form className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))_auto]" action="/admin/appartements" method="get">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-300" />
           <Input name="search" placeholder="Rechercher un titre, une ville, un slug..." defaultValue={searchParams.search} className="pl-10" />

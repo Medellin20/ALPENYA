@@ -137,7 +137,7 @@ function PriceSelectorLayout<T extends string>({
         id="rental-period"
         value={period}
         onChange={(event) => onPeriodChange(event.target.value as T)}
-        className="mt-2 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm font-semibold text-ink-800 shadow-sm outline-none transition focus:border-canal-500 focus:ring-2 focus:ring-canal-200"
+        className="mt-2 h-11 w-full min-w-0 rounded-xl border border-ink-200 bg-white px-3 text-base sm:text-sm font-semibold text-ink-800 shadow-sm outline-none transition focus:border-canal-500 focus:ring-2 focus:ring-canal-200"
       >
         {Object.keys(labels).map((key) => {
           const value = key as T;

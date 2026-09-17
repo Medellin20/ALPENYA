@@ -308,11 +308,11 @@ export function PropertyForm({
         </div>
 
         <div className="mt-4 flex flex-wrap gap-6">
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">
+          <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm text-ink-700">
             <Checkbox {...register('isPublished')} />
             Publié (visible sur le site public)
           </label>
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">
+          <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm text-ink-700">
             <Checkbox {...register('isFeatured')} />
             Mettre en avant sur la page d’accueil
           </label>
@@ -363,7 +363,7 @@ export function PropertyForm({
 
       {/* CARACTÉRISTIQUES */}
       <FormSection title="Caractéristiques">
-        <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 xl:grid-cols-4">
           <div>
             <Label htmlFor="surfaceM2">Surface (m²)</Label>
             <Input id="surfaceM2" type="number" min="0.1" step="0.1" {...register('surfaceM2', { setValueAs: value => value === '' ? undefined : Number(value) })} />
@@ -404,7 +404,7 @@ export function PropertyForm({
 
         <div className="mt-5 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3">
           {BOOLEAN_FIELDS.filter(field => !isApartment || field.key !== 'isFurnished').map((field) => (
-            <label key={field.key} className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">
+            <label key={field.key} className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm text-ink-700">
               <Checkbox {...register(field.key as any)} />
               {field.label}
             </label>
@@ -413,7 +413,7 @@ export function PropertyForm({
       </FormSection>
 
       <FormSection title="Séjour et état du bien">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <div>
             <Label htmlFor="contractType">Type de contrat</Label>
             <Select id="contractType" {...register('contractType')}>
@@ -458,7 +458,7 @@ export function PropertyForm({
               {amenities.filter(amenity => !PROPERTY_AMENITY_FIELDS.some(item => item.key === amenity.key)).map((amenity) => {
                 const checked = field.value?.includes(amenity.id);
                 return (
-                  <label key={amenity.id} className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700">
+                  <label key={amenity.id} className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm text-ink-700">
                     <Checkbox
                       checked={checked}
                       onChange={(e) => {
@@ -475,7 +475,7 @@ export function PropertyForm({
         />
       </FormSection>
 
-      <div className="sticky bottom-2 z-20 flex justify-end rounded-2xl bg-sand-100/90 p-2 backdrop-blur sm:bottom-4 sm:bg-transparent sm:p-0">
+      <div className="sticky bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-20 flex justify-end rounded-2xl bg-sand-100/90 p-2 backdrop-blur sm:bottom-4 sm:bg-transparent sm:p-0">
         <Button
           type="submit"
           size="lg"

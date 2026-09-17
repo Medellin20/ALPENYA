@@ -70,14 +70,14 @@ export function PropertyGallery({ images, title }: { images: PropertyImage[]; ti
             <button
               onClick={prev}
               aria-label="Image précédente"
-              className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-soft transition-transform hover:scale-105 sm:left-3 sm:h-10 sm:w-10"
+              className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-soft transition-transform hover:scale-105 sm:left-3 sm:h-11 sm:w-11"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={next}
               aria-label="Image suivante"
-              className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-soft transition-transform hover:scale-105 sm:right-3 sm:h-10 sm:w-10"
+              className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-soft transition-transform hover:scale-105 sm:right-3 sm:h-11 sm:w-11"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -86,7 +86,7 @@ export function PropertyGallery({ images, title }: { images: PropertyImage[]; ti
 
         <button
           onClick={() => setFullscreen(true)}
-          className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-ink-700 shadow-soft"
+          className="absolute bottom-3 right-3 flex min-h-11 items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-ink-700 shadow-soft"
         >
           <Expand className="h-3.5 w-3.5" />
           {active + 1} / {images.length}
@@ -121,18 +121,18 @@ export function PropertyGallery({ images, title }: { images: PropertyImage[]; ti
             <button
               onClick={() => setFullscreen(false)}
               aria-label="Fermer"
-              className="absolute right-5 top-5 rounded-full bg-white/10 p-2.5 text-white hover:bg-white/20"
+              className="absolute right-5 top-5 rounded-full z-20 flex h-11 w-11 items-center justify-center bg-white/10 text-white hover:bg-white/20"
             >
               <X className="h-5 w-5" />
             </button>
             <button
               onClick={prev}
               aria-label="Image précédente"
-              className="absolute left-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/20 sm:left-4 sm:h-11 sm:w-11"
+              className="absolute left-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/20 sm:left-4 sm:h-11 sm:w-11"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <div className="relative h-[80vh] w-full max-w-5xl">
+            <div className="relative h-[80dvh] w-full max-w-5xl">
               <Image
                 src={images[active].url}
                 alt={images[active].alt_text || title}
@@ -144,7 +144,7 @@ export function PropertyGallery({ images, title }: { images: PropertyImage[]; ti
             <button
               onClick={next}
               aria-label="Image suivante"
-              className="absolute right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/20 sm:right-4 sm:h-11 sm:w-11"
+              className="absolute right-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/20 sm:right-4 sm:h-11 sm:w-11"
             >
               <ChevronRight className="h-5 w-5" />
             </button>

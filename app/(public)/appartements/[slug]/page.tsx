@@ -90,10 +90,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           </FadeIn>
 
           <FadeIn delay={0.05} className="mt-6">
-            <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-sand-200 px-2.5 py-1 text-xs font-semibold text-ink-700">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-sand-200 px-2.5 py-1 text-xs font-semibold text-ink-700">
                     <StatusDot colorClass={statusMeta.colorClass} />
                     {statusMeta.label}
                   </span>
@@ -107,11 +107,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   {property.city} · France
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 <ShareButton title={property.title} />
                 <FavoriteButton
                   propertyId={property.id}
-                  className="static flex h-10 w-10 shadow-none ring-1 ring-inset ring-ink-200"
+                  className="static flex h-11 w-11 shadow-none ring-1 ring-inset ring-ink-200"
                 />
               </div>
             </div>

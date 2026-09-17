@@ -52,7 +52,7 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              'relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-4 shadow-lifted sm:max-h-[90vh] sm:rounded-2xl sm:p-6',
+              'relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lifted sm:max-h-[90vh] sm:rounded-2xl sm:p-6',
               className
             )}
             role="dialog"
@@ -64,7 +64,7 @@ export function Modal({
                 type="button"
                 onClick={onClose}
                 aria-label="Fermer"
-                className="ml-auto rounded-full p-1.5 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink-700"
+                className="ml-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink-700"
               >
                 <X className="h-5 w-5" />
               </button>

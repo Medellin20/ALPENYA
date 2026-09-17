@@ -53,10 +53,24 @@ export function Navbar() {
 
   React.useEffect(() => {
     if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKeyDown = (event: KeyboardEvent) => event.key === 'Escape' && setMobileOpen(false);
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
   }, [mobileOpen]);
+
+  React.useEffect(() => {
+    const tablet = window.matchMedia('(min-width: 768px)');
+    const desktop = window.matchMedia('(min-width: 1400px)');
+    const closeMenus = () => { setMobileOpen(false); setTabletOpen(false); };
+    tablet.addEventListener('change', closeMenus);
+    desktop.addEventListener('change', closeMenus);
+    return () => { tablet.removeEventListener('change', closeMenus); desktop.removeEventListener('change', closeMenus); };
+  }, []);
 
   React.useEffect(() => {
     if (!tabletOpen) return;
@@ -82,7 +96,7 @@ export function Navbar() {
       )}
     >
       <nav className="container-app flex h-16 items-center justify-between md:h-20">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <Link href="/" aria-label="ALPENIA — Accueil" className="flex items-center gap-2 shrink-0">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-canal-400 to-canal-700 text-white shadow-soft">
             <Home className="h-4.5 w-4.5" strokeWidth={2.25} />
           </span>
@@ -130,13 +144,13 @@ export function Navbar() {
               onClick={() => setTabletOpen((open) => !open)}
               aria-expanded={tabletOpen}
               aria-controls="main-dropdown-menu"
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-ink-200 bg-white px-3.5 py-2 text-sm font-semibold text-ink-700 hover:bg-sand-100"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-ink-200 bg-white px-3.5 py-2 text-sm font-semibold text-ink-700 hover:bg-sand-100"
             >
               <Menu className="h-4.5 w-4.5" /> Menu
             </button>
             <AnimatePresence>
               {tabletOpen && (
-                <motion.div id="main-dropdown-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-ink-100 bg-white p-2 shadow-lifted">
+                <motion.div id="main-dropdown-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="absolute right-0 top-full mt-2 max-h-[calc(100dvh-6rem)] w-64 overflow-y-auto overscroll-contain rounded-2xl border border-ink-100 bg-white p-2 shadow-lifted">
                   {NAV_LINKS.map((link) => (
                     <Link key={link.href} href={link.href} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium hover:bg-sand-100', isActivePath(pathname, link.href) ? 'bg-sand-100 text-ink-900' : 'text-ink-600')}>
                       <link.icon className="h-4.5 w-4.5 text-canal-600" /> {link.label}
@@ -156,6 +170,7 @@ export function Navbar() {
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-ink-700 hover:bg-sand-100"
             aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -169,11 +184,11 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
-              role="menu"
+              id="mobile-navigation"
               aria-label="Navigation principale"
               className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-ink-100 bg-white shadow-lifted md:hidden"
             >
-              <div className="container-app py-3">
+              <div className="container-app py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                 {NAV_LINKS.map((link, i) => (
                   <motion.div
                     key={link.href}
@@ -183,6 +198,7 @@ export function Navbar() {
                   >
                     <Link
                       href={link.href}
+                      onClick={() => setMobileOpen(false)}
                       aria-current={isActivePath(pathname, link.href) ? 'page' : undefined}
                       className={cn(
                         'flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',

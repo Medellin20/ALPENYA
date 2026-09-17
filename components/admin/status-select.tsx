@@ -43,7 +43,7 @@ export function StatusSelect<T extends string>({
       disabled={isPending}
       onChange={(e) => handleChange(e.target.value as T)}
       aria-label="Modifier le statut"
-      className="!h-10 w-full min-w-0 text-xs sm:w-auto sm:min-w-[10rem]"
+      className="h-11 w-full min-w-0 text-base sm:text-xs sm:w-auto sm:min-w-[10rem]"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>

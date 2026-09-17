@@ -18,7 +18,7 @@ export function FavoriteButton({ propertyId, className }: { propertyId: string; 
       aria-label={active ? 'Retirer des favoris' : 'Ajouter aux favoris'}
       aria-pressed={active}
       className={cn(
-        'flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-soft backdrop-blur-sm transition-transform duration-150 hover:scale-110 active:scale-95',
+        'flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/90 shadow-soft backdrop-blur-sm transition-transform duration-150 hover:scale-110 active:scale-95',
         className
       )}
     >

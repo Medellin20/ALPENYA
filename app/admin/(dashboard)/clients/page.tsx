@@ -35,8 +35,8 @@ export default async function AdminClientsPage({ searchParams }: { searchParams:
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden overflow-hidden rounded-2xl border border-ink-100 bg-white lg:block">
-            <table className="w-full text-sm">
+          <div className="scrollbar-safe hidden overflow-x-auto rounded-2xl border border-ink-100 bg-white lg:block">
+            <table className="w-full min-w-[640px] text-sm">
               <thead className="border-b border-ink-100 bg-sand-100/50 text-left text-xs font-semibold uppercase tracking-wide text-ink-400">
                 <tr>
                   <th className="px-4 py-3">Nom</th>

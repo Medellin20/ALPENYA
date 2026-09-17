@@ -37,7 +37,7 @@ const NAV_ITEMS = [
 
 function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
-    <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
+    <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain px-3 py-4">
       {NAV_ITEMS.map((item) => {
         const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
         return (
@@ -46,7 +46,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors',
+              'flex min-h-11 shrink-0 items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors',
               isActive ? 'bg-white/10 text-white' : 'text-sand-300 hover:bg-white/5 hover:text-white'
             )}
           >
@@ -62,11 +62,43 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
 export function AdminSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const menuButtonRef = React.useRef<HTMLButtonElement>(null);
+  const panelRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false); };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
+  }, []);
+
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panelRef.current?.querySelector<HTMLElement>('button')?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+      if (event.key !== 'Tab') return;
+      const controls = panelRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!controls?.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+      menuButtonRef.current?.focus();
+    };
+  }, [mobileOpen]);
 
   return (
     <>
       {/* Sidebar desktop */}
-      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-ink-950 lg:sticky lg:top-0 lg:flex">
+      <aside className="hidden h-dvh w-64 shrink-0 flex-col border-r border-white/10 bg-ink-950 lg:sticky lg:top-0 lg:flex">
         <SidebarHeader />
         <NavLinks pathname={pathname} />
         <LogoutSection />
@@ -82,8 +114,11 @@ export function AdminSidebar() {
         </Link>
         <button
           type="button"
+          ref={menuButtonRef}
+          aria-expanded={mobileOpen}
+          aria-controls="admin-mobile-menu"
           onClick={() => setMobileOpen(true)}
-          className="rounded-lg p-2 text-ink-700"
+          className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-700"
           aria-label="Ouvrir le menu admin"
         >
           <Menu className="h-5.5 w-5.5" />
@@ -93,13 +128,13 @@ export function AdminSidebar() {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div className="absolute inset-0 bg-ink-950/60" onClick={() => setMobileOpen(false)} />
-          <div className="relative flex h-full w-[min(18rem,calc(100vw-2rem))] flex-col bg-ink-950 shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-4">
+          <div ref={panelRef} id="admin-mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation administrateur" className="relative flex h-dvh w-[min(18rem,calc(100vw-2rem))] flex-col bg-ink-950 shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between px-5 py-4">
               <SidebarHeader compact />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg p-1.5 text-sand-300 hover:bg-white/10"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sand-300 hover:bg-white/10"
                 aria-label="Fermer le menu"
               >
                 <X className="h-5 w-5" />
@@ -130,7 +165,7 @@ function SidebarHeader({ compact }: { compact?: boolean }) {
 
 function LogoutSection() {
   return (
-    <div className="border-t border-white/10 p-3">
+    <div className="shrink-0 border-t border-white/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <form action={logoutAdmin}>
         <button
           type="submit"

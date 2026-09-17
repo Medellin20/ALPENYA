@@ -33,8 +33,8 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-ink-950/10" />
-        <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink-900">
-          <TypeIcon className="h-3.5 w-3.5" aria-hidden="true" />
+        <span className="absolute left-3 top-3 inline-flex max-w-[calc(100%-5rem)] items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink-900">
+          <TypeIcon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {PROPERTY_TYPES.find(type => type.value === property.property_type)?.label ?? 'Logement'}
         </span>
         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 text-white">

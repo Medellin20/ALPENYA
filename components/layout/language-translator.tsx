@@ -90,7 +90,7 @@ export function LanguageTranslator({ id, className }: { id: string; className?: 
 
   return (
     <div
-      className={cn('language-translator relative inline-flex h-8 cursor-pointer items-center gap-1 rounded-full bg-sand-100 px-2 text-xs font-semibold text-ink-600 transition-colors hover:bg-sand-200', className)}
+      className={cn('language-translator relative inline-flex h-11 cursor-pointer items-center gap-1 rounded-full bg-sand-100 px-2 text-xs font-semibold text-ink-600 transition-colors hover:bg-sand-200', className)}
       aria-label="Choisir la langue du site"
     >
       <Globe2 className="h-3 w-3 shrink-0 text-canal-600" aria-hidden="true" />

@@ -21,11 +21,15 @@ export function Drawer({
 
   React.useEffect(() => {
     if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
     };
-  }, [open]);
+  }, [open, onClose]);
 
   if (!mounted) return null;
 
@@ -45,20 +49,23 @@ export function Drawer({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title ?? 'Panneau'}
             className="relative z-10 flex h-[100dvh] w-full max-w-sm flex-col bg-white shadow-lifted sm:max-w-md"
           >
-            <div className="flex items-center justify-between border-b border-ink-100 px-5 py-4">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-ink-100 px-5 py-4">
               {title && <h2 className="text-base font-bold text-ink-900">{title}</h2>}
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Fermer"
-                className="ml-auto rounded-full p-1.5 text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink-700"
+                className="ml-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-400 transition-colors hover:bg-sand-100 hover:text-ink-700"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5">{children}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5">{children}</div>
           </motion.div>
         </div>
       )}
