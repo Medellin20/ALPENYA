@@ -125,13 +125,15 @@ export default async function HomePage() {
               </Link>
             </FadeIn>
             {[
-              { type: 'furnished_studio', title: 'Appartements meublés', description: 'Un appartement équipé et prêt à vivre, pour vous installer simplement.', icon: Building2, color: 'bg-sand-200 text-ink-950', action: 'Trouver mon appartement' },
-              { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, color: 'bg-canal-100 text-canal-900', action: 'Découvrir les mobil-homes' },
-            ].map(({ type, title, description, icon: Icon, color, action }) => (
+              { type: 'furnished_studio', title: 'Appartements meublés', description: 'Un appartement équipé et prêt à vivre, pour vous installer simplement.', icon: Building2, image: '/images/categories/appartement-meuble.png', color: 'bg-ink-950 text-white', action: 'Trouver mon appartement' },
+              { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, image: '/images/categories/mobil-home.png', color: 'bg-ink-950 text-white', action: 'Découvrir les mobil-homes' },
+            ].map(({ type, title, description, icon: Icon, image, color, action }) => (
               <FadeIn key={type} className="min-w-0">
                 <Link href={`/appartements?type=${type}`} className={`group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[350px] sm:rounded-[2rem] sm:p-8 ${color}`}>
-                  <Icon className="mb-8 h-12 w-12 stroke-1" aria-hidden="true" />
-                  <div className="mt-auto">
+                  <Image src={image} alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />
+                  <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/55 to-ink-950/20" />
+                  <Icon className="relative mb-8 h-12 w-12 stroke-1" aria-hidden="true" />
+                  <div className="relative mt-auto">
                     <h3 className="break-words text-2xl font-extrabold xl:text-3xl">{title}</h3>
                     <p className="mt-3 text-sm leading-relaxed sm:text-base">{description}</p>
                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">{action}<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" /></span>
