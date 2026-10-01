@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    // Supabase Storage images are served directly to avoid intermittent failures
+    // in Next's server-side image optimizer for these remote assets.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

@@ -45,7 +45,7 @@ function getReservationRateLabel(propertyType: PropertyType, selectedRateId?: st
 export async function createReservation(
   input: ReservationInput,
   propertySlug: string
-): Promise<ActionResult<{ confirmationUrl: string }>> {
+): Promise<ActionResult<{ confirmationUrl: string; emailSent: boolean }>> {
   const parsed = reservationSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -171,22 +171,16 @@ export async function createReservation(
     'Montant à régler (acompte + caution)': paymentAmount,
   });
 
-  if (!alertSent) {
-    revalidatePath('/admin/reservations');
-    revalidatePath('/admin');
-    return {
-      success: false,
-      message: `Votre demande a été enregistrée sous la référence ${reference}, mais l’e-mail de notification n’a pas pu être envoyé. Ne renvoyez pas le formulaire ; contactez notre équipe.`,
-    };
-  }
-
   revalidatePath('/admin/reservations');
   revalidatePath('/admin');
 
   return {
     success: true,
-    message: 'Votre demande a bien été envoyée.',
+    message: alertSent
+      ? 'Votre demande a bien été envoyée.'
+      : `Votre demande a été enregistrée sous la référence ${reference}, mais l’e-mail de notification n’a pas pu être envoyé.`,
     data: {
+      emailSent: alertSent,
       confirmationUrl: `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${encodeURIComponent(
         parsed.data.email
       )}`,

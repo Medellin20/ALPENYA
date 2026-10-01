@@ -15,6 +15,7 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  icons: { icon: '/favicon.svg' },
   title: {
     default: 'ALPENIA — Biens à louer en France',
     template: '%s | ALPENIA',

@@ -108,6 +108,9 @@ export function ReservationForm({
         return;
       }
 
+      if (!result.data.emailSent) {
+        toast.error(result.message);
+      }
       router.push(result.data.confirmationUrl);
     } catch (error) {
       console.error('Échec de l’envoi de la demande de réservation.', error);
