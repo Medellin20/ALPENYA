@@ -19,7 +19,12 @@ function load(file, imports) {
   return context.exports;
 }
 
-function setup({ existingGuarantee = null, bankSettings = { default_deposit_amount: 975.25 }, reservationError = null } = {}) {
+function setup({
+  existingGuarantee = null,
+  bankSettings = { default_deposit_amount: 975.25 },
+  reservationError = null,
+  paymentAmount = 700,
+} = {}) {
   const inserts = [];
   const reservationUpdates = [];
   const paths = [];
@@ -28,6 +33,7 @@ function setup({ existingGuarantee = null, bankSettings = { default_deposit_amou
     reference: 'REN-2026-123456',
     client_id: 'client-1',
     status: 'under_review',
+    payment_amount: paymentAmount,
   };
   const supabase = {
     createAdminClient: () => ({
@@ -71,7 +77,7 @@ function setup({ existingGuarantee = null, bankSettings = { default_deposit_amou
   return { action, inserts, reservationUpdates, paths };
 }
 
-test('Le passage en attente de garantie crée un virement au montant configuré', async () => {
+test('Le passage en attente de garantie reprend le montant du virement affiché au client', async () => {
   const s = setup();
   const result = await s.action.updateReservationStatus('reservation-1', 'awaiting_guarantee');
 
@@ -80,7 +86,7 @@ test('Le passage en attente de garantie crée un virement au montant configuré'
     reference: 'GUARANTEE-REN-2026-123456',
     reservation_id: 'reservation-1',
     client_id: 'client-1',
-    amount: 975.25,
+    amount: 700,
     status: 'awaiting_payment',
   }]);
   assert.deepEqual(JSON.parse(JSON.stringify(s.reservationUpdates)), [{ status: 'awaiting_guarantee' }]);
@@ -88,7 +94,7 @@ test('Le passage en attente de garantie crée un virement au montant configuré'
 });
 
 test('Un montant non configuré bloque la demande de garantie', async () => {
-  const s = setup({ bankSettings: { default_deposit_amount: 0 } });
+  const s = setup({ bankSettings: { default_deposit_amount: 0 }, paymentAmount: null });
   const result = await s.action.updateReservationStatus('reservation-1', 'awaiting_guarantee');
 
   assert.equal(result.success, false);

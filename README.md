@@ -289,6 +289,10 @@ npm start
 
 Projet propriétaire — Real Estate NL. Tous droits réservés.
 
+### Virement RIB après une demande de réservation
+
+Pour les bases existantes, appliquer `supabase/migrations/20261001_reservation_payment_amounts.sql`. Après l’envoi de la demande, l’écran de confirmation présente les coordonnées RIB configurées dans **Admin → Configuration bancaire**. Le montant est calculé côté serveur à partir du tarif sélectionné et de la durée du séjour : acompte de 40 % du coût du séjour, plus 300 € de caution. Si le tarif n’est pas configuré, l’écran demande au client de faire confirmer le montant par l’agence.
+
 ### Appartements meublés et mobil-homes
 
 Pour une base existante, exécuter `supabase/migrations/20260917_add_property_categories.sql` dans le SQL Editor Supabase avant d'ajouter les nouveaux biens. Exécuter ensuite `supabase/migrations/20260917_replace_unfurnished_with_studio.sql` pour remplacer l’ancienne catégorie par « Appartement meublé » et mettre à jour son statut meublé, sans supprimer les annonces ni leurs relations. Une installation neuve inclut directement les catégories finales dans `supabase/schema.sql`.

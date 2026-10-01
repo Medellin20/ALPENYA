@@ -9,6 +9,11 @@ import { reservationSchema, type ReservationInput } from '@/lib/validations/rese
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
 import { sendAdminAlert } from '@/lib/notifications/email';
+import {
+  calculateReservationPayment,
+  calculateStayRentalAmount,
+  getReservationRate,
+} from '@/lib/utils/reservation-payment';
 
 /**
  * Crée une demande de réservation de logement (dossier locataire). Le
@@ -28,7 +33,7 @@ export async function createReservation(input: ReservationInput, propertySlug: s
 
   const { data: property, error: propertyError } = await supabase
     .from('properties')
-    .select('id, title, is_published, status')
+    .select('id, title, is_published, status, property_type, monthly_price, deposit_amount, viewing_fee, service_charges')
     .eq('id', parsed.data.propertyId)
     .maybeSingle();
 
@@ -44,6 +49,19 @@ export async function createReservation(input: ReservationInput, propertySlug: s
   });
 
   const reference = generateReference('REN');
+  const rate = getReservationRate({
+    propertyType: property.property_type,
+    monthlyPrice: property.monthly_price,
+    depositAmount: property.deposit_amount,
+    viewingFee: property.viewing_fee,
+    serviceCharges: property.service_charges,
+  }, parsed.data.selectedRateId);
+  const rentalAmount = rate
+    ? calculateStayRentalAmount(rate.amount, parsed.data.durationDays, rate.unit)
+    : null;
+  const paymentAmount = rentalAmount === null
+    ? null
+    : calculateReservationPayment(rentalAmount).totalAmount;
 
   const reservationPayload = {
     reference,
@@ -54,6 +72,8 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     duration_months: parsed.data.durationDays,
     occupants_count: parsed.data.occupantsCount,
     has_pets: parsed.data.hasPets,
+    rental_amount: rentalAmount,
+    payment_amount: paymentAmount,
     status: 'submitted' as const,
   };
 
@@ -102,6 +122,8 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
     Occupants: parsed.data.occupantsCount,
     'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
+    'Montant du séjour': rentalAmount,
+    'Montant à régler (acompte + caution)': paymentAmount,
   });
 
   revalidatePath('/admin/reservations');

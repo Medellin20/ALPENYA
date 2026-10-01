@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { getPropertyBySlug } from '@/lib/data/properties';
 import { ReservationForm } from '@/components/forms/reservation-form';
-import type { PropertyType } from '@/types/database';
 
 export const metadata: Metadata = { title: 'Réserver ce logement' };
 

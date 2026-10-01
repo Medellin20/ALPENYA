@@ -23,7 +23,7 @@ import {
 } from '@/lib/utils/reservation-payment';
 import type { PropertyType } from '@/types/database';
 
-const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif', 'Envoi du dossier'] as const;
+const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif'] as const;
 type WeeklyRate = { id: string; label: string; amount: number };
 
 export function ReservationForm({
@@ -51,11 +51,13 @@ export function ReservationForm({
     handleSubmit,
     trigger,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<ReservationInput>({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
       propertyId,
+      selectedRateId: availableWeeklyRates[0]?.id,
       durationDays: 7,
       occupantsCount: 1,
       hasPets: false,
@@ -80,11 +82,11 @@ export function ReservationForm({
       ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets'],
     ];
     const valid = await trigger(fieldsByStep[step]);
-    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 2));
+    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
 
   function onSubmit(data: ReservationInput) {
-    if (step !== 2 || isPending) return;
+    if (step !== STEPS.length - 1 || isPending) return;
     startTransition(async () => {
       const result = await createReservation(data, propertySlug);
       if (result && !result.success) {
@@ -117,6 +119,7 @@ export function ReservationForm({
       </div>
 
       <form onSubmit={(event) => event.preventDefault()}>
+        <input type="hidden" {...register('selectedRateId')} />
         <AnimatePresence mode="wait">
           {step === 0 && (
             <motion.div
@@ -186,7 +189,11 @@ export function ReservationForm({
                     <Select
                       id="reservationRate"
                       value={selectedRateId}
-                      onChange={(event) => setSelectedRateId(event.target.value)}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setSelectedRateId(value);
+                        setValue('selectedRateId', value, { shouldValidate: true });
+                      }}
                     >
                       {availableWeeklyRates.map((rate) => (
                         <option key={rate.id} value={rate.id}>
@@ -263,7 +270,7 @@ export function ReservationForm({
             Retour
           </Button>
 
-          {step < STEPS.length - 2 ? (
+          {step < STEPS.length - 1 ? (
             <Button key="continue" type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />

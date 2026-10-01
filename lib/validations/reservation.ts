@@ -7,6 +7,7 @@ export const reservationSchema = z.object({
   email: z.string().trim().email('Adresse e-mail invalide.'),
   phone: z.string().trim().min(8, 'Numéro de téléphone invalide.').max(20),
   desiredMoveInDate: z.string().min(1, 'Merci d’indiquer une date d’entrée souhaitée.'),
+  selectedRateId: z.string().trim().min(1).optional(),
   durationDays: z.coerce
     .number()
     .int()

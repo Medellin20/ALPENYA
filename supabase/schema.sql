@@ -202,6 +202,8 @@
       duration_months integer not null default 12,
       occupants_count integer not null default 1,
       has_pets boolean not null default false,
+      rental_amount numeric(10, 2),
+      payment_amount numeric(10, 2),
       profession text,
       monthly_income numeric(10, 2),
       employment_contract text,

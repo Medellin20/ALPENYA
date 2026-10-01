@@ -49,7 +49,7 @@ export function ReservationPaymentNotice({
       )}
 
       <p className="mt-3 text-xs leading-relaxed text-ink-500">
-        Ce montant sera demandé uniquement si votre dossier est accepté. Le calcul comprend l’acompte de 40 % du séjour et la caution de {formatPrice(guaranteeAmount)}.
+        Le calcul comprend l’acompte de 40 % du séjour et la caution de {formatPrice(guaranteeAmount)}. Le montant définitif sera confirmé avec les coordonnées bancaires après l’envoi de votre demande.
       </p>
     </section>
   );

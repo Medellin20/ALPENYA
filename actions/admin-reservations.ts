@@ -41,19 +41,23 @@ export async function updateReservationStatus(
     }
 
     if (!existingGuarantee) {
-      const bankSettings = await getBankSettings();
-      if (!bankSettings) {
-        return { success: false, message: 'Configurez les coordonnées bancaires avant de demander une garantie.' };
-      }
-      if (bankSettings.default_deposit_amount <= 0) {
-        return { success: false, message: 'Configurez un montant de garantie supérieur à 0 avant de continuer.' };
+      let guaranteeAmount = reservation.payment_amount;
+      if (!guaranteeAmount || guaranteeAmount <= 0) {
+        const bankSettings = await getBankSettings();
+        if (!bankSettings) {
+          return { success: false, message: 'Configurez les coordonnées bancaires avant de demander une garantie.' };
+        }
+        guaranteeAmount = bankSettings.default_deposit_amount;
+        if (guaranteeAmount <= 0) {
+          return { success: false, message: 'Configurez un montant de garantie supérieur à 0 avant de continuer.' };
+        }
       }
 
       const { error: guaranteeInsertError } = await supabase.from('guarantee_payments').insert({
         reference: generateGuaranteeReference(reservation.reference),
         reservation_id: reservation.id,
         client_id: reservation.client_id,
-        amount: bankSettings.default_deposit_amount,
+        amount: guaranteeAmount,
         status: 'awaiting_payment',
       });
 
