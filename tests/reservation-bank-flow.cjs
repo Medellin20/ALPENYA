@@ -300,15 +300,18 @@ test('La confirmation finale annonce que la demande est en attente de confirmati
   assert.doesNotMatch(progress, /'Confirmation'/);
 });
 
-test('Le flow réservation conserve le tarif choisi et supprime le bouton d’envoi final', () => {
+test('Le flow réservation conserve le tarif choisi et envoie la demande depuis le récapitulatif', () => {
   const form = fs.readFileSync('components/forms/reservation-form.tsx', 'utf8');
   assert.match(form, /const FORM_STEP_COUNT = 3/);
   assert.match(form, /register\('selectedRateId'\)/);
-  assert.doesNotMatch(form, /handleSubmit|createReservation|send-request|Valider et continuer|Envoyer ma demande/);
+  assert.match(form, /handleSubmit\(onSubmit\)/);
+  assert.match(form, /createReservation\(data, propertySlug\)/);
+  assert.match(form, /key="send-request"/);
+  assert.match(form, /Valider et continuer/);
   assert.match(form, /event\.preventDefault\(\)/);
-  assert.doesNotMatch(form, /propertySlug/);
+  assert.match(form, /propertySlug/);
   const page = fs.readFileSync('app/(public)/appartements/[slug]/reserver/page.tsx', 'utf8');
-  assert.doesNotMatch(page, /propertySlug=/);
+  assert.match(page, /propertySlug=\{property\.slug\}/);
 });
 
 test('Le récapitulatif affiche le RIB sans les messages de précaution supprimés', () => {

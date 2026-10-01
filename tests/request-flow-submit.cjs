@@ -108,12 +108,6 @@ for (const [file, name] of [
     assert.equal(prevented, true);
     assert.equal(flow.sends(), 0);
     const send = find(tree, node => node.key === 'send-request');
-    if (name === 'ReservationForm') {
-      assert.equal(send, undefined);
-      assert.equal(flow.sends(), 0);
-      return;
-    }
-
     assert.ok(send);
     assert.equal(send.props.type, 'button');
     await send.props.onClick();

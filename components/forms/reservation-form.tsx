@@ -2,10 +2,12 @@
 
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ClipboardList, FileCheck2, User } from 'lucide-react';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
+import { createReservation } from '@/actions/reservations';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -30,23 +32,27 @@ type WeeklyRate = { id: string; label: string; amount: number };
 
 export function ReservationForm({
   propertyId,
+  propertySlug,
   propertyTitle,
   bankSettings,
   isDemoBankSettings,
   pricing,
 }: {
   propertyId: string;
+  propertySlug: string;
   propertyTitle: string;
   bankSettings: BankSettings | null;
   isDemoBankSettings: boolean;
   pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
   const [step, setStep] = React.useState(0);
+  const [isPending, startTransition] = React.useTransition();
   const availableWeeklyRates = pricing.weeklyRates.filter((rate) => rate.amount > 0);
   const [selectedRateId, setSelectedRateId] = React.useState(availableWeeklyRates[0]?.id ?? '');
 
   const {
     register,
+    handleSubmit,
     trigger,
     watch,
     setValue,
@@ -85,6 +91,14 @@ export function ReservationForm({
     ];
     const valid = await trigger(fieldsByStep[step]);
     if (valid) setStep((s) => Math.min(s + 1, FORM_STEP_COUNT - 1));
+  }
+
+  function onSubmit(data: ReservationInput) {
+    if (step !== FORM_STEP_COUNT - 1 || isPending) return;
+    startTransition(async () => {
+      const result = await createReservation(data, propertySlug);
+      if (result && !result.success) toast.error(result.message);
+    });
   }
 
   return (
@@ -258,6 +272,7 @@ export function ReservationForm({
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Button
             type="button"
+            disabled={isPending}
             variant="outline"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             className={cn('w-full sm:w-auto', step === 0 && 'hidden sm:inline-flex sm:invisible')}
@@ -266,9 +281,14 @@ export function ReservationForm({
             Retour
           </Button>
 
-          {step < FORM_STEP_COUNT - 1 && (
-            <Button key="continue" type="button" onClick={goNext} className="w-full sm:w-auto">
+          {step < FORM_STEP_COUNT - 1 ? (
+            <Button key="continue" type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button key="send-request" type="button" onClick={handleSubmit(onSubmit)} isLoading={isPending} className="w-full sm:w-auto">
+              Valider et continuer
               <ArrowRight className="h-4 w-4" />
             </Button>
           )}
