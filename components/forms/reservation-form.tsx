@@ -42,7 +42,8 @@ export function ReservationForm({
 }) {
   const router = useRouter();
   const [step, setStep] = React.useState(0);
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, setIsPending] = React.useState(false);
+  const submissionInProgress = React.useRef(false);
   const availableWeeklyRates = pricing.weeklyRates.filter((rate) => rate.amount > 0);
   const [selectedRateId, setSelectedRateId] = React.useState(availableWeeklyRates[0]?.id ?? '');
 
@@ -89,16 +90,32 @@ export function ReservationForm({
     if (valid) setStep((s) => Math.min(s + 1, FORM_STEP_COUNT - 1));
   }
 
-  function onSubmit(data: ReservationInput) {
-    if (step !== FORM_STEP_COUNT - 1 || isPending) return;
-    startTransition(async () => {
+  async function onSubmit(data: ReservationInput) {
+    if (step !== FORM_STEP_COUNT - 1 || submissionInProgress.current) return;
+
+    submissionInProgress.current = true;
+    setIsPending(true);
+    try {
       const result = await createReservation(data, propertySlug);
-      if (result && !result.success) {
+      if (!result.success) {
         toast.error(result.message);
         return;
       }
-      if (result?.data?.confirmationUrl) router.push(result.data.confirmationUrl);
-    });
+
+      if (!result.data?.confirmationUrl) {
+        console.error('La demande de réservation a réussi sans URL de confirmation.');
+        toast.error('Votre demande a été enregistrée, mais la page de confirmation est indisponible. Contactez notre équipe.');
+        return;
+      }
+
+      router.push(result.data.confirmationUrl);
+    } catch (error) {
+      console.error('Échec de l’envoi de la demande de réservation.', error);
+      toast.error('Impossible d’envoyer votre demande pour le moment. Merci de réessayer.');
+    } finally {
+      submissionInProgress.current = false;
+      setIsPending(false);
+    }
   }
 
   return (

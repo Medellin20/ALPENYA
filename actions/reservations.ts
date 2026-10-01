@@ -127,7 +127,7 @@ export async function createReservation(
     changedBy: 'client',
   });
 
-  await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
+  const alertSent = await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
     Référence: reference,
     Logement: property.title,
     Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
@@ -141,6 +141,15 @@ export async function createReservation(
     'Forfait ménage': cleaningFeeAmount > 0 ? cleaningFeeAmount : 'Non',
     'Montant à régler (acompte + caution)': paymentAmount,
   });
+
+  if (!alertSent) {
+    revalidatePath('/admin/reservations');
+    revalidatePath('/admin');
+    return {
+      success: false,
+      message: `Votre demande a été enregistrée sous la référence ${reference}, mais l’e-mail de notification n’a pas pu être envoyé. Ne renvoyez pas le formulaire ; contactez notre équipe.`,
+    };
+  }
 
   revalidatePath('/admin/reservations');
   revalidatePath('/admin');
