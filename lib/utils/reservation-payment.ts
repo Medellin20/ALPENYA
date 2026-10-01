@@ -9,6 +9,15 @@ export interface ReservationPricing {
   depositAmount: number;
   viewingFee: number;
   serviceCharges: number;
+  cleaningFee?: number;
+}
+
+export function getReservationCleaningFee(pricing: ReservationPricing) {
+  if (pricing.propertyType === 'villa') return pricing.cleaningFee ?? 0;
+  if (pricing.propertyType === 'chalet' || pricing.propertyType === 'mobile_home') {
+    return pricing.serviceCharges;
+  }
+  return 0;
 }
 
 export function getReservationRate(
@@ -38,15 +47,17 @@ export function getReservationRate(
   return amount && amount > 0 ? { amount, unit: 'week' } : null;
 }
 
-export function calculateReservationPayment(rentalAmount: number) {
+export function calculateReservationPayment(rentalAmount: number, cleaningFee = 0) {
   const rentalAmountCents = Math.round(rentalAmount * 100);
   const depositAmount = Math.round(rentalAmountCents * RESERVATION_DEPOSIT_RATE) / 100;
+  const cleaningFeeCents = Math.round(cleaningFee * 100);
 
   return {
     rentalAmount: rentalAmountCents / 100,
     depositAmount,
     guaranteeAmount: RESERVATION_GUARANTEE_AMOUNT,
-    totalAmount: depositAmount + RESERVATION_GUARANTEE_AMOUNT,
+    cleaningFee: cleaningFeeCents / 100,
+    totalAmount: depositAmount + RESERVATION_GUARANTEE_AMOUNT + cleaningFeeCents / 100,
   };
 }
 

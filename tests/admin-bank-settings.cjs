@@ -78,6 +78,9 @@ test('La configuration bancaire enregistre le RIB et le montant sans nom de banq
     default_deposit_amount: 1250.5,
   }]);
   assert.ok(s.paths.includes('/admin/configuration-bancaire'));
+  assert.ok(s.paths.includes('/mon-compte'));
+  assert.ok(s.paths.includes('/appartements/[slug]/visite/confirmation'));
+  assert.ok(s.paths.includes('/appartements/[slug]/reserver/confirmation'));
 });
 
 test('Une erreur ou une configuration inexistante ne signale pas une sauvegarde réussie', async () => {
@@ -103,6 +106,13 @@ test('Le formulaire admin ne présente plus le champ du nom de la banque', () =>
   assert.equal(form.includes('htmlFor="bankName"'), false);
   assert.equal(form.includes('htmlFor="defaultDepositAmount"'), false);
   assert.equal(form.includes('type="hidden" {...register(\'defaultDepositAmount\')}'), true);
+});
+
+test('Les instructions RIB ont un rendu structuré et préservent les retours à la ligne', () => {
+  const component = fs.readFileSync('components/shared/bank-transfer-instructions.tsx', 'utf8');
+  assert.match(component, /Instructions pour votre virement/);
+  assert.match(component, /whitespace-pre-line/);
+  assert.match(component, /payment_instructions\.trim\(\)/);
 });
 
 test('Le RIB de démonstration fourni par le schéma est reconnu comme tel', () => {

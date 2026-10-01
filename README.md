@@ -291,7 +291,7 @@ Projet propriétaire — Real Estate NL. Tous droits réservés.
 
 ### Virement RIB après une demande de réservation
 
-Pour les bases existantes, appliquer `supabase/migrations/20261001_reservation_payment_amounts.sql`. Après l’envoi de la demande, l’écran de confirmation présente les coordonnées RIB configurées dans **Admin → Configuration bancaire**. Le montant est calculé côté serveur à partir du tarif sélectionné et de la durée du séjour : acompte de 40 % du coût du séjour, plus 300 € de caution. Si le tarif n’est pas configuré, l’écran demande au client de faire confirmer le montant par l’agence.
+Pour les bases existantes, appliquer `supabase/migrations/20261001_reservation_payment_amounts.sql` puis `supabase/migrations/20261001160000_reservation_cleaning_fee.sql`. Après l’envoi de la demande, l’écran de confirmation présente les coordonnées RIB configurées dans **Admin → Configuration bancaire**. Le montant est calculé côté serveur à partir du tarif sélectionné et de la durée du séjour : acompte de 40 % du coût du séjour, plus 300 € de caution. Si le logement propose un forfait ménage, le client peut le sélectionner et son montant est ajouté au total sans modifier la base de calcul de l’acompte. Si le tarif n’est pas configuré, l’écran demande au client de faire confirmer le montant par l’agence.
 
 ### Appartements meublés et mobil-homes
 

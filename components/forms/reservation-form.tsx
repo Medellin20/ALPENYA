@@ -19,9 +19,10 @@ import { formatPrice } from '@/lib/utils/format';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
+  getReservationCleaningFee,
   RESERVATION_GUARANTEE_AMOUNT,
+  type ReservationPricing,
 } from '@/lib/utils/reservation-payment';
-import type { PropertyType } from '@/types/database';
 
 const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif'] as const;
 type WeeklyRate = { id: string; label: string; amount: number };
@@ -35,11 +36,7 @@ export function ReservationForm({
   propertyId: string;
   propertySlug: string;
   propertyTitle: string;
-  pricing: {
-    propertyType: PropertyType;
-    monthlyPrice: number | null;
-    weeklyRates: WeeklyRate[];
-  };
+  pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
   const [step, setStep] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
@@ -61,12 +58,15 @@ export function ReservationForm({
       durationDays: 7,
       occupantsCount: 1,
       hasPets: false,
+      hasCleaningFee: false,
     },
   });
 
   const values = watch();
   const minDate = new Date().toISOString().split('T')[0];
   const stayDuration = Number(values.durationDays) || 0;
+  const availableCleaningFee = getReservationCleaningFee(pricing);
+  const cleaningFee = values.hasCleaningFee ? availableCleaningFee : 0;
   const selectedRate = availableWeeklyRates.find((rate) => rate.id === selectedRateId);
   const rentalAmount =
     pricing.propertyType === 'furnished_studio' && pricing.monthlyPrice
@@ -74,12 +74,13 @@ export function ReservationForm({
       : selectedRate
         ? calculateStayRentalAmount(selectedRate.amount, stayDuration, 'week')
         : null;
-  const paymentBreakdown = rentalAmount === null ? null : calculateReservationPayment(rentalAmount);
+  const paymentBreakdown =
+    rentalAmount === null ? null : calculateReservationPayment(rentalAmount, cleaningFee);
 
   async function goNext() {
     const fieldsByStep: (keyof ReservationInput)[][] = [
       ['firstName', 'lastName', 'email', 'phone'],
-      ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets'],
+      ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets', 'hasCleaningFee'],
     ];
     const valid = await trigger(fieldsByStep[step]);
     if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -213,6 +214,15 @@ export function ReservationForm({
                   <FieldError message={errors.occupantsCount?.message} />
                 </div>
               </div>
+              {availableCleaningFee > 0 && (
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-ink-100 bg-sand-100/60 p-4 text-sm font-semibold text-ink-700">
+                  <Checkbox {...register('hasCleaningFee')} />
+                  <span className="flex flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    <span>Ajouter le forfait ménage</span>
+                    <span className="text-ink-500">{formatPrice(availableCleaningFee)}</span>
+                  </span>
+                </label>
+              )}
               <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-ink-100 bg-sand-100/60 p-4 text-sm font-semibold text-ink-700">
                 <Checkbox {...register('hasPets')} />
                 Je voyage avec un ou plusieurs animaux de compagnie
@@ -244,11 +254,15 @@ export function ReservationForm({
                 {selectedRate && (
                   <Row label="Période tarifaire" value={`${selectedRate.label} — ${formatPrice(selectedRate.amount)} / semaine`} />
                 )}
+                {cleaningFee > 0 && (
+                  <Row label="Forfait ménage" value={formatPrice(cleaningFee)} />
+                )}
               </div>
               <ReservationPaymentNotice
                 rentalAmount={paymentBreakdown?.rentalAmount ?? null}
                 depositAmount={paymentBreakdown?.depositAmount ?? null}
                 guaranteeAmount={paymentBreakdown?.guaranteeAmount ?? RESERVATION_GUARANTEE_AMOUNT}
+                cleaningFee={paymentBreakdown?.cleaningFee ?? 0}
                 totalAmount={paymentBreakdown?.totalAmount ?? null}
               />
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">

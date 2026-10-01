@@ -36,7 +36,11 @@ export default async function ReservationPage({ params }: { params: { slug: stri
                 propertyTitle={property.title}
                 pricing={{
                   propertyType: property.property_type,
-                  monthlyPrice: property.property_type === 'furnished_studio' ? property.monthly_price : null,
+                  monthlyPrice: property.monthly_price,
+                  depositAmount: property.deposit_amount,
+                  viewingFee: property.viewing_fee,
+                  serviceCharges: property.service_charges,
+                  cleaningFee: property.cleaning_fee ?? 0,
                   weeklyRates:
                     property.property_type === 'chalet'
                       ? [

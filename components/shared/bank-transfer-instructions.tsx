@@ -1,4 +1,4 @@
-import { AlertTriangle, Landmark } from 'lucide-react';
+import { AlertTriangle, Landmark, ScrollText } from 'lucide-react';
 import type { BankSettings } from '@/types/database';
 import { formatPrice } from '@/lib/utils/format';
 import { CopyableField } from '@/components/shared/copyable-field';
@@ -46,10 +46,21 @@ export function BankTransferInstructions({
         <CopyableField label="Référence à indiquer" value={reference} mono highlight />
       </div>
 
-      {bankSettings.payment_instructions && (
-        <p className="mt-4 rounded-xl bg-sand-100/70 p-3.5 text-xs leading-relaxed text-ink-500">
-          {bankSettings.payment_instructions}
-        </p>
+      {bankSettings.payment_instructions.trim() && (
+        <section
+          aria-labelledby="transfer-instructions-heading"
+          className="mt-5 overflow-hidden rounded-xl border border-canal-100 bg-gradient-to-br from-canal-50/80 to-white"
+        >
+          <div className="flex items-center gap-2 border-b border-canal-100 px-4 py-3">
+            <ScrollText className="h-4 w-4 shrink-0 text-canal-700" />
+            <h4 id="transfer-instructions-heading" className="text-sm font-bold text-ink-800">
+              Instructions pour votre virement
+            </h4>
+          </div>
+          <p className="whitespace-pre-line break-words px-4 py-4 text-sm leading-6 text-ink-600">
+            {bankSettings.payment_instructions.trim()}
+          </p>
+        </section>
       )}
     </div>
   );

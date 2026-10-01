@@ -142,6 +142,8 @@ export interface Reservation {
   duration_months: number;
   occupants_count: number;
   has_pets: boolean;
+  has_cleaning_fee: boolean;
+  cleaning_fee_amount: number;
   rental_amount: number | null;
   payment_amount: number | null;
   profession: string | null;

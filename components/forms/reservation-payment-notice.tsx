@@ -4,11 +4,13 @@ export function ReservationPaymentNotice({
   rentalAmount,
   depositAmount,
   guaranteeAmount,
+  cleaningFee,
   totalAmount,
 }: {
   rentalAmount: number | null;
   depositAmount: number | null;
   guaranteeAmount: number;
+  cleaningFee: number;
   totalAmount: number | null;
 }) {
   return (
@@ -37,6 +39,12 @@ export function ReservationPaymentNotice({
             <dt className="text-ink-600">Caution</dt>
             <dd className="font-semibold text-ink-800">{formatPrice(guaranteeAmount)}</dd>
           </div>
+          {cleaningFee > 0 && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-ink-600">Forfait ménage</dt>
+              <dd className="font-semibold text-ink-800">{formatPrice(cleaningFee)}</dd>
+            </div>
+          )}
           <div className="flex justify-between gap-4 border-t border-canal-200 pt-2 font-bold">
             <dt className="text-ink-900">Total à régler</dt>
             <dd className="text-canal-800">{formatPrice(totalAmount)}</dd>

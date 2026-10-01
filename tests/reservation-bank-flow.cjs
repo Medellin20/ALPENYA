@@ -21,7 +21,7 @@ function load(file, imports) {
 
 const pricing = load('lib/utils/reservation-payment.ts', {});
 
-function setup() {
+function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
   const inserts = [];
   const emails = [];
   const redirects = [];
@@ -42,7 +42,8 @@ function setup() {
                     monthly_price: 700,
                     deposit_amount: 1200,
                     viewing_fee: 0,
-                    service_charges: 0,
+                    service_charges: serviceCharges,
+                    cleaning_fee: 0,
                   },
                   error: null,
                 }),
@@ -97,16 +98,70 @@ test('Le clic de soumission conserve l’envoi du mail et affiche le RIB avec le
       durationDays: 10,
       occupantsCount: 2,
       hasPets: false,
+      hasCleaningFee: true,
       selectedRateId: 'lowSeason',
     }, 'chalet'),
     /redirected/
   );
 
   assert.equal(s.inserts[0].rental_amount, 1000);
-  assert.equal(s.inserts[0].payment_amount, 700);
+  assert.equal(s.inserts[0].has_cleaning_fee, true);
+  assert.equal(s.inserts[0].cleaning_fee_amount, 125);
+  assert.equal(s.inserts[0].payment_amount, 825);
   assert.equal(s.emails.length, 1);
-  assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 700);
+  assert.equal(s.emails[0].data['Forfait ménage'], 125);
+  assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
   assert.equal(s.redirects[0], '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=camille%40example.com');
+});
+
+test('Sans sélection du client, aucun forfait ménage n’est ajouté au montant', async () => {
+  const s = setup({ hasCleaningFee: false });
+
+  await assert.rejects(
+    s.action.createReservation({
+      propertyId: 'property-1',
+      firstName: 'Camille',
+      lastName: 'Martin',
+      email: 'camille@example.com',
+      phone: '+33600000000',
+      desiredMoveInDate: '2026-12-20',
+      durationDays: 10,
+      occupantsCount: 2,
+      hasPets: false,
+      hasCleaningFee: false,
+      selectedRateId: 'lowSeason',
+    }, 'chalet'),
+    /redirected/
+  );
+
+  assert.equal(s.inserts[0].has_cleaning_fee, false);
+  assert.equal(s.inserts[0].cleaning_fee_amount, 0);
+  assert.equal(s.inserts[0].payment_amount, 700);
+});
+
+test('Le serveur ne facture pas un forfait ménage absent de la configuration du logement', async () => {
+  const s = setup({ serviceCharges: 0 });
+
+  await assert.rejects(
+    s.action.createReservation({
+      propertyId: 'property-1',
+      firstName: 'Camille',
+      lastName: 'Martin',
+      email: 'camille@example.com',
+      phone: '+33600000000',
+      desiredMoveInDate: '2026-12-20',
+      durationDays: 10,
+      occupantsCount: 2,
+      hasPets: false,
+      hasCleaningFee: true,
+      selectedRateId: 'lowSeason',
+    }, 'chalet'),
+    /redirected/
+  );
+
+  assert.equal(s.inserts[0].has_cleaning_fee, false);
+  assert.equal(s.inserts[0].cleaning_fee_amount, 0);
+  assert.equal(s.inserts[0].payment_amount, 700);
 });
 
 test('La confirmation finale charge les coordonnées bancaires et le montant enregistré', () => {

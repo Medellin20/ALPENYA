@@ -14,7 +14,14 @@ const { calculateReservationPayment, calculateStayRentalAmount } = context.expor
 test('Le montant à payer correspond à 40 % du séjour plus 300 € de caution', () => {
   assert.deepEqual(
     JSON.parse(JSON.stringify(calculateReservationPayment(1425.5))),
-    { rentalAmount: 1425.5, depositAmount: 570.2, guaranteeAmount: 300, totalAmount: 870.2 }
+    { rentalAmount: 1425.5, depositAmount: 570.2, guaranteeAmount: 300, cleaningFee: 0, totalAmount: 870.2 }
+  );
+});
+
+test('Le forfait ménage choisi s’ajoute au total sans augmenter la base de l’acompte', () => {
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(calculateReservationPayment(1000, 125))),
+    { rentalAmount: 1000, depositAmount: 400, guaranteeAmount: 300, cleaningFee: 125, totalAmount: 825 }
   );
 });
 

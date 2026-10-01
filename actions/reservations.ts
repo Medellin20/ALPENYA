@@ -12,6 +12,7 @@ import { sendAdminAlert } from '@/lib/notifications/email';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
+  getReservationCleaningFee,
   getReservationRate,
 } from '@/lib/utils/reservation-payment';
 
@@ -33,7 +34,7 @@ export async function createReservation(input: ReservationInput, propertySlug: s
 
   const { data: property, error: propertyError } = await supabase
     .from('properties')
-    .select('id, title, is_published, status, property_type, monthly_price, deposit_amount, viewing_fee, service_charges')
+    .select('id, title, is_published, status, property_type, monthly_price, deposit_amount, viewing_fee, service_charges, cleaning_fee')
     .eq('id', parsed.data.propertyId)
     .maybeSingle();
 
@@ -55,13 +56,23 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     depositAmount: property.deposit_amount,
     viewingFee: property.viewing_fee,
     serviceCharges: property.service_charges,
+    cleaningFee: property.cleaning_fee ?? 0,
   }, parsed.data.selectedRateId);
+  const availableCleaningFee = getReservationCleaningFee({
+    propertyType: property.property_type,
+    monthlyPrice: property.monthly_price,
+    depositAmount: property.deposit_amount,
+    viewingFee: property.viewing_fee,
+    serviceCharges: property.service_charges,
+    cleaningFee: property.cleaning_fee ?? 0,
+  });
+  const cleaningFeeAmount = parsed.data.hasCleaningFee ? availableCleaningFee : 0;
   const rentalAmount = rate
     ? calculateStayRentalAmount(rate.amount, parsed.data.durationDays, rate.unit)
     : null;
   const paymentAmount = rentalAmount === null
     ? null
-    : calculateReservationPayment(rentalAmount).totalAmount;
+    : calculateReservationPayment(rentalAmount, cleaningFeeAmount).totalAmount;
 
   const reservationPayload = {
     reference,
@@ -72,6 +83,8 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     duration_months: parsed.data.durationDays,
     occupants_count: parsed.data.occupantsCount,
     has_pets: parsed.data.hasPets,
+    has_cleaning_fee: cleaningFeeAmount > 0,
+    cleaning_fee_amount: cleaningFeeAmount,
     rental_amount: rentalAmount,
     payment_amount: paymentAmount,
     status: 'submitted' as const,
@@ -123,6 +136,7 @@ export async function createReservation(input: ReservationInput, propertySlug: s
     Occupants: parsed.data.occupantsCount,
     'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
     'Montant du séjour': rentalAmount,
+    'Forfait ménage': cleaningFeeAmount > 0 ? cleaningFeeAmount : 'Non',
     'Montant à régler (acompte + caution)': paymentAmount,
   });
 

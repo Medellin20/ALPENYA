@@ -61,6 +61,7 @@ export default async function ReservationConfirmationPage({
               rentalAmount={reservation.rental_amount}
               depositAmount={Math.round(reservation.rental_amount * 0.4 * 100) / 100}
               guaranteeAmount={RESERVATION_GUARANTEE_AMOUNT}
+              cleaningFee={reservation.cleaning_fee_amount ?? 0}
               totalAmount={reservation.payment_amount}
             />
           </div>
