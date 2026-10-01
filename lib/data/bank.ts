@@ -15,7 +15,12 @@ export const DEMO_BANK_SETTINGS: BankSettings = {
 
 export function isDemoBankSettings(settings: BankSettings) {
   const iban = settings.iban.replace(/\s/g, '').toUpperCase();
-  return iban === 'NL91ABNA0417164300' || iban.startsWith('NL00BANK') || iban.startsWith('NL00TEST');
+  return (
+    iban === 'NL91ABNA0417164300' ||
+    iban.startsWith('NL00BANK') ||
+    iban.startsWith('NL00TEST') ||
+    iban.startsWith('FR00')
+  );
 }
 
 /**

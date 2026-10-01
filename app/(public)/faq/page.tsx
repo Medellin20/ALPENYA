@@ -17,9 +17,9 @@ const CATEGORIES = [
           'Depuis la fiche d’un logement, cliquez sur « Réserver une visite », choisissez une date et un créneau, puis envoyez votre demande. Notre équipe vous contacte ensuite pour confirmer le rendez-vous.',
       },
       {
-        question: 'Dois-je payer pour envoyer une demande ?',
+        question: 'Comment régler les frais de visite ?',
         answer:
-          'Votre demande est enregistrée avant le paiement. Une dernière étape affiche le lien de paiement configuré par l’agence. Après le paiement, envoyez une capture justificative à contacts@alpenia-residences.com en précisant votre référence.',
+          'Après l’envoi de votre demande, les coordonnées bancaires et votre référence de virement sont affichées. Les frais de visite sont à régler avant le rendez-vous et vous seront remboursés si l’intérieur du logement ne correspond pas à ce qui vous a été présenté.',
       },
       {
         question: 'Puis-je changer la date de ma visite ?',

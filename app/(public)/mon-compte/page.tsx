@@ -10,6 +10,9 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { getReservationTimelineSteps, getViewingTimelineSteps } from '@/lib/utils/timeline';
 import { formatDate } from '@/lib/utils/format';
 import { RESERVATION_STATUS_LABELS, VIEWING_STATUS_LABELS } from '@/lib/utils/constants';
+import { getBankSettings, isDemoBankSettings } from '@/lib/data/bank';
+import { BankTransferInstructions } from '@/components/shared/bank-transfer-instructions';
+import { DeclareTransferForm } from '@/components/forms/declare-transfer-form';
 
 export const metadata: Metadata = { title: 'Mon compte' };
 
@@ -25,6 +28,13 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
   if (!dossier) {
     return <EmailLookupScreen notFoundEmail={email} />;
   }
+
+  const hasPendingGuarantee = dossier.reservations.some((reservation: any) =>
+    reservation.guarantee_payments?.some((guarantee: any) =>
+      ['awaiting_payment', 'payment_declared'].includes(guarantee.status)
+    )
+  );
+  const bankSettings = hasPendingGuarantee ? await getBankSettings() : null;
 
   return (
     <div className="container-app py-10 sm:py-14">
@@ -52,7 +62,12 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
           />
         ) : (
           <div className="space-y-6">
-            {dossier.reservations.map((reservation: any) => (
+            {dossier.reservations.map((reservation: any) => {
+              const guarantee = reservation.guarantee_payments?.[0];
+              const isGuaranteePending = guarantee &&
+                ['awaiting_payment', 'payment_declared'].includes(guarantee.status);
+
+              return (
                 <div key={reservation.id} className="rounded-2xl border border-ink-100 bg-white p-6 shadow-soft">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -91,10 +106,37 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
                           Votre demande n’a malheureusement pas pu être acceptée pour ce logement.
                         </p>
                       )}
+
+                      {isGuaranteePending && (
+                        <div className="mt-5 space-y-4">
+                          {bankSettings ? (
+                            <>
+                              <BankTransferInstructions
+                                bankSettings={bankSettings}
+                                reference={guarantee.reference}
+                                amount={guarantee.amount}
+                                isExample={isDemoBankSettings(bankSettings)}
+                              />
+                              {guarantee.status === 'awaiting_payment' ? (
+                                <DeclareTransferForm guaranteePaymentId={guarantee.id} />
+                              ) : (
+                                <p className="rounded-xl bg-canal-50 p-4 text-sm font-semibold text-canal-800">
+                                  Votre virement a été déclaré et est en attente de vérification par notre équipe.
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">
+                              Les coordonnées bancaires sont temporairement indisponibles. Contactez notre équipe avant d’effectuer un virement.
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

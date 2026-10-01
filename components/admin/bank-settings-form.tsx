@@ -26,7 +26,6 @@ export function BankSettingsForm({ settings }: { settings: BankSettings }) {
       beneficiaryName: settings.beneficiary_name,
       iban: settings.iban,
       bic: settings.bic,
-      bankName: settings.bank_name,
       paymentInstructions: settings.payment_instructions,
       defaultDepositAmount: settings.default_deposit_amount,
     },
@@ -45,6 +44,7 @@ export function BankSettingsForm({ settings }: { settings: BankSettings }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <input type="hidden" {...register('defaultDepositAmount')} />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Label htmlFor="beneficiaryName">Nom du bénéficiaire</Label>
@@ -60,16 +60,6 @@ export function BankSettingsForm({ settings }: { settings: BankSettings }) {
           <Label htmlFor="bic">BIC / SWIFT</Label>
           <Input id="bic" {...register('bic')} className="font-mono" />
           <FieldError message={errors.bic?.message} />
-        </div>
-        <div>
-          <Label htmlFor="bankName">Nom de la banque</Label>
-          <Input id="bankName" {...register('bankName')} />
-          <FieldError message={errors.bankName?.message} />
-        </div>
-        <div>
-          <Label htmlFor="defaultDepositAmount">Montant par défaut de la garantie (€)</Label>
-          <Input id="defaultDepositAmount" type="number" step="1" {...register('defaultDepositAmount')} />
-          <FieldError message={errors.defaultDepositAmount?.message} />
         </div>
       </div>
 

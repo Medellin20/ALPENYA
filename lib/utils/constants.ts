@@ -81,6 +81,8 @@ export const TIME_SLOTS = [
   '17:00 - 17:30',
 ];
 
+export const VIEWING_FEE_AMOUNT = 50;
+
 export const AMENITY_ICON_MAP: Record<string, string> = {
   wifi: 'Wifi',
   heating: 'Flame',

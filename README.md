@@ -289,11 +289,6 @@ npm start
 
 Projet propriétaire — Real Estate NL. Tous droits réservés.
 
-### Lien de paiement des visites et réservations
-
-Appliquer `supabase/migrations/20260916_payment_settings.sql` dans Supabase, puis saisir le lien HTTPS dans **Admin → Paramètres → Paiement**. Le lien est commun aux deux parcours et peut être modifié ou retiré à tout moment. Les pages de confirmation lisent la configuration à chaque requête et affichent la quatrième et dernière étape après l’enregistrement de la demande. Sans lien configuré, elles invitent le client à contacter l’équipe. Les captures de paiement sont envoyées par e-mail à `contacts@alpenia-residences.com`, avec la référence du dossier ; le paiement n’est pas automatiquement marqué comme confirmé.
-
-
 ### Appartements meublés et mobil-homes
 
 Pour une base existante, exécuter `supabase/migrations/20260917_add_property_categories.sql` dans le SQL Editor Supabase avant d'ajouter les nouveaux biens. Exécuter ensuite `supabase/migrations/20260917_replace_unfurnished_with_studio.sql` pour remplacer l’ancienne catégorie par « Appartement meublé » et mettre à jour son statut meublé, sans supprimer les annonces ni leurs relations. Une installation neuve inclut directement les catégories finales dans `supabase/schema.sql`.

@@ -18,19 +18,20 @@ export async function updateBankSettings(input: BankSettingsInput): Promise<Acti
 
   const supabase = createAdminClient();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('bank_settings')
     .update({
       beneficiary_name: parsed.data.beneficiaryName,
       iban: parsed.data.iban,
       bic: parsed.data.bic,
-      bank_name: parsed.data.bankName,
       payment_instructions: parsed.data.paymentInstructions,
       default_deposit_amount: parsed.data.defaultDepositAmount,
     })
-    .eq('id', 1);
+    .eq('id', 1)
+    .select('id')
+    .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     return { success: false, message: 'Impossible de mettre à jour la configuration bancaire.' };
   }
 

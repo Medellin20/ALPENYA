@@ -8,6 +8,7 @@ import { recordStatusChange } from '@/lib/data/history';
 import { viewingRequestSchema, type ViewingRequestInput } from '@/lib/validations/viewing';
 import { generateReference } from '@/lib/utils/reference';
 import { sendAdminAlert } from '@/lib/notifications/email';
+import { VIEWING_FEE_AMOUNT } from '@/lib/utils/constants';
 import type { ActionResult } from '@/types';
 
 /**
@@ -58,7 +59,7 @@ export async function createViewingRequest(
       requested_date: parsed.data.requestedDate,
       requested_time_slot: parsed.data.requestedTimeSlot,
       status: initialStatus,
-      fee_amount: 0,
+      fee_amount: VIEWING_FEE_AMOUNT,
     })
     .select('*')
     .single();

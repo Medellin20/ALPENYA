@@ -37,7 +37,6 @@ export function BankTransferInstructions({
         <CopyableField label="Bénéficiaire" value={bankSettings.beneficiary_name} />
         <CopyableField label="IBAN" value={bankSettings.iban} mono />
         <CopyableField label="BIC" value={bankSettings.bic} mono />
-        <CopyableField label="Banque" value={bankSettings.bank_name} />
         <CopyableField label="Référence à indiquer" value={reference} mono highlight />
       </div>
 

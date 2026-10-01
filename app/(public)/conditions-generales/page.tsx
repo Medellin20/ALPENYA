@@ -14,9 +14,10 @@ export default function ConditionsGeneralesPage() {
 
       <h2>Demandes de visite</h2>
       <p>
-        L’envoi d’une demande de visite depuis le site ne nécessite aucun paiement. Le créneau
-        demandé reste soumis à confirmation par ALPENIA, qui contacte le client pour
-        organiser le rendez-vous.
+        Les frais de visite de 50 € sont réglés par virement avant le rendez-vous. Les coordonnées
+        bancaires et la référence à indiquer sont communiquées après l’envoi de la demande. Ces frais
+        sont remboursés si, lors de la visite, l’intérieur du logement ne correspond pas à ce qui a
+        été présenté. Le créneau demandé reste soumis à confirmation par ALPENIA.
       </p>
 
       <h2>Demandes de réservation</h2>
@@ -24,14 +25,6 @@ export default function ConditionsGeneralesPage() {
         L’envoi d’une demande de réservation ne vaut pas acceptation définitive et ne nécessite
         aucun paiement sur le site. ALPENIA examine le dossier, communique sa décision et
         organise directement avec le client les éventuelles formalités ultérieures.
-      </p>
-
-      <h2>Étape de paiement</h2>
-      <p>
-        Après l’enregistrement de la demande de visite ou de réservation, une dernière étape
-        présente le lien de paiement lorsqu’il est disponible. Après le paiement, le client envoie
-        une capture d’écran justificative à contacts@alpenia-residences.com avec la référence
-        de sa demande. ALPENIA vérifie le justificatif avant de confirmer la suite du dossier.
       </p>
 
       <h2>Responsabilité</h2>

@@ -1,5 +1,3 @@
-import { PaymentSettingsForm } from '@/components/admin/payment-settings-form';
-import { getPaymentSettings } from '@/lib/data/payment-settings';
 import type { Metadata } from 'next';
 import { getSiteUrl } from '@/lib/utils/site-url';
 import { Settings, ShieldCheck, ClipboardCheck, Globe } from 'lucide-react';
@@ -7,7 +5,6 @@ import { Settings, ShieldCheck, ClipboardCheck, Globe } from 'lucide-react';
 export const metadata: Metadata = { title: 'Paramètres' };
 
 export default async function AdminParametresPage() {
-  const paymentSettings = await getPaymentSettings();
   const siteUrl = getSiteUrl();
 
   return (
@@ -18,10 +15,6 @@ export default async function AdminParametresPage() {
       </h1>
 
       <div className="max-w-2xl space-y-5">
-        <div className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6">
-          <h2 className="font-bold text-ink-900">Paiement</h2>
-          <PaymentSettingsForm {...paymentSettings} />
-        </div>
         <div className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-canal-600" />
@@ -43,8 +36,8 @@ export default async function AdminParametresPage() {
             <h2 className="font-bold text-ink-900">Traitement des demandes</h2>
           </div>
           <p className="mt-2 text-sm text-ink-500">
-            Après l’enregistrement de leur demande, les clients accèdent à la dernière étape de paiement
-            et envoient leur capture par e-mail. L’équipe vérifie le justificatif et confirme la suite.
+            Après l’envoi d’une demande de visite, le client reçoit les coordonnées bancaires et la
+            référence à indiquer lors du virement. L’équipe vérifie le paiement et confirme le rendez-vous.
           </p>
         </div>
 

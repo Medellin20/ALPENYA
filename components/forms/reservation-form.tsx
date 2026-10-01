@@ -15,20 +15,36 @@ import { Label, FieldError } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils/cn';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
+import { formatPrice } from '@/lib/utils/format';
+import {
+  calculateReservationPayment,
+  calculateStayRentalAmount,
+  RESERVATION_GUARANTEE_AMOUNT,
+} from '@/lib/utils/reservation-payment';
+import type { PropertyType } from '@/types/database';
 
-const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif', 'Paiement'] as const;
+const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif', 'Envoi du dossier'] as const;
+type WeeklyRate = { id: string; label: string; amount: number };
 
 export function ReservationForm({
   propertyId,
   propertySlug,
   propertyTitle,
+  pricing,
 }: {
   propertyId: string;
   propertySlug: string;
   propertyTitle: string;
+  pricing: {
+    propertyType: PropertyType;
+    monthlyPrice: number | null;
+    weeklyRates: WeeklyRate[];
+  };
 }) {
   const [step, setStep] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
+  const availableWeeklyRates = pricing.weeklyRates.filter((rate) => rate.amount > 0);
+  const [selectedRateId, setSelectedRateId] = React.useState(availableWeeklyRates[0]?.id ?? '');
 
   const {
     register,
@@ -48,6 +64,15 @@ export function ReservationForm({
 
   const values = watch();
   const minDate = new Date().toISOString().split('T')[0];
+  const stayDuration = Number(values.durationDays) || 0;
+  const selectedRate = availableWeeklyRates.find((rate) => rate.id === selectedRateId);
+  const rentalAmount =
+    pricing.propertyType === 'furnished_studio' && pricing.monthlyPrice
+      ? calculateStayRentalAmount(pricing.monthlyPrice, stayDuration, 'month')
+      : selectedRate
+        ? calculateStayRentalAmount(selectedRate.amount, stayDuration, 'week')
+        : null;
+  const paymentBreakdown = rentalAmount === null ? null : calculateReservationPayment(rentalAmount);
 
   async function goNext() {
     const fieldsByStep: (keyof ReservationInput)[][] = [
@@ -92,9 +117,6 @@ export function ReservationForm({
       </div>
 
       <form onSubmit={(event) => event.preventDefault()}>
-        <div className="mb-6">
-          <ReservationPaymentNotice />
-        </div>
         <AnimatePresence mode="wait">
           {step === 0 && (
             <motion.div
@@ -158,6 +180,22 @@ export function ReservationForm({
                   <Input id="durationDays" type="number" min={1} max={365} {...register('durationDays')} />
                   <FieldError message={errors.durationDays?.message} />
                 </div>
+                {pricing.propertyType !== 'furnished_studio' && availableWeeklyRates.length > 1 && (
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="reservationRate">Tarif correspondant à votre période de séjour</Label>
+                    <Select
+                      id="reservationRate"
+                      value={selectedRateId}
+                      onChange={(event) => setSelectedRateId(event.target.value)}
+                    >
+                      {availableWeeklyRates.map((rate) => (
+                        <option key={rate.id} value={rate.id}>
+                          {rate.label} — {formatPrice(rate.amount)} / semaine
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                )}
                 <div>
                   <Label htmlFor="occupantsCount">Nombre d’occupants</Label>
                   <Select id="occupantsCount" {...register('occupantsCount')}>
@@ -196,10 +234,18 @@ export function ReservationForm({
                 <Row label="Durée" value={values.durationDays ? `${values.durationDays} jour${values.durationDays > 1 ? 's' : ''}` : '—'} />
                 <Row label="Nombre d’occupants" value={String(values.occupantsCount || '—')} />
                 <Row label="Animaux de compagnie" value={values.hasPets ? 'Oui' : 'Non'} />
+                {selectedRate && (
+                  <Row label="Période tarifaire" value={`${selectedRate.label} — ${formatPrice(selectedRate.amount)} / semaine`} />
+                )}
               </div>
+              <ReservationPaymentNotice
+                rentalAmount={paymentBreakdown?.rentalAmount ?? null}
+                depositAmount={paymentBreakdown?.depositAmount ?? null}
+                guaranteeAmount={paymentBreakdown?.guaranteeAmount ?? RESERVATION_GUARANTEE_AMOUNT}
+                totalAmount={paymentBreakdown?.totalAmount ?? null}
+              />
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
-                Après l’envoi de votre demande, vous accéderez à la dernière étape avec le lien de
-                paiement et les instructions pour envoyer votre justificatif par e-mail.
+                Le montant affiché est calculé selon le tarif choisi et la durée du séjour. Notre équipe confirmera les modalités de règlement après examen de votre demande.
               </p>
             </motion.div>
           )}
@@ -224,7 +270,7 @@ export function ReservationForm({
             </Button>
           ) : (
             <Button key="send-request" type="button" onClick={handleSubmit(onSubmit)} isLoading={isPending} className="w-full sm:w-auto">
-              Envoyer et accéder au paiement
+              Envoyer ma demande
             </Button>
           )}
         </div>

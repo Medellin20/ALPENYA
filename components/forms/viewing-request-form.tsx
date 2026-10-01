@@ -12,10 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Label, FieldError } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { TIME_SLOTS } from '@/lib/utils/constants';
+import { TIME_SLOTS, VIEWING_FEE_AMOUNT } from '@/lib/utils/constants';
 import { cn } from '@/lib/utils/cn';
 
-const STEPS = ['Date & créneau', 'Vos coordonnées', 'Confirmation', 'Paiement'] as const;
+const STEPS = ['Date & créneau', 'Vos coordonnées', 'Confirmation', 'Virement bancaire'] as const;
 
 export function ViewingRequestForm({
   propertyId,
@@ -188,13 +188,12 @@ export function ViewingRequestForm({
               </div>
 
               <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-relaxed text-red-700">
-                Les frais de visite de 50 € sont exigibles avant la visite. Ils vous seront
-                remboursés si le bien ne vous convient pas.
+                Les frais de visite de {VIEWING_FEE_AMOUNT} € sont à régler avant la visite.
               </p>
 
-              <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
-                Après l’envoi de votre demande, vous accéderez à la dernière étape avec le lien de
-                paiement et les instructions pour envoyer votre justificatif par e-mail.
+              <p className="rounded-xl bg-canal-50 p-4 text-sm font-bold leading-relaxed text-canal-800">
+                Si, lors de la visite, l’intérieur du logement ne correspond pas à ce qui vous a été
+                présenté, les frais de visite vous seront remboursés.
               </p>
             </motion.div>
           )}
@@ -219,7 +218,7 @@ export function ViewingRequestForm({
             </Button>
           ) : (
             <Button key="send-request" type="button" onClick={handleSubmit(onSubmit)} isLoading={isPending} className="w-full sm:w-auto">
-              Envoyer et accéder au paiement
+              Envoyer ma demande
             </Button>
           )}
         </div>

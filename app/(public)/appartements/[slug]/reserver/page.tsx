@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { getPropertyBySlug } from '@/lib/data/properties';
 import { ReservationForm } from '@/components/forms/reservation-form';
+import type { PropertyType } from '@/types/database';
 
 export const metadata: Metadata = { title: 'Réserver ce logement' };
 
@@ -34,6 +35,27 @@ export default async function ReservationPage({ params }: { params: { slug: stri
                 propertyId={property.id}
                 propertySlug={property.slug}
                 propertyTitle={property.title}
+                pricing={{
+                  propertyType: property.property_type,
+                  monthlyPrice: property.property_type === 'furnished_studio' ? property.monthly_price : null,
+                  weeklyRates:
+                    property.property_type === 'chalet'
+                      ? [
+                          { id: 'lowSeason', label: 'Hors saison', amount: property.monthly_price },
+                          { id: 'holidays', label: 'Noël et Nouvel An', amount: property.deposit_amount },
+                          { id: 'winter', label: 'De janvier à mars', amount: property.viewing_fee },
+                        ]
+                      : property.property_type === 'villa'
+                        ? [
+                            { id: 'summer', label: 'Juillet – août', amount: property.monthly_price },
+                            { id: 'earlySummer', label: 'Mi-juin – début juillet', amount: property.deposit_amount },
+                            { id: 'september', label: 'Septembre', amount: property.viewing_fee },
+                            { id: 'lateSpring', label: 'Mai – début juin', amount: property.service_charges },
+                          ]
+                        : property.property_type === 'mobile_home'
+                          ? [{ id: 'weekly', label: 'Tarif de location', amount: property.monthly_price }]
+                          : [],
+                }}
               />
             </div>
           </div>
