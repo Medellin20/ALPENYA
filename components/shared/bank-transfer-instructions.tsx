@@ -10,7 +10,7 @@ export function BankTransferInstructions({
   isExample = false,
 }: {
   bankSettings: BankSettings;
-  reference: string;
+  reference?: string;
   amount: number | null;
   isExample?: boolean;
 }) {
@@ -43,7 +43,7 @@ export function BankTransferInstructions({
         <CopyableField label="Bénéficiaire" value={bankSettings.beneficiary_name} />
         <CopyableField label="IBAN" value={bankSettings.iban} mono />
         <CopyableField label="BIC" value={bankSettings.bic} mono />
-        <CopyableField label="Référence à indiquer" value={reference} mono highlight />
+        {reference && <CopyableField label="Référence à indiquer" value={reference} mono highlight />}
       </div>
 
       {bankSettings.payment_instructions.trim() && (

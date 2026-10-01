@@ -51,6 +51,7 @@ function harness(file, exportName) {
       RESERVATION_GUARANTEE_AMOUNT: 0,
     },
     '@/components/forms/reservation-payment-notice': { ReservationPaymentNotice: component },
+    '@/components/shared/bank-transfer-instructions': { BankTransferInstructions: component },
     '@/components/forms/reservation-progress': { ReservationProgress: component },
   };
   const context = { exports: {}, require: name => {
@@ -64,6 +65,8 @@ function harness(file, exportName) {
     propertyId: 'id',
     propertySlug: 'slug',
     propertyTitle: 'Logement',
+    bankSettings: null,
+    isDemoBankSettings: false,
     pricing: {
       propertyType: 'chalet',
       monthlyPrice: 100,

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { getPropertyBySlug } from '@/lib/data/properties';
+import { getBankSettings, isDemoBankSettings } from '@/lib/data/bank';
 import { ReservationForm } from '@/components/forms/reservation-form';
 
 export const metadata: Metadata = { title: 'Réserver ce logement' };
@@ -12,6 +13,7 @@ export default async function ReservationPage({ params }: { params: { slug: stri
   const property = await getPropertyBySlug(params.slug);
   if (!property) notFound();
 
+  const bankSettings = await getBankSettings();
   const primaryImage = property.property_images.find((i) => i.is_primary) ?? property.property_images[0];
 
   return (
@@ -34,6 +36,8 @@ export default async function ReservationPage({ params }: { params: { slug: stri
                 propertyId={property.id}
                 propertySlug={property.slug}
                 propertyTitle={property.title}
+                bankSettings={bankSettings}
+                isDemoBankSettings={bankSettings ? isDemoBankSettings(bankSettings) : false}
                 pricing={{
                   propertyType: property.property_type,
                   monthlyPrice: property.monthly_price,

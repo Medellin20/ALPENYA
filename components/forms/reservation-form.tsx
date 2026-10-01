@@ -16,7 +16,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils/cn';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
 import { ReservationProgress } from '@/components/forms/reservation-progress';
+import { BankTransferInstructions } from '@/components/shared/bank-transfer-instructions';
 import { formatPrice } from '@/lib/utils/format';
+import type { BankSettings } from '@/types/database';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
@@ -32,11 +34,15 @@ export function ReservationForm({
   propertyId,
   propertySlug,
   propertyTitle,
+  bankSettings,
+  isDemoBankSettings,
   pricing,
 }: {
   propertyId: string;
   propertySlug: string;
   propertyTitle: string;
+  bankSettings: BankSettings | null;
+  isDemoBankSettings: boolean;
   pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
   const [step, setStep] = React.useState(0);
@@ -249,6 +255,20 @@ export function ReservationForm({
                 cleaningFee={paymentBreakdown?.cleaningFee ?? 0}
                 totalAmount={paymentBreakdown?.totalAmount ?? null}
               />
+              <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-relaxed text-amber-800">
+                Le RIB est affiché à titre indicatif. N’effectuez aucun virement avant la confirmation de votre demande par notre équipe.
+              </p>
+              {bankSettings ? (
+                <BankTransferInstructions
+                  bankSettings={bankSettings}
+                  amount={null}
+                  isExample={isDemoBankSettings}
+                />
+              ) : (
+                <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">
+                  Les coordonnées bancaires sont momentanément indisponibles.
+                </p>
+              )}
               <p className="rounded-xl bg-canal-50 p-4 text-sm leading-relaxed text-ink-600">
                 Le montant affiché est calculé selon le tarif choisi et la durée du séjour. Notre équipe confirmera les modalités de règlement après examen de votre demande.
               </p>
