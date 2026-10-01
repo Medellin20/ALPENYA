@@ -89,6 +89,7 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
         emails.push({ subject, data });
         return emailSent;
       },
+      sendReservationConfirmationEmail: async () => true,
     },
     '@/lib/utils/reservation-payment': pricing,
   });
@@ -128,7 +129,7 @@ test('Après insertion, l’action redirige vers la page d’attente avec la ré
   }
 
   assert.equal(s.inserts.length, 1);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
 });
 
 test('La demande envoie les détails du formulaire puis redirige vers l’étape de confirmation', async () => {
@@ -164,7 +165,7 @@ test('La demande envoie les détails du formulaire puis redirige vers l’étape
   assert.equal(s.emails[0].data['Caution'], 300);
   assert.equal(s.emails[0].data['Forfait ménage'], 125);
   assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
 });
 
 test('Un échec d’e-mail ne bloque pas la redirection de réservation', async () => {
@@ -185,7 +186,7 @@ test('Un échec d’e-mail ne bloque pas la redirection de réservation', async 
   });
 
   assert.equal(s.emails.length, 1);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
 });
 
 test('Une erreur SMTP détaillée est écrite dans la console sans exposer les identifiants', async () => {
@@ -307,7 +308,7 @@ test('Le flow réservation conserve le tarif choisi et envoie la demande depuis 
   assert.match(form, /handleSubmit\(onSubmit\)/);
   assert.match(form, /createReservation\(data, propertySlug\)/);
   assert.match(form, /key="send-request"/);
-  assert.match(form, /Valider et continuer/);
+  assert.match(form, /Confirmer la demande/);
   assert.match(form, /event\.preventDefault\(\)/);
   assert.match(form, /propertySlug/);
   const page = fs.readFileSync('app/(public)/appartements/[slug]/reserver/page.tsx', 'utf8');

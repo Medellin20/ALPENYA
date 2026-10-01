@@ -8,7 +8,7 @@ import { recordStatusChange } from '@/lib/data/history';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
-import { sendAdminAlert } from '@/lib/notifications/email';
+import { sendAdminAlert, sendReservationConfirmationEmail } from '@/lib/notifications/email';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
@@ -184,9 +184,15 @@ export async function createReservation(
     'Montant à régler (acompte + caution)': paymentAmount,
   });
 
+  const confirmationEmailSent = await sendReservationConfirmationEmail(
+    parsed.data.email,
+    parsed.data.firstName,
+    reference
+  );
+
   revalidatePath('/admin/reservations');
   revalidatePath('/admin/demandes-reservations');
   revalidatePath('/admin');
 
-  redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`);
+  redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${confirmationEmailSent ? 'sent' : 'failed'}`);
 }
