@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { CheckCircle2, Home } from 'lucide-react';
+import { Clock3, Home } from 'lucide-react';
 import { getReservationByReference } from '@/lib/data/dossier';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
 import { ReservationProgress } from '@/components/forms/reservation-progress';
@@ -11,7 +11,7 @@ import { formatDate } from '@/lib/utils/format';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = { title: 'Demande de réservation envoyée' };
+export const metadata = { title: 'Demande de réservation en attente de confirmation' };
 
 export default async function ReservationConfirmationPage({
   searchParams,
@@ -27,20 +27,22 @@ export default async function ReservationConfirmationPage({
   return (
     <div className="container-app flex min-h-[70vh] items-center justify-center py-6 sm:py-14">
       <div className="w-full max-w-2xl rounded-2xl border border-ink-100 bg-white p-4 text-center shadow-card sm:p-8">
-        <ReservationProgress activeStep={4} />
+        <ReservationProgress activeStep={3} />
 
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-canal-50 text-canal-600">
-          <CheckCircle2 className="h-7 w-7" />
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+          <Clock3 className="h-7 w-7" />
         </div>
 
-        <h1 className="mt-5 text-xl font-extrabold text-ink-900">Votre demande de réservation est envoyée</h1>
+        <h1 className="mt-5 text-xl font-extrabold text-ink-900">
+          Votre demande de réservation est en attente de confirmation
+        </h1>
 
         <p className="mt-2 text-sm text-ink-500">
-          Votre demande a bien été transmise à notre équipe. Aucun virement n’est à effectuer à cette étape ; notre équipe vous informera des prochaines démarches après examen de votre dossier.
+          Votre demande a bien été transmise à notre équipe. Elle sera confirmée après examen de votre dossier ; nous vous contacterons pour vous informer de la suite.
         </p>
 
-        <p className="mt-5 rounded-xl border border-canal-200 bg-canal-50 p-4 text-sm font-semibold leading-relaxed text-canal-800">
-          Notre équipe examinera votre dossier et vous informera de la suite donnée à votre demande.
+        <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-relaxed text-amber-800">
+          Aucun paiement n’est à effectuer avant la confirmation de votre réservation par notre équipe.
         </p>
 
         <p className="mt-2 text-sm text-ink-500">
@@ -51,7 +53,12 @@ export default async function ReservationConfirmationPage({
           <Row label="Logement" value={property?.title ?? '—'} />
           <Row label="Date de réservation" value={formatDate(reservation.desired_move_in_date)} />
           <Row label="Durée" value={`${reservation.duration_months} jour${reservation.duration_months > 1 ? 's' : ''}`} />
-          <Row label="Statut" value={RESERVATION_STATUS_LABELS[reservation.status] ?? reservation.status} />
+          <Row
+            label="Statut"
+            value={reservation.status === 'submitted'
+              ? 'En attente de confirmation'
+              : RESERVATION_STATUS_LABELS[reservation.status] ?? reservation.status}
+          />
         </div>
 
         {reservation.rental_amount !== null && reservation.payment_amount !== null && (

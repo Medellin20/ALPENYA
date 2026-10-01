@@ -242,7 +242,7 @@ test('Le serveur ne facture pas un forfait ménage absent de la configuration du
   assert.equal(s.inserts[0].payment_amount, 700);
 });
 
-test('La confirmation finale n’affiche plus le RIB et conserve le récapitulatif de réservation', () => {
+test('La confirmation finale annonce que la demande est en attente de confirmation', () => {
   const confirmation = fs.readFileSync(
     'app/(public)/appartements/[slug]/reserver/confirmation/page.tsx',
     'utf8'
@@ -251,7 +251,9 @@ test('La confirmation finale n’affiche plus le RIB et conserve le récapitulat
   const dataSource = fs.readFileSync('lib/data/dossier.ts', 'utf8');
 
   assert.doesNotMatch(confirmation, /BankTransferInstructions|BankSettings|RIB|virement à effectuer/);
-  assert.match(confirmation, /ReservationProgress activeStep=\{4\}/);
+  assert.match(confirmation, /ReservationProgress activeStep=\{3\}/);
+  assert.match(confirmation, /Votre demande de réservation est en attente de confirmation/);
+  assert.match(confirmation, /En attente de confirmation/);
   assert.match(confirmation, /reservation\.payment_amount/);
   assert.doesNotMatch(progress, /Paiement par RIB/);
   assert.match(progress, /'Récapitulatif'/);
