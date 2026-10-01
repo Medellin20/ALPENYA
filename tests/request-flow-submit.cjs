@@ -9,6 +9,7 @@ function harness(file, exportName) {
   let step = 0;
   let sends = 0;
   const pending = [];
+  const navigations = [];
   const component = () => null;
   const action = async () => {
     sends++;
@@ -22,7 +23,7 @@ function harness(file, exportName) {
       useTransition: () => [false, callback => pending.push(callback())],
     },
     'react/jsx-runtime': require('react/jsx-runtime'),
-    'next/navigation': { useRouter: () => ({ push: () => {} }) },
+    'next/navigation': { useRouter: () => ({ push: url => navigations.push(url) }) },
     'react-hook-form': { useForm: () => ({
       register: () => ({}), trigger: async () => true, watch: () => ({}),
       handleSubmit: callback => async () => callback({}), formState: { errors: {} },
@@ -75,7 +76,7 @@ function harness(file, exportName) {
       weeklyRates: [{ id: 'weekly', label: 'Tarif', amount: 100 }],
     },
   });
-  return { render, pending, sends: () => sends };
+  return { render, pending, sends: () => sends, navigations };
 }
 function find(node, predicate) {
   if (!node || typeof node !== 'object') return;
@@ -110,5 +111,8 @@ for (const [file, name] of [
     await send.props.onClick();
     await Promise.all(flow.pending);
     assert.equal(flow.sends(), 1);
+    if (name === 'ReservationForm') {
+      assert.deepEqual(flow.navigations, ['/confirmation']);
+    }
   });
 }

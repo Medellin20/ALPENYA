@@ -14,6 +14,29 @@ import {
   getReservationCleaningFee,
   getReservationRate,
 } from '@/lib/utils/reservation-payment';
+import type { PropertyType } from '@/types/database';
+
+const RESERVATION_RATE_LABELS: Partial<Record<PropertyType, Record<string, string>>> = {
+  chalet: {
+    lowSeason: 'Hors saison',
+    holidays: 'Noël et Nouvel An',
+    winter: 'De janvier à mars',
+  },
+  villa: {
+    summer: 'Juillet – août',
+    earlySummer: 'Mi-juin – début juillet',
+    september: 'Septembre',
+    lateSpring: 'Mai – début juin',
+  },
+  mobile_home: { weekly: 'Tarif de location' },
+};
+
+function getReservationRateLabel(propertyType: PropertyType, selectedRateId?: string) {
+  if (propertyType === 'furnished_studio') return 'Tarif mensuel';
+  return selectedRateId
+    ? RESERVATION_RATE_LABELS[propertyType]?.[selectedRateId] ?? 'Tarif sélectionné'
+    : 'Tarif sélectionné';
+}
 
 /**
  * Crée une demande de réservation de logement (dossier locataire). Le
@@ -72,9 +95,10 @@ export async function createReservation(
   const rentalAmount = rate
     ? calculateStayRentalAmount(rate.amount, parsed.data.durationDays, rate.unit)
     : null;
-  const paymentAmount = rentalAmount === null
+  const paymentBreakdown = rentalAmount === null
     ? null
-    : calculateReservationPayment(rentalAmount, cleaningFeeAmount).totalAmount;
+    : calculateReservationPayment(rentalAmount, cleaningFeeAmount);
+  const paymentAmount = paymentBreakdown?.totalAmount ?? null;
 
   const reservationPayload = {
     reference,
@@ -137,7 +161,12 @@ export async function createReservation(
     Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
     Occupants: parsed.data.occupantsCount,
     'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
+    'Période tarifaire': getReservationRateLabel(property.property_type, parsed.data.selectedRateId),
+    'Tarif de base': rate ? `${rate.amount} € / ${rate.unit === 'week' ? 'semaine' : 'mois'}` : null,
     'Montant du séjour': rentalAmount,
+    'Acompte (40 %)': paymentBreakdown?.depositAmount,
+    Caution: paymentBreakdown?.guaranteeAmount,
+    'Ménage demandé': parsed.data.hasCleaningFee ? 'Oui' : 'Non',
     'Forfait ménage': cleaningFeeAmount > 0 ? cleaningFeeAmount : 'Non',
     'Montant à régler (acompte + caution)': paymentAmount,
   });

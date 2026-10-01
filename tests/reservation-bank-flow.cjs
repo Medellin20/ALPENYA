@@ -21,7 +21,7 @@ function load(file, imports) {
 
 const pricing = load('lib/utils/reservation-payment.ts', {});
 
-function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
+function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true } = {}) {
   const inserts = [];
   const emails = [];
   const reservation = { id: 'reservation-1' };
@@ -71,7 +71,12 @@ function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
     '@/lib/data/history': { recordStatusChange: async () => {} },
     '@/lib/validations/reservation': { reservationSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'REN-2026-123456' },
-    '@/lib/notifications/email': { sendAdminAlert: async (subject, data) => emails.push({ subject, data }) },
+    '@/lib/notifications/email': {
+      sendAdminAlert: async (subject, data) => {
+        emails.push({ subject, data });
+        return emailSent;
+      },
+    },
     '@/lib/utils/reservation-payment': pricing,
   });
   return { action, inserts, emails };
@@ -100,12 +105,42 @@ test('La demande envoie l’alerte et retourne explicitement l’URL de l’éta
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
   assert.equal(s.inserts[0].payment_amount, 825);
   assert.equal(s.emails.length, 1);
+  assert.equal(s.emails[0].data['Client'], 'Camille Martin');
+  assert.equal(s.emails[0].data['Email'], 'camille@example.com');
+  assert.equal(s.emails[0].data['Téléphone'], '+33600000000');
+  assert.equal(s.emails[0].data['Période tarifaire'], 'Hors saison');
+  assert.equal(s.emails[0].data['Tarif de base'], '700 € / semaine');
+  assert.equal(s.emails[0].data['Acompte (40 %)'], 400);
+  assert.equal(s.emails[0].data['Caution'], 300);
+  assert.equal(s.emails[0].data['Ménage demandé'], 'Oui');
   assert.equal(s.emails[0].data['Forfait ménage'], 125);
   assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
   assert.equal(
     result.data.confirmationUrl,
     '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=camille%40example.com'
   );
+});
+
+test('Si l’e-mail configuré ne peut pas être envoyé, la demande ne renvoie pas une URL de confirmation', async () => {
+  const s = setup({ emailSent: false });
+
+  const result = await s.action.createReservation({
+    propertyId: 'property-1',
+    firstName: 'Camille',
+    lastName: 'Martin',
+    email: 'camille@example.com',
+    phone: '+33600000000',
+    desiredMoveInDate: '2026-12-20',
+    durationDays: 10,
+    occupantsCount: 2,
+    hasPets: false,
+    hasCleaningFee: true,
+    selectedRateId: 'lowSeason',
+  }, 'chalet');
+
+  assert.equal(s.emails.length, 1);
+  assert.equal(result.success, false);
+  assert.equal(result.data, undefined);
 });
 
 test('Sans sélection du client, aucun forfait ménage n’est ajouté au montant', async () => {
