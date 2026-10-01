@@ -10,14 +10,19 @@ function harness(file, exportName) {
   let sends = 0;
   const pending = [];
   const component = () => null;
-  const action = async () => { sends++; return { success: true }; };
+  const action = async () => {
+    sends++;
+    return { success: true, data: { confirmationUrl: '/confirmation' } };
+  };
   const imports = {
     react: {
       ...React,
       useState: () => [step, setter => { step = typeof setter === 'function' ? setter(step) : setter; }],
+      useRef: initialValue => ({ current: initialValue }),
       useTransition: () => [false, callback => pending.push(callback())],
     },
     'react/jsx-runtime': require('react/jsx-runtime'),
+    'next/navigation': { useRouter: () => ({ push: () => {} }) },
     'react-hook-form': { useForm: () => ({
       register: () => ({}), trigger: async () => true, watch: () => ({}),
       handleSubmit: callback => async () => callback({}), formState: { errors: {} },
@@ -37,7 +42,17 @@ function harness(file, exportName) {
     '@/components/ui/button': { Button: component },
     '@/lib/utils/constants': { TIME_SLOTS: [] },
     '@/lib/utils/cn': { cn: () => '' },
+    '@/lib/utils/format': { formatPrice: () => '' },
+    '@/lib/utils/reservation-payment': {
+      calculateReservationPayment: () => ({
+        rentalAmount: 0, depositAmount: 0, guaranteeAmount: 0, cleaningFee: 0, totalAmount: 0,
+      }),
+      calculateStayRentalAmount: () => 0,
+      getReservationCleaningFee: () => 0,
+      RESERVATION_GUARANTEE_AMOUNT: 0,
+    },
     '@/components/forms/reservation-payment-notice': { ReservationPaymentNotice: component },
+    '@/components/forms/reservation-progress': { ReservationProgress: component },
   };
   const context = { exports: {}, require: name => {
     assert.ok(name in imports, `Unexpected import: ${name}`);
@@ -46,7 +61,20 @@ function harness(file, exportName) {
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX },
   }).outputText, context);
-  const render = () => context.exports[exportName]({ propertyId: 'id', propertySlug: 'slug', propertyTitle: 'Logement' });
+  const render = () => context.exports[exportName]({
+    propertyId: 'id',
+    propertySlug: 'slug',
+    propertyTitle: 'Logement',
+    pricing: {
+      propertyType: 'chalet',
+      monthlyPrice: 100,
+      depositAmount: 100,
+      viewingFee: 100,
+      serviceCharges: 100,
+      cleaningFee: 0,
+      weeklyRates: [{ id: 'weekly', label: 'Tarif', amount: 100 }],
+    },
+  });
   return { render, pending, sends: () => sends };
 }
 function find(node, predicate) {
