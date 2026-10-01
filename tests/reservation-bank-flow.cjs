@@ -24,7 +24,6 @@ const pricing = load('lib/utils/reservation-payment.ts', {});
 function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
   const inserts = [];
   const emails = [];
-  const redirects = [];
   const reservation = { id: 'reservation-1' };
   const supabase = {
     createAdminClient: () => ({
@@ -66,12 +65,6 @@ function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
     }),
   };
   const action = load('actions/reservations.ts', {
-    'next/navigation': {
-      redirect: url => {
-        redirects.push(url);
-        throw new Error('redirected');
-      },
-    },
     'next/cache': { revalidatePath: () => {} },
     '@/lib/supabase/admin': supabase,
     '@/lib/data/clients': { upsertClient: async () => ({ id: 'client-1' }) },
@@ -81,14 +74,13 @@ function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
     '@/lib/notifications/email': { sendAdminAlert: async (subject, data) => emails.push({ subject, data }) },
     '@/lib/utils/reservation-payment': pricing,
   });
-  return { action, inserts, emails, redirects };
+  return { action, inserts, emails };
 }
 
-test('Le clic de soumission conserve l’envoi du mail et affiche le RIB avec le total exact', async () => {
+test('La demande envoie l’alerte et retourne explicitement l’URL de l’étape RIB', async () => {
   const s = setup();
 
-  await assert.rejects(
-    s.action.createReservation({
+  const result = await s.action.createReservation({
       propertyId: 'property-1',
       firstName: 'Camille',
       lastName: 'Martin',
@@ -100,10 +92,9 @@ test('Le clic de soumission conserve l’envoi du mail et affiche le RIB avec le
       hasPets: false,
       hasCleaningFee: true,
       selectedRateId: 'lowSeason',
-    }, 'chalet'),
-    /redirected/
-  );
+    }, 'chalet');
 
+  assert.equal(result.success, true);
   assert.equal(s.inserts[0].rental_amount, 1000);
   assert.equal(s.inserts[0].has_cleaning_fee, true);
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
@@ -111,14 +102,16 @@ test('Le clic de soumission conserve l’envoi du mail et affiche le RIB avec le
   assert.equal(s.emails.length, 1);
   assert.equal(s.emails[0].data['Forfait ménage'], 125);
   assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
-  assert.equal(s.redirects[0], '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=camille%40example.com');
+  assert.equal(
+    result.data.confirmationUrl,
+    '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=camille%40example.com'
+  );
 });
 
 test('Sans sélection du client, aucun forfait ménage n’est ajouté au montant', async () => {
   const s = setup({ hasCleaningFee: false });
 
-  await assert.rejects(
-    s.action.createReservation({
+  const result = await s.action.createReservation({
       propertyId: 'property-1',
       firstName: 'Camille',
       lastName: 'Martin',
@@ -130,10 +123,9 @@ test('Sans sélection du client, aucun forfait ménage n’est ajouté au montan
       hasPets: false,
       hasCleaningFee: false,
       selectedRateId: 'lowSeason',
-    }, 'chalet'),
-    /redirected/
-  );
+    }, 'chalet');
 
+  assert.equal(result.success, true);
   assert.equal(s.inserts[0].has_cleaning_fee, false);
   assert.equal(s.inserts[0].cleaning_fee_amount, 0);
   assert.equal(s.inserts[0].payment_amount, 700);
@@ -142,8 +134,7 @@ test('Sans sélection du client, aucun forfait ménage n’est ajouté au montan
 test('Le serveur ne facture pas un forfait ménage absent de la configuration du logement', async () => {
   const s = setup({ serviceCharges: 0 });
 
-  await assert.rejects(
-    s.action.createReservation({
+  const result = await s.action.createReservation({
       propertyId: 'property-1',
       firstName: 'Camille',
       lastName: 'Martin',
@@ -155,10 +146,9 @@ test('Le serveur ne facture pas un forfait ménage absent de la configuration du
       hasPets: false,
       hasCleaningFee: true,
       selectedRateId: 'lowSeason',
-    }, 'chalet'),
-    /redirected/
-  );
+    }, 'chalet');
 
+  assert.equal(result.success, true);
   assert.equal(s.inserts[0].has_cleaning_fee, false);
   assert.equal(s.inserts[0].cleaning_fee_amount, 0);
   assert.equal(s.inserts[0].payment_amount, 700);
@@ -186,4 +176,5 @@ test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi',
   assert.match(form, /register\('selectedRateId'\)/);
   assert.match(form, /handleSubmit\(onSubmit\)/);
   assert.match(form, /createReservation\(data, propertySlug\)/);
+  assert.match(form, /router\.push\(result\.data\.confirmationUrl\)/);
 });

@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, ClipboardList, FileCheck2, User } from 'lucide-react';
@@ -39,6 +40,7 @@ export function ReservationForm({
   propertyTitle: string;
   pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
+  const router = useRouter();
   const [step, setStep] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
   const availableWeeklyRates = pricing.weeklyRates.filter((rate) => rate.amount > 0);
@@ -93,7 +95,9 @@ export function ReservationForm({
       const result = await createReservation(data, propertySlug);
       if (result && !result.success) {
         toast.error(result.message);
+        return;
       }
+      if (result?.data?.confirmationUrl) router.push(result.data.confirmationUrl);
     });
   }
 

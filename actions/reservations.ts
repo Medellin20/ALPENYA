@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { upsertClient } from '@/lib/data/clients';
@@ -20,7 +19,10 @@ import {
  * Crée une demande de réservation de logement (dossier locataire). Le
  * La demande est ensuite examinée et traitée manuellement par l'agence.
  */
-export async function createReservation(input: ReservationInput, propertySlug: string): Promise<ActionResult> {
+export async function createReservation(
+  input: ReservationInput,
+  propertySlug: string
+): Promise<ActionResult<{ confirmationUrl: string }>> {
   const parsed = reservationSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -143,9 +145,13 @@ export async function createReservation(input: ReservationInput, propertySlug: s
   revalidatePath('/admin/reservations');
   revalidatePath('/admin');
 
-  redirect(
-    `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${encodeURIComponent(
-      parsed.data.email
-    )}`
-  );
+  return {
+    success: true,
+    message: 'Votre demande a bien été envoyée.',
+    data: {
+      confirmationUrl: `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${encodeURIComponent(
+        parsed.data.email
+      )}`,
+    },
+  };
 }
