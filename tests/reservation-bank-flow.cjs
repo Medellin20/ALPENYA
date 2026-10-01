@@ -248,16 +248,14 @@ test('La confirmation finale annonce que la demande est en attente de confirmati
     'utf8'
   );
   const progress = fs.readFileSync('components/forms/reservation-progress.tsx', 'utf8');
-  const dataSource = fs.readFileSync('lib/data/dossier.ts', 'utf8');
 
-  assert.doesNotMatch(confirmation, /BankTransferInstructions|BankSettings|RIB|virement à effectuer/);
+  assert.doesNotMatch(confirmation, /BankTransferInstructions|BankSettings|RIB|virement à effectuer|getReservationByReference/);
   assert.match(confirmation, /ReservationProgress activeStep=\{3\}/);
-  assert.match(confirmation, /Votre demande de réservation est en attente de confirmation/);
-  assert.match(confirmation, /En attente de confirmation/);
-  assert.match(confirmation, /reservation\.payment_amount/);
+  assert.match(confirmation, /en attente de confirmation/);
+  assert.match(confirmation, /attente de confirmation par notre équipe/);
+  assert.match(confirmation, /searchParams\.ref/);
   assert.doesNotMatch(progress, /Paiement par RIB/);
   assert.match(progress, /'Récapitulatif'/);
-  assert.match(dataSource, /\.select\('\*, properties/);
 });
 
 test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi', () => {
