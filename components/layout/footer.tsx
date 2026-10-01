@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Facebook, Home, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Facebook, Home, Instagram, Linkedin, Mail } from 'lucide-react';
 
 const COLUMN_LINKS = [
   { href: '/', label: 'Accueil' },
@@ -96,15 +96,6 @@ export function Footer() {
               >
                 <Mail className="h-4 w-4 shrink-0" />
                 contacts@alpenia-residences.com
-              </a>
-            </li>
-            <li>
-              <a
-                href="tel:+31201234567"
-                className="flex items-center gap-2.5 text-sm text-sand-300 transition-colors hover:text-white"
-              >
-                <Phone className="h-4 w-4 shrink-0" />
-                +33 1 23 45 67 89
               </a>
             </li>
           </ul>
