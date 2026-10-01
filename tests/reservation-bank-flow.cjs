@@ -287,23 +287,24 @@ test('La confirmation finale annonce que la demande est en attente de confirmati
   const progress = fs.readFileSync('components/forms/reservation-progress.tsx', 'utf8');
 
   assert.doesNotMatch(confirmation, /BankTransferInstructions|BankSettings|RIB|virement à effectuer|getReservationByReference/);
-  assert.match(confirmation, /ReservationProgress activeStep=\{4\}/);
+  assert.match(confirmation, /ReservationProgress activeStep=\{3\}/);
   assert.match(confirmation, /en attente de confirmation/);
   assert.match(confirmation, /attente de confirmation par notre équipe/);
   assert.match(confirmation, /searchParams\.ref/);
   assert.doesNotMatch(progress, /Paiement par RIB/);
-  assert.match(progress, /'Récapitulatif', 'Confirmation'/);
+  assert.match(progress, /'Vos coordonnées', 'Votre projet', 'Récapitulatif'/);
+  assert.doesNotMatch(progress, /'Confirmation'/);
 });
 
-test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi', () => {
+test('Le flow réservation conserve le tarif choisi et supprime le bouton d’envoi final', () => {
   const form = fs.readFileSync('components/forms/reservation-form.tsx', 'utf8');
   assert.match(form, /const FORM_STEP_COUNT = 3/);
   assert.match(form, /register\('selectedRateId'\)/);
-  assert.match(form, /handleSubmit\(onSubmit\)/);
-  assert.match(form, /createReservation\(data, propertySlug\)/);
-  assert.match(form, /startTransition\(async \(\) =>/);
-  assert.doesNotMatch(form, /router\.push/);
-  assert.match(fs.readFileSync('actions/reservations.ts', 'utf8'), /sendAdminAlert/);
+  assert.doesNotMatch(form, /handleSubmit|createReservation|send-request|Valider et continuer|Envoyer ma demande/);
+  assert.match(form, /event\.preventDefault\(\)/);
+  assert.doesNotMatch(form, /propertySlug/);
+  const page = fs.readFileSync('app/(public)/appartements/[slug]/reserver/page.tsx', 'utf8');
+  assert.doesNotMatch(page, /propertySlug=/);
 });
 
 test('Le récapitulatif affiche le RIB sans les messages de précaution supprimés', () => {
