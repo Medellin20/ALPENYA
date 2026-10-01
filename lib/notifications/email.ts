@@ -9,6 +9,39 @@ function escapeHtml(value: string) {
   })[character] as string);
 }
 
+function getSafeErrorDetails(error: unknown, secrets: string[]) {
+  const errorObject = error !== null && typeof error === 'object'
+    ? error as {
+        name?: unknown;
+        message?: unknown;
+        code?: unknown;
+        command?: unknown;
+        responseCode?: unknown;
+        response?: unknown;
+        stack?: unknown;
+      }
+    : undefined;
+  const redact = (value: unknown) => {
+    if (typeof value !== 'string') return value;
+    return secrets.reduce(
+      (safeValue, secret) => secret ? safeValue.split(secret).join('[masqué]') : safeValue,
+      value
+    );
+  };
+
+  if (!errorObject) return { error: redact(String(error)) };
+
+  return {
+    name: redact(errorObject.name ?? 'Error'),
+    message: redact(errorObject.message ?? String(error)),
+    code: errorObject.code,
+    command: errorObject.command,
+    responseCode: errorObject.responseCode,
+    response: redact(errorObject.response),
+    stack: redact(errorObject.stack),
+  };
+}
+
 /** Envoie une alerte sans jamais bloquer la création d'un dossier client. */
 export async function sendAdminAlert(subject: string, details: AlertDetails): Promise<boolean> {
   const user = process.env.GMAIL_USER?.trim();
@@ -17,7 +50,16 @@ export async function sendAdminAlert(subject: string, details: AlertDetails): Pr
   const recipient = process.env.ALERT_EMAIL?.trim();
 
   if (!user || !appPassword || !recipient) {
-    console.error('Alerte e-mail non envoyée : configuration Gmail incomplète.');
+    const missingSettings = [
+      ['GMAIL_USER', user],
+      ['GMAIL_APP_PASSWORD', appPassword],
+      ['ALERT_EMAIL', recipient],
+    ]
+      .filter(([, value]) => !value)
+      .map(([name]) => name);
+    console.error(
+      `Alerte e-mail non envoyée : configuration Gmail incomplète. Paramètre(s) absent(s) : ${missingSettings.join(', ')}.`
+    );
     return false;
   }
 
@@ -44,7 +86,10 @@ export async function sendAdminAlert(subject: string, details: AlertDetails): Pr
     });
     return true;
   } catch (error) {
-    console.error('Échec de l’envoi de l’alerte Gmail :', error);
+    console.error(
+      'Échec de l’envoi de l’alerte Gmail. Détails SMTP :',
+      getSafeErrorDetails(error, [user, recipient, appPassword, process.env.GMAIL_APP_PASSWORD ?? ''])
+    );
     return false;
   }
 }
