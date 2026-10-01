@@ -3,41 +3,16 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { upsertClient } from '@/lib/data/clients';
-import { recordStatusChange } from '@/lib/data/history';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
-import { sendAdminAlert, sendReservationConfirmationEmail } from '@/lib/notifications/email';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
   getReservationCleaningFee,
   getReservationRate,
 } from '@/lib/utils/reservation-payment';
-import type { PropertyType } from '@/types/database';
 
-const RESERVATION_RATE_LABELS: Partial<Record<PropertyType, Record<string, string>>> = {
-  chalet: {
-    lowSeason: 'Hors saison',
-    holidays: 'Noël et Nouvel An',
-    winter: 'De janvier à mars',
-  },
-  villa: {
-    summer: 'Juillet – août',
-    earlySummer: 'Mi-juin – début juillet',
-    september: 'Septembre',
-    lateSpring: 'Mai – début juin',
-  },
-  mobile_home: { weekly: 'Tarif de location' },
-};
-
-function getReservationRateLabel(propertyType: PropertyType, selectedRateId?: string) {
-  if (propertyType === 'furnished_studio') return 'Tarif mensuel';
-  return selectedRateId
-    ? RESERVATION_RATE_LABELS[propertyType]?.[selectedRateId] ?? 'Tarif sélectionné'
-    : 'Tarif sélectionné';
-}
 /**
  * Crée une demande de réservation de logement (dossier locataire). Le
  * La demande est ensuite examinée et traitée manuellement par l'agence.
@@ -67,13 +42,6 @@ export async function createReservation(
     return { success: false, message: 'Ce logement n’est plus disponible.' };
   }
 
-  const client = await upsertClient({
-    firstName: parsed.data.firstName,
-    lastName: parsed.data.lastName,
-    email: parsed.data.email,
-    phone: parsed.data.phone,
-  });
-
   const reference = generateReference('REN');
   const rate = getReservationRate({
     propertyType: property.property_type,
@@ -100,43 +68,6 @@ export async function createReservation(
     : calculateReservationPayment(rentalAmount, cleaningFeeAmount);
   const paymentAmount = paymentBreakdown?.totalAmount ?? null;
 
-  const legacyReservationPayload = {
-    reference,
-    property_id: property.id,
-    client_id: client.id,
-    desired_move_in_date: parsed.data.desiredMoveInDate,
-    // Colonne historique conservée pour les parcours existants.
-    duration_months: parsed.data.durationDays,
-    occupants_count: parsed.data.occupantsCount,
-    has_pets: parsed.data.hasPets,
-    has_cleaning_fee: cleaningFeeAmount > 0,
-    cleaning_fee_amount: cleaningFeeAmount,
-    rental_amount: rentalAmount,
-    payment_amount: paymentAmount,
-    status: 'submitted' as const,
-  };
-
-  let { data: reservation, error: insertError } = await supabase
-    .from('reservations')
-    .insert(legacyReservationPayload)
-    .select('*')
-    .single();
-
-  if (insertError?.code === 'PGRST204' || insertError?.code === '42703') {
-    const { has_pets: _hasPets, ...legacyPayload } = legacyReservationPayload;
-    const legacyInsert = await supabase
-      .from('reservations')
-      .insert({ ...legacyPayload, message: parsed.data.hasPets ? 'ANIMAUX_DE_COMPAGNIE_OUI' : 'ANIMAUX_DE_COMPAGNIE_NON' })
-      .select('*')
-      .single();
-    reservation = legacyInsert.data;
-    insertError = legacyInsert.error;
-  }
-
-  if (insertError || !reservation) {
-    return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
-  }
-
   const requestPayload = {
     reference,
     property_id: property.id,
@@ -160,39 +91,11 @@ export async function createReservation(
     .from('reservation_requests')
     .insert(requestPayload);
 
-  if (requestError) return { success: false, message: 'La réservation a été enregistrée, mais sa copie de suivi n’a pas pu être créée.' };
-
-  await recordStatusChange({ entityType: 'reservation', entityId: reservation.id, fromStatus: null, toStatus: 'submitted', changedBy: 'client' });
-
-  await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
-    Référence: reference,
-    Logement: property.title,
-    Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
-    Email: parsed.data.email,
-    Téléphone: parsed.data.phone,
-    'Date de réservation': parsed.data.desiredMoveInDate,
-    Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
-    Occupants: parsed.data.occupantsCount,
-    'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
-    'Période tarifaire': getReservationRateLabel(property.property_type, parsed.data.selectedRateId),
-    'Tarif de base': rate ? `${rate.amount} € / ${rate.unit === 'week' ? 'semaine' : 'mois'}` : null,
-    'Montant du séjour': rentalAmount,
-    'Acompte (40 %)': paymentBreakdown?.depositAmount,
-    Caution: paymentBreakdown?.guaranteeAmount,
-    'Ménage demandé': parsed.data.hasCleaningFee ? 'Oui' : 'Non',
-    'Forfait ménage': cleaningFeeAmount > 0 ? cleaningFeeAmount : 'Non',
-    'Montant à régler (acompte + caution)': paymentAmount,
-  });
-
-  const confirmationEmailSent = await sendReservationConfirmationEmail(
-    parsed.data.email,
-    parsed.data.firstName,
-    reference
-  );
+  if (requestError) return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
 
   revalidatePath('/admin/reservations');
   revalidatePath('/admin/demandes-reservations');
   revalidatePath('/admin');
 
-  redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${confirmationEmailSent ? 'sent' : 'failed'}`);
+  redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`);
 }

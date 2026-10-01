@@ -93,38 +93,3 @@ export async function sendAdminAlert(subject: string, details: AlertDetails): Pr
     return false;
   }
 }
-
-/** Confirme au demandeur que sa demande de réservation a été enregistrée. */
-export async function sendReservationConfirmationEmail(
-  recipient: string,
-  firstName: string,
-  reference: string
-): Promise<boolean> {
-  const user = process.env.GMAIL_USER?.trim();
-  const appPassword = process.env.GMAIL_APP_PASSWORD?.replace(/[\s-]/g, '');
-  if (!user || !appPassword) return false;
-
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user, pass: appPassword },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-    });
-    await transporter.sendMail({
-      from: `ALPENIA <${user}>`,
-      to: recipient,
-      subject: `Confirmation de votre demande de réservation — ${reference}`,
-      text: `Bonjour ${firstName},\n\nVotre demande de réservation ${reference} a bien été enregistrée. Notre équipe l’examinera et vous contactera pour la suite.\n\nALPENIA`,
-      html: `<div style="font-family:Arial,sans-serif;color:#263238"><p>Bonjour ${escapeHtml(firstName)},</p><p>Votre demande de réservation <strong>${escapeHtml(reference)}</strong> a bien été enregistrée. Notre équipe l’examinera et vous contactera pour la suite.</p><p>ALPENIA</p></div>`,
-    });
-    return true;
-  } catch (error) {
-    console.error(
-      'Échec de l’envoi de la confirmation de réservation. Détails SMTP :',
-      getSafeErrorDetails(error, [user, appPassword, process.env.GMAIL_APP_PASSWORD ?? ''])
-    );
-    return false;
-  }
-}

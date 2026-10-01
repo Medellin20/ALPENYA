@@ -10,14 +10,14 @@ export const metadata = { title: 'Demande de réservation en attente de confirma
 export default function ReservationConfirmationPage({
   searchParams,
 }: {
-  searchParams: { ref?: string; email?: string };
+  searchParams: { ref?: string };
 }) {
   if (!searchParams.ref) notFound();
 
   return (
     <div className="container-app flex min-h-[70vh] items-center justify-center py-6 sm:py-14">
       <div className="w-full max-w-2xl rounded-2xl border border-ink-100 bg-white p-4 text-center shadow-card sm:p-8">
-        <ReservationConfirmationToast emailSent={searchParams.email === 'sent'} />
+        <ReservationConfirmationToast />
         <ReservationProgress activeStep={3} />
 
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600">

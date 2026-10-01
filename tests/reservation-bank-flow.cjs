@@ -23,11 +23,9 @@ function load(file, imports) {
 
 const pricing = load('lib/utils/reservation-payment.ts', {});
 
-function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true } = {}) {
-  const inserts = [];
+function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
   const requestInserts = [];
   const emails = [];
-  const reservation = { id: 'reservation-1' };
   const supabase = {
     createAdminClient: () => ({
       from: table => {
@@ -56,17 +54,7 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
         if (table === 'reservation_requests') {
           return { insert: data => { requestInserts.push(data); return Promise.resolve({ error: null }); } };
         }
-        assert.equal(table, 'reservations');
-        return {
-          insert: data => {
-            inserts.push(data);
-            return {
-              select: () => ({
-                single: async () => ({ data: reservation, error: null }),
-              }),
-            };
-          },
-        };
+        assert.fail(`Écriture inattendue dans ${table}`);
       },
     }),
   };
@@ -80,20 +68,14 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
       },
     },
     '@/lib/supabase/admin': supabase,
-    '@/lib/data/clients': { upsertClient: async () => ({ id: 'client-1' }) },
-    '@/lib/data/history': { recordStatusChange: async () => {} },
     '@/lib/validations/reservation': { reservationSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'REN-2026-123456' },
     '@/lib/notifications/email': {
-      sendAdminAlert: async (subject, data) => {
-        emails.push({ subject, data });
-        return emailSent;
-      },
-      sendReservationConfirmationEmail: async () => true,
+      sendAdminAlert: async (subject, data) => { emails.push({ subject, data }); return true; },
     },
     '@/lib/utils/reservation-payment': pricing,
   });
-  return { action, inserts, requestInserts, emails };
+  return { action, inserts: requestInserts, requestInserts, emails };
 }
 
 async function captureReservationRedirect(action, data) {
@@ -129,10 +111,10 @@ test('Après insertion, l’action redirige vers la page d’attente avec la ré
   }
 
   assert.equal(s.inserts.length, 1);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('La demande envoie les détails du formulaire puis redirige vers l’étape de confirmation', async () => {
+test('La demande complète est enregistrée une seule fois sans e-mail puis redirige vers la confirmation', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -149,27 +131,25 @@ test('La demande envoie les détails du formulaire puis redirige vers l’étape
       selectedRateId: 'lowSeason',
     });
 
+  assert.equal(s.inserts[0].first_name, 'Camille');
+  assert.equal(s.inserts[0].last_name, 'Martin');
+  assert.equal(s.inserts[0].email, 'camille@example.com');
+  assert.equal(s.inserts[0].phone, '+33600000000');
+  assert.equal(s.inserts[0].desired_move_in_date, '2026-12-20');
+  assert.equal(s.inserts[0].duration_days, 10);
+  assert.equal(s.inserts[0].occupants_count, 2);
+  assert.equal(s.inserts[0].selected_rate_id, 'lowSeason');
   assert.equal(s.inserts[0].rental_amount, 1000);
   assert.equal(s.inserts[0].has_cleaning_fee, true);
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
   assert.equal(s.inserts[0].payment_amount, 825);
-  assert.equal(s.emails.length, 1);
-  assert.equal(s.emails[0].subject, 'Nouvelle réservation — REN-2026-123456');
-  assert.equal(s.emails[0].data['Client'], 'Camille Martin');
-  assert.equal(s.emails[0].data['Email'], 'camille@example.com');
-  assert.equal(s.emails[0].data['Téléphone'], '+33600000000');
-  assert.equal(s.emails[0].data['Date de réservation'], '2026-12-20');
-  assert.equal(s.emails[0].data['Période tarifaire'], 'Hors saison');
-  assert.equal(s.emails[0].data['Tarif de base'], '700 € / semaine');
-  assert.equal(s.emails[0].data['Acompte (40 %)'], 400);
-  assert.equal(s.emails[0].data['Caution'], 300);
-  assert.equal(s.emails[0].data['Forfait ménage'], 125);
-  assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
+  assert.equal(s.inserts.length, 1);
+  assert.equal(s.emails.length, 0);
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('Un échec d’e-mail ne bloque pas la redirection de réservation', async () => {
-  const s = setup({ emailSent: false });
+test('Le pop-up de confirmation est affiché sans envoyer de mail depuis le formulaire', async () => {
+  const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
     propertyId: 'property-1',
@@ -185,8 +165,10 @@ test('Un échec d’e-mail ne bloque pas la redirection de réservation', async 
     selectedRateId: 'lowSeason',
   });
 
-  assert.equal(s.emails.length, 1);
-  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456&email=sent');
+  assert.equal(s.emails.length, 0);
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
+  const popup = fs.readFileSync('components/forms/reservation-confirmation-toast.tsx', 'utf8');
+  assert.match(popup, /Vous recevrez un mail de confirmation dans un instant/);
 });
 
 test('Une erreur SMTP détaillée est écrite dans la console sans exposer les identifiants', async () => {
