@@ -255,9 +255,6 @@ export function ReservationForm({
                 cleaningFee={paymentBreakdown?.cleaningFee ?? 0}
                 totalAmount={paymentBreakdown?.totalAmount ?? null}
               />
-              <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-relaxed text-amber-800">
-                Le RIB est affiché à titre indicatif. N’effectuez aucun virement avant la confirmation de votre demande par notre équipe.
-              </p>
               {bankSettings ? (
                 <BankTransferInstructions
                   bankSettings={bankSettings}

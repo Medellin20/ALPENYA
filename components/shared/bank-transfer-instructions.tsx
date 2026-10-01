@@ -28,15 +28,11 @@ export function BankTransferInstructions({
         </div>
       )}
 
-      {amount !== null ? (
+      {amount !== null && (
         <div className="mt-4 flex flex-col gap-1 rounded-xl bg-ink-700 px-4 py-3.5 text-white min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
           <span className="text-sm font-medium">Montant à verser</span>
           <span className="text-lg font-extrabold">{formatPrice(amount)}</span>
         </div>
-      ) : (
-        <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm font-medium text-amber-800">
-          Le montant sera confirmé par notre équipe avant le virement.
-        </p>
       )}
 
       <div className="mt-4 space-y-3">

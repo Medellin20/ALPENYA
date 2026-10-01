@@ -306,11 +306,13 @@ test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi',
   assert.match(fs.readFileSync('actions/reservations.ts', 'utf8'), /sendAdminAlert/);
 });
 
-test('Le récapitulatif affiche le RIB sans demander de virement avant confirmation', () => {
+test('Le récapitulatif affiche le RIB sans les messages de précaution supprimés', () => {
   const form = fs.readFileSync('components/forms/reservation-form.tsx', 'utf8');
+  const bankTransferInstructions = fs.readFileSync('components/shared/bank-transfer-instructions.tsx', 'utf8');
   const page = fs.readFileSync('app/(public)/appartements/[slug]/reserver/page.tsx', 'utf8');
 
   assert.match(page, /getBankSettings\(\)/);
   assert.match(form, /<BankTransferInstructions[\s\S]*?amount=\{null\}/);
-  assert.match(form, /N’effectuez aucun virement avant la confirmation/);
+  assert.doesNotMatch(form, /RIB est affiché à titre indicatif|N’effectuez aucun virement/);
+  assert.doesNotMatch(bankTransferInstructions, /Le montant sera confirmé par notre équipe avant le virement/);
 });
