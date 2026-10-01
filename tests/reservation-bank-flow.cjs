@@ -127,7 +127,7 @@ test('Après insertion, l’action redirige vers la page d’attente avec la ré
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('La demande est enregistrée sans e-mail puis redirige vers l’étape de confirmation', async () => {
+test('La demande envoie les détails du formulaire puis redirige vers l’étape de confirmation', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -148,11 +148,22 @@ test('La demande est enregistrée sans e-mail puis redirige vers l’étape de c
   assert.equal(s.inserts[0].has_cleaning_fee, true);
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
   assert.equal(s.inserts[0].payment_amount, 825);
-  assert.equal(s.emails.length, 0);
+  assert.equal(s.emails.length, 1);
+  assert.equal(s.emails[0].subject, 'Nouvelle réservation — REN-2026-123456');
+  assert.equal(s.emails[0].data['Client'], 'Camille Martin');
+  assert.equal(s.emails[0].data['Email'], 'camille@example.com');
+  assert.equal(s.emails[0].data['Téléphone'], '+33600000000');
+  assert.equal(s.emails[0].data['Date de réservation'], '2026-12-20');
+  assert.equal(s.emails[0].data['Période tarifaire'], 'Hors saison');
+  assert.equal(s.emails[0].data['Tarif de base'], '700 € / semaine');
+  assert.equal(s.emails[0].data['Acompte (40 %)'], 400);
+  assert.equal(s.emails[0].data['Caution'], 300);
+  assert.equal(s.emails[0].data['Forfait ménage'], 125);
+  assert.equal(s.emails[0].data['Montant à régler (acompte + caution)'], 825);
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('L’absence de configuration e-mail ne bloque pas la redirection de réservation', async () => {
+test('Un échec d’e-mail ne bloque pas la redirection de réservation', async () => {
   const s = setup({ emailSent: false });
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -169,7 +180,7 @@ test('L’absence de configuration e-mail ne bloque pas la redirection de réser
     selectedRateId: 'lowSeason',
   });
 
-  assert.equal(s.emails.length, 0);
+  assert.equal(s.emails.length, 1);
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
@@ -292,5 +303,5 @@ test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi',
   assert.match(form, /createReservation\(data, propertySlug\)/);
   assert.match(form, /startTransition\(async \(\) =>/);
   assert.doesNotMatch(form, /router\.push/);
-  assert.doesNotMatch(fs.readFileSync('actions/reservations.ts', 'utf8'), /sendAdminAlert/);
+  assert.match(fs.readFileSync('actions/reservations.ts', 'utf8'), /sendAdminAlert/);
 });

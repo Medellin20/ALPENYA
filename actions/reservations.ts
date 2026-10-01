@@ -8,12 +8,36 @@ import { recordStatusChange } from '@/lib/data/history';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
+import { sendAdminAlert } from '@/lib/notifications/email';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
   getReservationCleaningFee,
   getReservationRate,
 } from '@/lib/utils/reservation-payment';
+import type { PropertyType } from '@/types/database';
+
+const RESERVATION_RATE_LABELS: Partial<Record<PropertyType, Record<string, string>>> = {
+  chalet: {
+    lowSeason: 'Hors saison',
+    holidays: 'Noël et Nouvel An',
+    winter: 'De janvier à mars',
+  },
+  villa: {
+    summer: 'Juillet – août',
+    earlySummer: 'Mi-juin – début juillet',
+    september: 'Septembre',
+    lateSpring: 'Mai – début juin',
+  },
+  mobile_home: { weekly: 'Tarif de location' },
+};
+
+function getReservationRateLabel(propertyType: PropertyType, selectedRateId?: string) {
+  if (propertyType === 'furnished_studio') return 'Tarif mensuel';
+  return selectedRateId
+    ? RESERVATION_RATE_LABELS[propertyType]?.[selectedRateId] ?? 'Tarif sélectionné'
+    : 'Tarif sélectionné';
+}
 /**
  * Crée une demande de réservation de logement (dossier locataire). Le
  * La demande est ensuite examinée et traitée manuellement par l'agence.
@@ -125,6 +149,26 @@ export async function createReservation(
     fromStatus: null,
     toStatus: 'submitted',
     changedBy: 'client',
+  });
+
+  await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
+    Référence: reference,
+    Logement: property.title,
+    Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
+    Email: parsed.data.email,
+    Téléphone: parsed.data.phone,
+    'Date de réservation': parsed.data.desiredMoveInDate,
+    Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
+    Occupants: parsed.data.occupantsCount,
+    'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
+    'Période tarifaire': getReservationRateLabel(property.property_type, parsed.data.selectedRateId),
+    'Tarif de base': rate ? `${rate.amount} € / ${rate.unit === 'week' ? 'semaine' : 'mois'}` : null,
+    'Montant du séjour': rentalAmount,
+    'Acompte (40 %)': paymentBreakdown?.depositAmount,
+    Caution: paymentBreakdown?.guaranteeAmount,
+    'Ménage demandé': parsed.data.hasCleaningFee ? 'Oui' : 'Non',
+    'Forfait ménage': cleaningFeeAmount > 0 ? cleaningFeeAmount : 'Non',
+    'Montant à régler (acompte + caution)': paymentAmount,
   });
 
   revalidatePath('/admin/reservations');
