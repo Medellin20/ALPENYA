@@ -1,31 +1,48 @@
 import type { Metadata } from 'next';
-import { Search, MessageCircle, Building2 } from 'lucide-react';
+import { Search, CalendarClock, FileCheck2, KeyRound, Building2, PenTool } from 'lucide-react';
 import { FadeIn } from '@/components/ui/fade-in';
 import { SectionHeading } from '@/components/ui/section-heading';
 
 export const metadata: Metadata = {
   title: 'Comment ça marche',
-  description: 'Découvrez comment parcourir les annonces ALPENIA et contacter notre équipe.',
+  description: 'Découvrez les étapes pour trouver, visiter et réserver votre chalet ou villa avec ALPENIA.',
 };
 
 const STEPS = [
   {
     icon: Search,
-    title: 'Parcourez les annonces',
+    title: 'Recherchez un logement',
     description:
       'Filtrez notre catalogue par ville, budget, nombre de chambres et type de logement pour trouver les annonces qui vous correspondent.',
   },
   {
     icon: Building2,
-    title: 'Consultez les détails',
+    title: 'Choisissez un chalet ou une villa',
     description:
       'Consultez les photos, la description détaillée, les équipements et la localisation approximative de chaque logement.',
   },
   {
-    icon: MessageCircle,
-    title: 'Posez vos questions',
+    icon: CalendarClock,
+    title: 'Réservez une visite',
     description:
-      'Contactez l’agence depuis le formulaire dédié. Notre équipe vous répondra au sujet des annonces et de leurs conditions.',
+      'Sélectionnez une date et un créneau horaire, renseignez vos coordonnées, puis envoyez votre demande.',
+  },
+  {
+    icon: PenTool,
+    title: 'Effectuez les formalités',
+    description:
+      'Indiquez simplement vos coordonnées, la date souhaitée et la durée de votre séjour.',
+  },
+  {
+    icon: FileCheck2,
+    title: 'Réservez le logement',
+    description:
+      'Une fois votre dossier examiné et accepté par notre équipe, votre demande de réservation est validée.',
+  },
+  {
+    icon: KeyRound,
+    title: 'Emménagez',
+    description: 'Votre dossier validé, l’agence organise manuellement les formalités et la remise des clés.',
   },
 ];
 
@@ -36,7 +53,7 @@ export default function CommentCaMarchePage() {
         <SectionHeading
           eyebrow="Notre processus"
           title="Comment ça marche"
-          description="Parcourez notre sélection de logements et contactez l’agence pour obtenir des renseignements."
+          description="De la première recherche à la remise des clés, voici comment se déroule votre parcours avec ALPENIA."
         />
       </FadeIn>
 

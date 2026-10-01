@@ -12,11 +12,19 @@ export default function ConditionsGeneralesPage() {
         services de mise en relation pour la location de chalets et villas en France.
       </p>
 
-      <h2>Demandes déjà enregistrées</h2>
+      <h2>Demandes de visite</h2>
       <p>
-        Les demandes de visite et de réservation soumises auparavant restent suivies par ALPENIA
-        selon les informations communiquées lors de leur enregistrement. Pour toute question sur un
-        dossier existant ou une annonce, utilisez le formulaire de contact du site.
+        Les frais de visite de 50 € sont réglés par virement avant le rendez-vous. Les coordonnées
+        bancaires et la référence à indiquer sont communiquées après l’envoi de la demande. Ces frais
+        sont remboursés si, lors de la visite, l’intérieur du logement ne correspond pas à ce qui a
+        été présenté. Le créneau demandé reste soumis à confirmation par ALPENIA.
+      </p>
+
+      <h2>Demandes de réservation</h2>
+      <p>
+        L’envoi d’une demande de réservation ne vaut pas acceptation définitive et ne nécessite
+        aucun paiement sur le site. ALPENIA examine le dossier, communique sa décision et
+        organise directement avec le client les éventuelles formalités ultérieures.
       </p>
 
       <h2>Responsabilité</h2>

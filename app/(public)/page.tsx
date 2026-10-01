@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { ArrowRight, ShieldCheck, Building2, Quote, Star, MapPin, MountainSnow, Palmtree, Caravan } from 'lucide-react';
+import { ArrowRight, ShieldCheck, KeyRound, CalendarCheck, Building2, Quote, Star, MapPin, MountainSnow, Palmtree, Caravan } from 'lucide-react';
 import { FadeIn } from '@/components/ui/fade-in';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -13,24 +13,29 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'ALPENIA — Biens à louer en France',
   description:
-    'Découvrez des chalets, villas, appartements meublés et mobil-homes en France. Comparez les annonces et contactez notre équipe.',
+    "Découvrez des chalets, villas, appartements meublés et mobil-homes en France. Visites, réservation et suivi réunis sur une plateforme claire.",
 };
 
 const STEPS = [
   {
     icon: Building2,
-    title: 'Explorez les annonces',
-    description: 'Filtrez notre catalogue par destination, budget et type de logement.',
+    title: 'Découvrez nos propriétés',
+    description: 'Choisissez votre type de logement, puis filtrez par destination, budget et capacité.',
   },
   {
-    icon: MountainSnow,
-    title: 'Comparez les logements',
-    description: 'Consultez les photos, équipements, tarifs et informations de chaque annonce.',
+    icon: CalendarCheck,
+    title: 'Réservez une visite',
+    description: 'Choisissez une date et un créneau, puis envoyez gratuitement votre demande à l’agence.',
   },
   {
     icon: ShieldCheck,
-    title: 'Contactez notre équipe',
-    description: 'Une question sur un logement ? Écrivez-nous depuis le formulaire de contact.',
+    title: 'Envoyez votre réservation',
+    description: 'Transmettez votre projet de location ; notre équipe examine ensuite votre dossier.',
+  },
+  {
+    icon: KeyRound,
+    title: 'Emménagez',
+    description: 'Votre dossier validé, récupérez les clés de votre nouveau logement.',
   },
 ];
 
@@ -56,7 +61,7 @@ export default async function HomePage() {
                 <span className="block font-light italic text-canal-300">autrement.</span>
               </h1>
               <p className="mt-8 max-w-md text-base leading-relaxed text-sand-200 sm:text-lg">
-                Des chalets, villas, appartements meublés et mobil-homes, sélectionnés avec exigence. Explorez les annonces et contactez notre équipe pour toute question.
+                Des chalets, villas, appartements meublés et mobil-homes, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
               </p>
             </div>
             <div className="mt-10 flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap sm:mt-12">
@@ -195,7 +200,7 @@ export default async function HomePage() {
             <SectionHeading
               eyebrow="Processus"
               title="Comment ça marche"
-              description="Parcourez notre sélection et échangez avec notre équipe si vous avez une question."
+              description="De la recherche à l’emménagement, un parcours pensé pour vous simplifier la vie."
               align="center"
               className="mx-auto"
             />
@@ -273,7 +278,7 @@ export default async function HomePage() {
                 Prêt à découvrir votre prochaine destination ?
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sand-200">
-              Parcourez nos annonces vérifiées et contactez l’agence pour toute question.
+                Parcourez nos annonces vérifiées et réservez une visite en quelques minutes.
               </p>
               <Button asChild variant="secondary" size="lg" className="mt-7 h-auto min-h-13 w-full whitespace-normal px-4 py-3 leading-snug sm:w-auto sm:px-7">
                 <Link href="/appartements">

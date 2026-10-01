@@ -70,6 +70,19 @@ export const REFUND_STATUS_LABELS: Record<string, string> & Record<RefundStatus,
   rejected: 'Refusé',
 };
 
+export const TIME_SLOTS = [
+  '09:00 - 09:30',
+  '10:00 - 10:30',
+  '11:00 - 11:30',
+  '13:00 - 13:30',
+  '14:00 - 14:30',
+  '15:00 - 15:30',
+  '16:00 - 16:30',
+  '17:00 - 17:30',
+];
+
+export const VIEWING_FEE_AMOUNT = 50;
+
 export const AMENITY_ICON_MAP: Record<string, string> = {
   wifi: 'Wifi',
   heating: 'Flame',

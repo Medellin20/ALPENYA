@@ -188,6 +188,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   <p className="mt-2 text-3xl font-extrabold text-ink-900">{formatPrice(property.monthly_price)} <span className="text-sm font-normal">/ {property.property_type === 'furnished_studio' ? 'mois' : 'semaine'}</span></p>
                   {property.service_charges > 0 && <p className="mt-3 text-sm text-ink-600">{property.property_type === 'furnished_studio' ? 'Charges mensuelles' : 'Forfait ménage'} : {formatPrice(property.service_charges)}</p>}
                   {property.deposit_amount > 0 && <p className="mt-2 text-sm text-ink-600">Dépôt de garantie : {formatPrice(property.deposit_amount)}</p>}
+                  {property.viewing_fee > 0 && <p className="mt-2 text-sm text-ink-600">Frais de visite : {formatPrice(property.viewing_fee)}</p>}
                 </div>
               ) : property.property_type === 'villa' ? (
                 <SeasonalPriceSelector
@@ -208,17 +209,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 />
               )}
               {isBookable ? (
-                <div className="mt-5">
+                <div className="mt-5 space-y-2.5">
                   <Button asChild className="w-full" size="lg">
-                    <Link href="/contact">
+                    <Link href={`/appartements/${property.slug}/reagir`}>
                       <MessageCircle className="h-4.5 w-4.5" />
-                      Contacter l’agence
+                      Répondre
                     </Link>
                   </Button>
                 </div>
               ) : (
                 <div className="mt-5 rounded-xl bg-sand-100 p-4 text-sm text-ink-500">
-                  Ce logement n’est pas disponible actuellement.
+                  Ce logement n’est plus disponible à la réservation pour le moment.
                 </div>
               )}
 

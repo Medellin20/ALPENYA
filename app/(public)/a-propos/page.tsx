@@ -42,8 +42,8 @@ export default function AProposPage() {
               Votre partenaire pour des lieux d’exception en France
             </h1>
             <p className="mt-4 max-w-xl text-sand-200">
-              ALPENIA accompagne les voyageurs dans la découverte de chalets et villas
-              soigneusement sélectionnés et répond à leurs questions sur les logements.
+              ALPENIA accompagne voyageurs et locataires dans la découverte, la visite et la
+              réservation de chalets et villas soigneusement sélectionnés.
             </p>
           </FadeIn>
         </div>
@@ -57,9 +57,9 @@ export default function AProposPage() {
               title="Rendre la location haut de gamme simple et transparente"
             />
             <p className="mt-4 leading-relaxed text-ink-500">
-              ALPENIA réunit sur une même plateforme des annonces vérifiées et les informations
-              nécessaires pour choisir un logement. Notre équipe reste joignable pour répondre aux
-              questions sur les annonces.
+              ALPENIA réunit sur une même plateforme des annonces vérifiées, un processus de visite
+              structuré et un suivi rigoureux de chaque réservation, de la première demande jusqu’à
+              la remise des clés.
             </p>
             <p className="mt-4 leading-relaxed text-ink-500">
               Nous travaillons avec des propriétaires et gestionnaires dans les destinations les

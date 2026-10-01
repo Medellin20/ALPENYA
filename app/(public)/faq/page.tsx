@@ -4,22 +4,42 @@ import { FadeIn } from '@/components/ui/fade-in';
 
 export const metadata: Metadata = {
   title: 'FAQ',
-  description: 'Questions fréquentes sur les annonces ALPENIA et la prise de contact avec notre équipe.',
+  description: 'Questions fréquentes sur les demandes de visite et de réservation chez ALPENIA.',
 };
 
 const CATEGORIES = [
   {
-    title: 'Annonces',
+    title: 'Visites',
     items: [
       {
-        question: 'Où trouver les informations sur un logement ?',
+        question: 'Comment réserver une visite ?',
         answer:
-          'Chaque fiche présente les photos, équipements, tarifs et principales caractéristiques du logement.',
+          'Depuis la fiche d’un logement, cliquez sur « Réserver une visite », choisissez une date et un créneau, puis envoyez votre demande. Notre équipe vous contacte ensuite pour confirmer le rendez-vous.',
       },
       {
-        question: 'Comment obtenir des renseignements complémentaires ?',
+        question: 'Comment régler les frais de visite ?',
         answer:
-          'Utilisez le formulaire de contact pour envoyer votre question à notre équipe.',
+          'Après l’envoi de votre demande, les coordonnées bancaires et votre référence de virement sont affichées. Les frais de visite sont à régler avant le rendez-vous et vous seront remboursés si l’intérieur du logement ne correspond pas à ce qui vous a été présenté.',
+      },
+      {
+        question: 'Puis-je changer la date de ma visite ?',
+        answer:
+          'Oui, contactez notre équipe via le formulaire de contact en indiquant votre référence de visite ; nous vous proposerons un nouveau créneau disponible.',
+      },
+    ],
+  },
+  {
+    title: 'Réservation',
+    items: [
+      {
+        question: 'Que se passe-t-il après l’envoi de ma demande de réservation ?',
+        answer:
+          'Notre équipe examine votre demande et vos dates de séjour, puis vous contacte pour organiser les formalités suivantes.',
+      },
+      {
+        question: 'Quels documents dois-je fournir ?',
+        answer:
+          'Selon le logement, une pièce d’identité, un justificatif de revenus et une lettre de recommandation ou de garant peuvent être demandés lors de la finalisation de votre dossier.',
       },
     ],
   },
@@ -29,7 +49,7 @@ const CATEGORIES = [
       {
         question: 'Sous quel délai recevrai-je une réponse à ma demande ?',
         answer:
-          'Nous répondons généralement aux messages envoyés via le formulaire de contact sous 48 heures ouvrées.',
+          'Nous répondons généralement aux demandes de visite et de réservation sous 48 heures ouvrées.',
       },
     ],
   },
@@ -44,7 +64,7 @@ export default function FaqPage() {
           Questions fréquentes
         </h1>
         <p className="mt-3 max-w-xl text-ink-500">
-          Tout ce qu’il faut savoir pour consulter nos annonces et contacter l’agence.
+          Tout ce qu’il faut savoir pour demander une visite ou réserver un logement.
         </p>
       </FadeIn>
 

@@ -10,6 +10,30 @@ import { createAdminClient } from '@/lib/supabase/admin';
  * jamais directement depuis le navigateur.
  */
 
+export async function getViewingByReference(reference: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('viewing_requests')
+    .select('*, properties(title, slug, city, viewing_fee), clients(first_name, last_name, email)')
+    .eq('reference', reference)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data;
+}
+
+export async function getReservationByReference(reference: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*, properties(title, slug, city, monthly_price, deposit_amount), clients(first_name, last_name, email)')
+    .eq('reference', reference)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data;
+}
+
 export async function getClientDossierByEmail(email: string) {
   const supabase = createAdminClient();
 

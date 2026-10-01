@@ -55,7 +55,7 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
         {dossier.reservations.length === 0 ? (
           <EmptyState
             title="Aucune réservation pour le moment"
-            description="Contactez notre équipe si vous souhaitez obtenir des renseignements sur nos logements."
+            description="Parcourez nos chalets et villas et démarrez votre prochaine réservation."
             action={
               <Button asChild><Link href="/appartements">Voir les chalets et villas</Link></Button>
             }
@@ -149,7 +149,7 @@ export default async function MonComptePage({ searchParams }: { searchParams: { 
         </h2>
 
         {dossier.viewings.length === 0 ? (
-          <EmptyState title="Aucune visite demandée" description="Les demandes de visite déjà enregistrées apparaîtront ici." />
+          <EmptyState title="Aucune visite demandée" description="Réservez une visite depuis la fiche d’un logement." />
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {dossier.viewings.map((viewing: any) => (
