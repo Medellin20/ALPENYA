@@ -43,8 +43,8 @@ export default async function ReservationConfirmationPage({
           Votre demande a bien été transmise à notre équipe. Vous trouverez ci-dessous les coordonnées bancaires et le montant du virement à effectuer.
         </p>
 
-        <p className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-relaxed text-red-700">
-          Si vous ne recevez pas une confirmation par mail ou par WhatsApp en moins de 24 h, sachez que votre dossier a été rejeté.
+        <p className="mt-5 rounded-xl border border-canal-200 bg-canal-50 p-4 text-sm font-semibold leading-relaxed text-canal-800">
+          Notre équipe examinera votre dossier et vous informera de la suite donnée à votre demande.
         </p>
 
         <p className="mt-2 text-sm text-ink-500">

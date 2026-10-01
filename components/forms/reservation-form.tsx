@@ -108,13 +108,11 @@ export function ReservationForm({
         return;
       }
 
-      if (!result.data.emailSent) {
-        toast.error(result.message);
-      }
+      toast.success(result.message);
       router.push(result.data.confirmationUrl);
     } catch (error) {
-      console.error('Échec de l’envoi de la demande de réservation.', error);
-      toast.error('Impossible d’envoyer votre demande pour le moment. Merci de réessayer.');
+      console.error('Échec de l’enregistrement de la demande de réservation.', error);
+      toast.error('Impossible d’enregistrer votre demande pour le moment. Merci de réessayer.');
     } finally {
       submissionInProgress.current = false;
       setIsPending(false);
