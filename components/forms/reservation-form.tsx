@@ -40,8 +40,7 @@ export function ReservationForm({
   pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
   const [step, setStep] = React.useState(0);
-  const [isPending, setIsPending] = React.useState(false);
-  const submissionInProgress = React.useRef(false);
+  const [isPending, startTransition] = React.useTransition();
   const availableWeeklyRates = pricing.weeklyRates.filter((rate) => rate.amount > 0);
   const [selectedRateId, setSelectedRateId] = React.useState(availableWeeklyRates[0]?.id ?? '');
 
@@ -88,23 +87,16 @@ export function ReservationForm({
     if (valid) setStep((s) => Math.min(s + 1, FORM_STEP_COUNT - 1));
   }
 
-  async function onSubmit(data: ReservationInput) {
-    if (step !== FORM_STEP_COUNT - 1 || submissionInProgress.current) return;
+  function onSubmit(data: ReservationInput) {
+    if (step !== FORM_STEP_COUNT - 1 || isPending) return;
 
-    submissionInProgress.current = true;
-    setIsPending(true);
-    try {
+    startTransition(async () => {
       const result = await createReservation(data, propertySlug);
-      if (!result.success) {
+      // L’action serveur redirige vers la page de confirmation après succès.
+      if (result && !result.success) {
         toast.error(result.message);
       }
-    } catch (error) {
-      console.error('Échec de l’enregistrement de la demande de réservation.', error);
-      toast.error('Impossible d’enregistrer votre demande pour le moment. Merci de réessayer.');
-    } finally {
-      submissionInProgress.current = false;
-      setIsPending(false);
-    }
+    });
   }
 
   return (
