@@ -100,12 +100,12 @@ export async function createReservation(
     : calculateReservationPayment(rentalAmount, cleaningFeeAmount);
   const paymentAmount = paymentBreakdown?.totalAmount ?? null;
 
-  const reservationPayload = {
+  const legacyReservationPayload = {
     reference,
     property_id: property.id,
     client_id: client.id,
     desired_move_in_date: parsed.data.desiredMoveInDate,
-    // Colonne historique : elle contient désormais la durée du séjour en jours.
+    // Colonne historique conservée pour les parcours existants.
     duration_months: parsed.data.durationDays,
     occupants_count: parsed.data.occupantsCount,
     has_pets: parsed.data.hasPets,
@@ -118,21 +118,15 @@ export async function createReservation(
 
   let { data: reservation, error: insertError } = await supabase
     .from('reservations')
-    .insert(reservationPayload)
+    .insert(legacyReservationPayload)
     .select('*')
     .single();
 
-  // Compatibilité temporaire avec une base qui n’a pas encore reçu la
-  // migration `has_pets`. Le champ message n’est plus exposé au client et sert
-  // uniquement à conserver cette réponse jusqu’au déploiement de la migration.
   if (insertError?.code === 'PGRST204' || insertError?.code === '42703') {
-    const { has_pets: _hasPets, ...legacyPayload } = reservationPayload;
+    const { has_pets: _hasPets, ...legacyPayload } = legacyReservationPayload;
     const legacyInsert = await supabase
       .from('reservations')
-      .insert({
-        ...legacyPayload,
-        message: parsed.data.hasPets ? 'ANIMAUX_DE_COMPAGNIE_OUI' : 'ANIMAUX_DE_COMPAGNIE_NON',
-      })
+      .insert({ ...legacyPayload, message: parsed.data.hasPets ? 'ANIMAUX_DE_COMPAGNIE_OUI' : 'ANIMAUX_DE_COMPAGNIE_NON' })
       .select('*')
       .single();
     reservation = legacyInsert.data;
@@ -143,13 +137,32 @@ export async function createReservation(
     return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
   }
 
-  await recordStatusChange({
-    entityType: 'reservation',
-    entityId: reservation.id,
-    fromStatus: null,
-    toStatus: 'submitted',
-    changedBy: 'client',
-  });
+  const requestPayload = {
+    reference,
+    property_id: property.id,
+    first_name: parsed.data.firstName,
+    last_name: parsed.data.lastName,
+    email: parsed.data.email,
+    phone: parsed.data.phone,
+    desired_move_in_date: parsed.data.desiredMoveInDate,
+    selected_rate_id: parsed.data.selectedRateId ?? null,
+    duration_days: parsed.data.durationDays,
+    occupants_count: parsed.data.occupantsCount,
+    has_pets: parsed.data.hasPets,
+    has_cleaning_fee: cleaningFeeAmount > 0,
+    cleaning_fee_amount: cleaningFeeAmount,
+    rental_amount: rentalAmount,
+    payment_amount: paymentAmount,
+    status: 'new' as const,
+  };
+
+  const { error: requestError } = await supabase
+    .from('reservation_requests')
+    .insert(requestPayload);
+
+  if (requestError) return { success: false, message: 'La réservation a été enregistrée, mais sa copie de suivi n’a pas pu être créée.' };
+
+  await recordStatusChange({ entityType: 'reservation', entityId: reservation.id, fromStatus: null, toStatus: 'submitted', changedBy: 'client' });
 
   await sendAdminAlert(`Nouvelle réservation — ${reference}`, {
     Référence: reference,
@@ -172,6 +185,7 @@ export async function createReservation(
   });
 
   revalidatePath('/admin/reservations');
+  revalidatePath('/admin/demandes-reservations');
   revalidatePath('/admin');
 
   redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`);

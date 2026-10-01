@@ -25,6 +25,7 @@ const pricing = load('lib/utils/reservation-payment.ts', {});
 
 function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true } = {}) {
   const inserts = [];
+  const requestInserts = [];
   const emails = [];
   const reservation = { id: 'reservation-1' };
   const supabase = {
@@ -51,6 +52,9 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
               }),
             }),
           };
+        }
+        if (table === 'reservation_requests') {
+          return { insert: data => { requestInserts.push(data); return Promise.resolve({ error: null }); } };
         }
         assert.equal(table, 'reservations');
         return {
@@ -88,7 +92,7 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
     },
     '@/lib/utils/reservation-payment': pricing,
   });
-  return { action, inserts, emails };
+  return { action, inserts, requestInserts, emails };
 }
 
 async function captureReservationRedirect(action, data) {

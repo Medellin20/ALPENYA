@@ -48,7 +48,7 @@ export async function createViewingRequest(
   });
 
   const reference = generateReference('VIS');
-  const initialStatus = 'pending';
+  const initialStatus = 'new';
 
   const { data: viewing, error: insertError } = await supabase
     .from('viewing_requests')
@@ -58,7 +58,7 @@ export async function createViewingRequest(
       client_id: client.id,
       requested_date: parsed.data.requestedDate,
       requested_time_slot: parsed.data.requestedTimeSlot,
-      status: initialStatus,
+      status: 'pending',
       fee_amount: VIEWING_FEE_AMOUNT,
     })
     .select('*')
@@ -68,12 +68,21 @@ export async function createViewingRequest(
     return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
   }
 
+  const { error: requestError } = await supabase.from('visit_requests').insert({
+    reference,
+    property_id: property.id,
+    first_name: parsed.data.firstName,
+    last_name: parsed.data.lastName,
+    email: parsed.data.email,
+    phone: parsed.data.phone,
+    requested_date: parsed.data.requestedDate,
+    requested_time_slot: parsed.data.requestedTimeSlot,
+    status: initialStatus,
+  });
+  if (requestError) return { success: false, message: 'La visite a été enregistrée, mais sa copie de suivi n’a pas pu être créée.' };
+
   await recordStatusChange({
-    entityType: 'viewing_request',
-    entityId: viewing.id,
-    fromStatus: null,
-    toStatus: initialStatus,
-    changedBy: 'client',
+    entityType: 'viewing_request', entityId: viewing.id, fromStatus: null, toStatus: 'pending', changedBy: 'client',
   });
 
   await sendAdminAlert(`Nouvelle demande de visite — ${reference}`, {
@@ -87,6 +96,7 @@ export async function createViewingRequest(
   });
 
   revalidatePath('/admin/visites');
+  revalidatePath('/admin/demandes-visites');
   revalidatePath('/admin');
 
   redirect(`/appartements/${propertySlug}/visite/confirmation?ref=${reference}`);

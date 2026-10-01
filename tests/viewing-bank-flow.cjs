@@ -21,6 +21,7 @@ function load(file, imports) {
 
 test('La demande de visite enregistre les frais affichés avant la redirection vers le RIB', async () => {
   const viewingInserts = [];
+  const requestInserts = [];
   const paths = [];
   const redirectUrls = [];
   const supabase = {
@@ -37,6 +38,9 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
               }),
             }),
           };
+        }
+        if (table === 'visit_requests') {
+          return { insert: data => { requestInserts.push(data); return Promise.resolve({ error: null }); } };
         }
         assert.equal(table, 'viewing_requests');
         return {
@@ -85,6 +89,9 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
   );
 
   assert.equal(viewingInserts[0].fee_amount, 50);
+  assert.equal(requestInserts[0].email, 'camille@example.com');
+  assert.equal(requestInserts[0].requested_time_slot, '10:00 - 10:30');
+  assert.equal(requestInserts[0].status, 'new');
   assert.equal(redirectUrls[0], '/appartements/chalet/visite/confirmation?ref=VIS-2026-123456');
   assert.ok(paths.includes('/admin/visites'));
 });

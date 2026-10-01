@@ -23,6 +23,8 @@ export type ReservationStatus =
   | 'confirmed'
   | 'cancelled';
 
+export type RequestStatus = 'new' | 'in_progress' | 'accepted' | 'rejected';
+
 export type GuaranteeStatus =
   | 'awaiting_payment'
   | 'payment_declared'
@@ -156,6 +158,45 @@ export interface Reservation {
   updated_at: string;
 }
 
+export interface VisitRequest {
+  id: string;
+  reference: string;
+  property_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  requested_date: string;
+  requested_time_slot: string;
+  status: RequestStatus;
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReservationRequest {
+  id: string;
+  reference: string;
+  property_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  desired_move_in_date: string;
+  selected_rate_id: string | null;
+  duration_days: number;
+  occupants_count: number;
+  has_pets: boolean;
+  has_cleaning_fee: boolean;
+  cleaning_fee_amount: number;
+  rental_amount: number | null;
+  payment_amount: number | null;
+  status: RequestStatus;
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface GuaranteePayment {
   id: string;
   reference: string;
@@ -260,6 +301,8 @@ export interface Database {
       };
       viewing_requests: { Row: ViewingRequest; Insert: Partial<ViewingRequest>; Update: Partial<ViewingRequest> };
       reservations: { Row: Reservation; Insert: Partial<Reservation>; Update: Partial<Reservation> };
+      visit_requests: { Row: VisitRequest; Insert: Partial<VisitRequest>; Update: Partial<VisitRequest> };
+      reservation_requests: { Row: ReservationRequest; Insert: Partial<ReservationRequest>; Update: Partial<ReservationRequest> };
       guarantee_payments: { Row: GuaranteePayment; Insert: Partial<GuaranteePayment>; Update: Partial<GuaranteePayment> };
       refund_requests: { Row: RefundRequest; Insert: Partial<RefundRequest>; Update: Partial<RefundRequest> };
       payment_settings: { Row: PaymentSettings; Insert: Partial<PaymentSettings>; Update: Partial<PaymentSettings> };

@@ -28,6 +28,8 @@ const NAV_ITEMS = [
   { href: '/admin/appartements/nouveau', label: 'Ajouter un bien', icon: PlusCircle },
   { href: '/admin/visites', label: 'Visites', icon: CalendarClock },
   { href: '/admin/reservations', label: 'Réservations', icon: FileText },
+  { href: '/admin/demandes-visites', label: 'Demandes de visite', icon: CalendarClock },
+  { href: '/admin/demandes-reservations', label: 'Demandes de réservation', icon: FileText },
   { href: '/admin/garanties', label: 'Garanties', icon: ShieldCheck },
   { href: '/admin/remboursements', label: 'Remboursements', icon: RefreshCcw },
   { href: '/admin/clients', label: 'Clients', icon: Users },
