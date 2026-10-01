@@ -38,8 +38,6 @@ export async function updateBankSettings(input: BankSettingsInput): Promise<Acti
   await logAdminAction({ action: 'bank_settings.update' });
   revalidatePath('/admin/configuration-bancaire');
   revalidatePath('/mon-compte');
-  revalidatePath('/appartements/[slug]/visite/confirmation', 'page');
-  revalidatePath('/appartements/[slug]/reserver/confirmation', 'page');
 
   return { success: true, message: 'Configuration bancaire mise à jour avec succès.' };
 }

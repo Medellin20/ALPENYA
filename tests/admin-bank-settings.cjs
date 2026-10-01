@@ -79,8 +79,8 @@ test('La configuration bancaire enregistre le RIB et le montant sans nom de banq
   }]);
   assert.ok(s.paths.includes('/admin/configuration-bancaire'));
   assert.ok(s.paths.includes('/mon-compte'));
-  assert.ok(s.paths.includes('/appartements/[slug]/visite/confirmation'));
-  assert.ok(s.paths.includes('/appartements/[slug]/reserver/confirmation'));
+  assert.equal(s.paths.some(path => path.includes('/appartements/[slug]/visite/confirmation')), false);
+  assert.equal(s.paths.some(path => path.includes('/appartements/[slug]/reserver/confirmation')), false);
 });
 
 test('Une erreur ou une configuration inexistante ne signale pas une sauvegarde réussie', async () => {
