@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { upsertClient } from '@/lib/data/clients';
 import { recordStatusChange } from '@/lib/data/history';
@@ -20,7 +21,7 @@ import {
 export async function createReservation(
   input: ReservationInput,
   propertySlug: string
-): Promise<ActionResult<{ confirmationUrl: string }>> {
+): Promise<ActionResult> {
   const parsed = reservationSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -129,11 +130,5 @@ export async function createReservation(
   revalidatePath('/admin/reservations');
   revalidatePath('/admin');
 
-  return {
-    success: true,
-    message: 'Votre demande a bien été enregistrée.',
-    data: {
-      confirmationUrl: `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`,
-    },
-  };
+  redirect(`/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`);
 }

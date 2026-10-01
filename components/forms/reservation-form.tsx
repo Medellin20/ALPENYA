@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, ClipboardList, FileCheck2, User } from 'lucide-react';
@@ -40,7 +39,6 @@ export function ReservationForm({
   propertyTitle: string;
   pricing: ReservationPricing & { weeklyRates: WeeklyRate[] };
 }) {
-  const router = useRouter();
   const [step, setStep] = React.useState(0);
   const [isPending, setIsPending] = React.useState(false);
   const submissionInProgress = React.useRef(false);
@@ -99,17 +97,7 @@ export function ReservationForm({
       const result = await createReservation(data, propertySlug);
       if (!result.success) {
         toast.error(result.message);
-        return;
       }
-
-      if (!result.data?.confirmationUrl) {
-        console.error('La demande de réservation a réussi sans URL de confirmation.');
-        toast.error('Votre demande a été enregistrée, mais la page de confirmation est indisponible. Contactez notre équipe.');
-        return;
-      }
-
-      toast.success(result.message);
-      router.push(result.data.confirmationUrl);
     } catch (error) {
       console.error('Échec de l’enregistrement de la demande de réservation.', error);
       toast.error('Impossible d’enregistrer votre demande pour le moment. Merci de réessayer.');

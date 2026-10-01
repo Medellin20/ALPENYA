@@ -68,6 +68,13 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
   };
   const action = load('actions/reservations.ts', {
     'next/cache': { revalidatePath: () => {} },
+    'next/navigation': {
+      redirect: url => {
+        const error = new Error('NEXT_REDIRECT');
+        error.url = url;
+        throw error;
+      },
+    },
     '@/lib/supabase/admin': supabase,
     '@/lib/data/clients': { upsertClient: async () => ({ id: 'client-1' }) },
     '@/lib/data/history': { recordStatusChange: async () => {} },
@@ -83,6 +90,32 @@ function setup({ hasCleaningFee = true, serviceCharges = 125, emailSent = true }
   });
   return { action, inserts, emails };
 }
+
+test('Après insertion, l’action redirige vers la page d’attente avec la référence enregistrée', async () => {
+  const s = setup();
+  let redirectUrl;
+
+  try {
+    await s.action.createReservation({
+      propertyId: 'property-1',
+      firstName: 'Camille',
+      lastName: 'Martin',
+      email: 'camille@example.com',
+      phone: '+33600000000',
+      desiredMoveInDate: '2026-12-20',
+      durationDays: 10,
+      occupantsCount: 2,
+      hasPets: false,
+      hasCleaningFee: true,
+      selectedRateId: 'lowSeason',
+    }, 'chalet');
+  } catch (error) {
+    redirectUrl = error.url;
+  }
+
+  assert.equal(s.inserts.length, 1);
+  assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
+});
 
 test('La demande envoie l’alerte et retourne explicitement l’URL de l’étape RIB', async () => {
   const s = setup();
