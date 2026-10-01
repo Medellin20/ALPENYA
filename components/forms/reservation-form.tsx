@@ -295,7 +295,7 @@ export function ReservationForm({
             </Button>
           ) : (
             <Button key="send-request" type="button" onClick={handleSubmit(onSubmit)} isLoading={isPending} className="w-full sm:w-auto">
-              Envoyer ma demande
+              Valider et continuer
             </Button>
           )}
         </div>

@@ -133,9 +133,7 @@ export async function createReservation(
     success: true,
     message: 'Votre demande a bien été enregistrée.',
     data: {
-      confirmationUrl: `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}&email=${encodeURIComponent(
-        parsed.data.email
-      )}`,
+      confirmationUrl: `/appartements/${propertySlug}/reserver/confirmation?ref=${reference}`,
     },
   };
 }

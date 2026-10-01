@@ -2,12 +2,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, Home } from 'lucide-react';
 import { getReservationByReference } from '@/lib/data/dossier';
-import { getBankSettings, isDemoBankSettings } from '@/lib/data/bank';
-import { BankTransferInstructions } from '@/components/shared/bank-transfer-instructions';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
 import { ReservationProgress } from '@/components/forms/reservation-progress';
 import { RESERVATION_GUARANTEE_AMOUNT } from '@/lib/utils/reservation-payment';
-import { generateGuaranteeReference } from '@/lib/utils/reference';
 import { Button } from '@/components/ui/button';
 import { RESERVATION_STATUS_LABELS } from '@/lib/utils/constants';
 import { formatDate } from '@/lib/utils/format';
@@ -26,7 +23,6 @@ export default async function ReservationConfirmationPage({
   if (!reservation) notFound();
 
   const property = (reservation as any).properties;
-  const bankSettings = await getBankSettings();
 
   return (
     <div className="container-app flex min-h-[70vh] items-center justify-center py-6 sm:py-14">
@@ -40,7 +36,7 @@ export default async function ReservationConfirmationPage({
         <h1 className="mt-5 text-xl font-extrabold text-ink-900">Votre demande de réservation est envoyée</h1>
 
         <p className="mt-2 text-sm text-ink-500">
-          Votre demande a bien été transmise à notre équipe. Vous trouverez ci-dessous les coordonnées bancaires et le montant du virement à effectuer.
+          Votre demande a bien été transmise à notre équipe. Aucun virement n’est à effectuer à cette étape ; notre équipe vous informera des prochaines démarches après examen de votre dossier.
         </p>
 
         <p className="mt-5 rounded-xl border border-canal-200 bg-canal-50 p-4 text-sm font-semibold leading-relaxed text-canal-800">
@@ -68,22 +64,6 @@ export default async function ReservationConfirmationPage({
               totalAmount={reservation.payment_amount}
             />
           </div>
-        )}
-
-        {bankSettings ? (
-          <div className="mt-6 text-left">
-            <h2 className="mb-3 text-lg font-bold text-ink-900">Dernière étape : paiement par RIB</h2>
-            <BankTransferInstructions
-              bankSettings={bankSettings}
-              reference={generateGuaranteeReference(reservation.reference)}
-              amount={reservation.payment_amount}
-              isExample={isDemoBankSettings(bankSettings)}
-            />
-          </div>
-        ) : (
-          <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">
-            Les coordonnées bancaires sont momentanément indisponibles. Contactez notre équipe avant d’effectuer un virement.
-          </p>
         )}
 
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">

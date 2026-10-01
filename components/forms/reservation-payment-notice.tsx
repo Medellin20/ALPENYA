@@ -57,7 +57,7 @@ export function ReservationPaymentNotice({
       )}
 
       <p className="mt-3 text-xs leading-relaxed text-ink-500">
-        Le calcul comprend l’acompte de 40 % du séjour et la caution de {formatPrice(guaranteeAmount)}. Le montant définitif sera confirmé avec les coordonnées bancaires après l’envoi de votre demande.
+        Le calcul comprend l’acompte de 40 % du séjour et la caution de {formatPrice(guaranteeAmount)}. Notre équipe vous communiquera les modalités de règlement après examen de votre demande.
       </p>
     </section>
   );

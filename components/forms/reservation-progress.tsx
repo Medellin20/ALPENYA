@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils/cn';
 
-const STEPS = ['Vos coordonnées', 'Votre projet', 'Récapitulatif', 'Paiement par RIB'] as const;
+const STEPS = ['Vos coordonnées', 'Votre projet', 'Récapitulatif'] as const;
 
 export function ReservationProgress({ activeStep }: { activeStep: number }) {
   return (
