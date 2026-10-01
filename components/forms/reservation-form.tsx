@@ -15,6 +15,7 @@ import { Label, FieldError } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils/cn';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
+import { ReservationProgress } from '@/components/forms/reservation-progress';
 import { formatPrice } from '@/lib/utils/format';
 import {
   calculateReservationPayment,
@@ -24,7 +25,7 @@ import {
   type ReservationPricing,
 } from '@/lib/utils/reservation-payment';
 
-const STEPS = ['Vos coordonnées', 'Votre projet de location', 'Récapitulatif'] as const;
+const FORM_STEP_COUNT = 3;
 type WeeklyRate = { id: string; label: string; amount: number };
 
 export function ReservationForm({
@@ -83,11 +84,11 @@ export function ReservationForm({
       ['desiredMoveInDate', 'durationDays', 'occupantsCount', 'hasPets', 'hasCleaningFee'],
     ];
     const valid = await trigger(fieldsByStep[step]);
-    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (valid) setStep((s) => Math.min(s + 1, FORM_STEP_COUNT - 1));
   }
 
   function onSubmit(data: ReservationInput) {
-    if (step !== STEPS.length - 1 || isPending) return;
+    if (step !== FORM_STEP_COUNT - 1 || isPending) return;
     startTransition(async () => {
       const result = await createReservation(data, propertySlug);
       if (result && !result.success) {
@@ -98,26 +99,7 @@ export function ReservationForm({
 
   return (
     <div>
-      <div className="mb-8 flex items-center gap-2">
-        {STEPS.map((label, i) => (
-          <React.Fragment key={label}>
-            <div className="flex items-center gap-2">
-              <span
-                className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors',
-                  i < step ? 'bg-canal-600 text-white' : i === step ? 'bg-ink-700 text-white' : 'bg-ink-100 text-ink-400'
-                )}
-              >
-                {i + 1}
-              </span>
-              <span className={cn('hidden text-sm font-medium lg:block', i === step ? 'text-ink-900' : 'text-ink-400')}>
-                {label}
-              </span>
-            </div>
-            {i < STEPS.length - 1 && <div className="h-px flex-1 bg-ink-100" />}
-          </React.Fragment>
-        ))}
-      </div>
+      <ReservationProgress activeStep={step + 1} />
 
       <form onSubmit={(event) => event.preventDefault()}>
         <input type="hidden" {...register('selectedRateId')} />
@@ -284,7 +266,7 @@ export function ReservationForm({
             Retour
           </Button>
 
-          {step < STEPS.length - 1 ? (
+          {step < FORM_STEP_COUNT - 1 ? (
             <Button key="continue" type="button" onClick={goNext} disabled={isPending} className="w-full sm:w-auto">
               Continuer
               <ArrowRight className="h-4 w-4" />

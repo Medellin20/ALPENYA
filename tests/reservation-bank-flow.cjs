@@ -169,17 +169,20 @@ test('La confirmation finale charge les coordonnées bancaires et le montant enr
     'app/(public)/appartements/[slug]/reserver/confirmation/page.tsx',
     'utf8'
   );
+  const progress = fs.readFileSync('components/forms/reservation-progress.tsx', 'utf8');
   const dataSource = fs.readFileSync('lib/data/dossier.ts', 'utf8');
 
   assert.match(confirmation, /BankTransferInstructions/);
+  assert.match(confirmation, /ReservationProgress activeStep=\{4\}/);
   assert.match(confirmation, /reservation\.payment_amount/);
   assert.match(confirmation, /getBankSettings/);
+  assert.match(progress, /Paiement par RIB/);
   assert.match(dataSource, /\.select\('\*, properties/);
 });
 
 test('Le formulaire transmet le tarif choisi sans changer son bouton d’envoi', () => {
   const form = fs.readFileSync('components/forms/reservation-form.tsx', 'utf8');
-  assert.match(form, /const STEPS = \['Vos coordonnées', 'Votre projet de location', 'Récapitulatif'\]/);
+  assert.match(form, /const FORM_STEP_COUNT = 3/);
   assert.match(form, /register\('selectedRateId'\)/);
   assert.match(form, /handleSubmit\(onSubmit\)/);
   assert.match(form, /createReservation\(data, propertySlug\)/);

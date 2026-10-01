@@ -5,6 +5,7 @@ import { getReservationByReference } from '@/lib/data/dossier';
 import { getBankSettings, isDemoBankSettings } from '@/lib/data/bank';
 import { BankTransferInstructions } from '@/components/shared/bank-transfer-instructions';
 import { ReservationPaymentNotice } from '@/components/forms/reservation-payment-notice';
+import { ReservationProgress } from '@/components/forms/reservation-progress';
 import { RESERVATION_GUARANTEE_AMOUNT } from '@/lib/utils/reservation-payment';
 import { generateGuaranteeReference } from '@/lib/utils/reference';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,8 @@ export default async function ReservationConfirmationPage({
   return (
     <div className="container-app flex min-h-[70vh] items-center justify-center py-6 sm:py-14">
       <div className="w-full max-w-2xl rounded-2xl border border-ink-100 bg-white p-4 text-center shadow-card sm:p-8">
+        <ReservationProgress activeStep={4} />
+
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-canal-50 text-canal-600">
           <CheckCircle2 className="h-7 w-7" />
         </div>
