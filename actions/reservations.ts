@@ -6,7 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
-import { sendFormRequestAlert } from '@/lib/notifications/email';
+import { sendRequestAlert } from '@/lib/notifications/alerts';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
@@ -94,11 +94,12 @@ export async function createReservation(
 
   if (requestError) return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
 
-  await sendFormRequestAlert('réservation', reference, {
+  await sendRequestAlert(`Nouvelle demande de réservation — ${reference}`, {
+    Référence: reference,
     Logement: property.title,
     Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
     'E-mail': parsed.data.email,
-    'Téléphone': parsed.data.phone,
+    Téléphone: parsed.data.phone,
     'Date d’entrée souhaitée': parsed.data.desiredMoveInDate,
     Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
     Occupants: parsed.data.occupantsCount,

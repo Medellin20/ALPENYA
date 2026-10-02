@@ -9,7 +9,7 @@ export function ReservationConfirmationToast() {
   useEffect(() => {
     if (shown.current) return;
     shown.current = true;
-    toast.success('Vous recevrez un mail de confirmation dans un instant.');
+    toast.success('Votre demande est enregistrée et en attente de confirmation.');
   }, []);
 
   return null;

@@ -56,10 +56,10 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 ADMIN_PASSWORD=Hublot@1233
 ADMIN_SESSION_SECRET=generez-une-longue-chaine-aleatoire-ici
 
-# Alertes Gmail pour les demandes de visite et les réservations
-GMAIL_USER=votre-compte@gmail.com
-GMAIL_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
+# Alertes des demandes de visite et de réservation (Resend)
+RESEND_API_KEY=re_votre_cle_api
 ALERT_EMAIL=alertes@votre-domaine.com
+ALERT_FROM_EMAIL="ALPENIA <notifications@votre-domaine-verifie.com>"
 
 STRIPE_SECRET_KEY=sk_test_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
@@ -70,7 +70,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 > **Important :** `.env.local` ne doit **jamais** être commité. Il est exclu via `.gitignore`.
 
-Pour recevoir les alertes Gmail lors d'une demande de visite ou d'une réservation, utilisez un compte Gmail avec un mot de passe d'application (Google Account > Sécurité > Vérification en 2 étapes > Mots de passe d'application). La variable `GMAIL_APP_PASSWORD` doit contenir ce mot de passe à 16 caractères, et `ALERT_EMAIL` doit être l'adresse qui reçoit les notifications.
+Les alertes de visite et de réservation utilisent l’API HTTP de Resend (sans Nodemailer). Créez une clé API dans Resend, vérifiez le domaine de l’adresse expéditrice, puis renseignez `RESEND_API_KEY`, `ALERT_EMAIL` et `ALERT_FROM_EMAIL` dans `.env.local`.
 
 ### 3. Créer la base de données
 

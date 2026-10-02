@@ -3,7 +3,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { contactSchema, type ContactInput } from '@/lib/validations/contact';
 import type { ActionResult } from '@/types';
-import { sendAdminAlert } from '@/lib/notifications/email';
 
 export async function submitContactMessage(input: ContactInput): Promise<ActionResult> {
   const parsed = contactSchema.safeParse(input);
@@ -31,14 +30,6 @@ export async function submitContactMessage(input: ContactInput): Promise<ActionR
   if (error) {
     return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
   }
-
-  await sendAdminAlert(`Nouveau message de contact — ${parsed.data.subject}`, {
-    Nom: parsed.data.name,
-    Email: parsed.data.email,
-    Téléphone: parsed.data.phone || null,
-    Sujet: parsed.data.subject,
-    Message: parsed.data.message,
-  });
 
   return { success: true, message: 'Votre message a été envoyé. Nous vous répondrons rapidement.' };
 }

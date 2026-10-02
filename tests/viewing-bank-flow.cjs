@@ -24,6 +24,7 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
   const requestInserts = [];
   const paths = [];
   const redirectUrls = [];
+  const alerts = [];
   const supabase = {
     createAdminClient: () => ({
       from: table => {
@@ -70,8 +71,10 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
     '@/lib/data/history': { recordStatusChange: async () => {} },
     '@/lib/validations/viewing': { viewingRequestSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'VIS-2026-123456' },
-    '@/lib/notifications/email': { sendFormRequestAlert: async () => true },
     '@/lib/utils/constants': { VIEWING_FEE_AMOUNT: 50 },
+    '@/lib/notifications/alerts': {
+      sendRequestAlert: async (subject, details) => alerts.push({ subject, details }),
+    },
     '@/types': {},
   });
 
@@ -92,6 +95,9 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
   assert.equal(requestInserts[0].email, 'camille@example.com');
   assert.equal(requestInserts[0].requested_time_slot, '10:00 - 10:30');
   assert.equal(requestInserts[0].status, 'new');
+  assert.equal(alerts.length, 1);
+  assert.equal(alerts[0].subject, 'Nouvelle demande de visite — VIS-2026-123456');
+  assert.equal(alerts[0].details['E-mail'], 'camille@example.com');
   assert.equal(redirectUrls[0], '/appartements/chalet/visite/confirmation?ref=VIS-2026-123456');
   assert.ok(paths.includes('/admin/visites'));
 });

@@ -10,8 +10,6 @@ function load(file, imports) {
   }).outputText;
   const context = {
     exports: {},
-    console,
-    process,
     require: name => {
       assert.ok(name in imports, `Unexpected import: ${name}`);
       return imports[name];
@@ -25,7 +23,7 @@ const pricing = load('lib/utils/reservation-payment.ts', {});
 
 function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
   const requestInserts = [];
-  const emails = [];
+  const alerts = [];
   const supabase = {
     createAdminClient: () => ({
       from: table => {
@@ -70,15 +68,12 @@ function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
     '@/lib/supabase/admin': supabase,
     '@/lib/validations/reservation': { reservationSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'REN-2026-123456' },
-    '@/lib/notifications/email': {
-      sendFormRequestAlert: async (kind, reference, data) => {
-        emails.push({ subject: `Nouvelle demande de ${kind} — ${reference}`, data });
-        return true;
-      },
-    },
     '@/lib/utils/reservation-payment': pricing,
+    '@/lib/notifications/alerts': {
+      sendRequestAlert: async (subject, details) => alerts.push({ subject, details }),
+    },
   });
-  return { action, inserts: requestInserts, requestInserts, emails };
+  return { action, inserts: requestInserts, requestInserts, alerts };
 }
 
 async function captureReservationRedirect(action, data) {
@@ -117,7 +112,7 @@ test('Après insertion, l’action redirige vers la page d’attente avec la ré
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('La demande est enregistrée une fois et déclenche une alerte admin, sans mail au demandeur', async () => {
+test('La demande est enregistrée une fois puis redirige vers la confirmation', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -147,13 +142,13 @@ test('La demande est enregistrée une fois et déclenche une alerte admin, sans 
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
   assert.equal(s.inserts[0].payment_amount, 825);
   assert.equal(s.inserts.length, 1);
-  assert.equal(s.emails.length, 1);
-  assert.equal(s.emails[0].subject, 'Nouvelle demande de réservation — REN-2026-123456');
-  assert.equal(s.emails[0].data['E-mail'], 'camille@example.com');
+  assert.equal(s.alerts.length, 1);
+  assert.equal(s.alerts[0].subject, 'Nouvelle demande de réservation — REN-2026-123456');
+  assert.equal(s.alerts[0].details['E-mail'], 'camille@example.com');
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('Le formulaire déclenche une alerte admin et affiche le pop-up de confirmation', async () => {
+test('Le formulaire affiche une confirmation sans promettre d’e-mail', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -170,62 +165,10 @@ test('Le formulaire déclenche une alerte admin et affiche le pop-up de confirma
     selectedRateId: 'lowSeason',
   });
 
-  assert.equal(s.emails.length, 1);
-  assert.equal(s.emails[0].data['E-mail'], 'camille@example.com');
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
   const popup = fs.readFileSync('components/forms/reservation-confirmation-toast.tsx', 'utf8');
-  assert.match(popup, /Vous recevrez un mail de confirmation dans un instant/);
-});
-
-test('Une erreur SMTP détaillée est écrite dans la console sans exposer les identifiants', async () => {
-  const keys = ['GMAIL_USER', 'GMAIL_APP_PASSWORD', 'ALERT_EMAIL'];
-  const originalValues = Object.fromEntries(keys.map(key => [key, process.env[key]]));
-  const credentials = {
-    GMAIL_USER: 'smtp-user-test@example.invalid',
-    GMAIL_APP_PASSWORD: 'smtp-test-secret',
-    ALERT_EMAIL: 'alerts-test@example.invalid',
-  };
-  const smtpError = Object.assign(new Error('Invalid login'), {
-    code: 'EAUTH',
-    command: 'AUTH PLAIN',
-    responseCode: 535,
-    response: '535-5.7.8 Username and Password not accepted',
-  });
-  const logs = [];
-  const originalConsoleError = console.error;
-
-  try {
-    Object.assign(process.env, credentials);
-    console.error = (...args) => logs.push(args);
-
-    const email = load('lib/notifications/email.ts', {
-      'server-only': {},
-      nodemailer: {
-        default: {
-          createTransport: () => ({
-            sendMail: async () => { throw smtpError; },
-          }),
-        },
-      },
-    });
-    const sent = await email.sendAdminAlert('Test réservation', { Référence: 'REN-TEST' });
-
-    assert.equal(sent, false);
-    assert.equal(logs.length, 1);
-    assert.match(logs[0][0], /Détails SMTP/);
-    assert.equal(logs[0][1].message, 'Invalid login');
-    assert.equal(logs[0][1].code, 'EAUTH');
-    assert.equal(logs[0][1].command, 'AUTH PLAIN');
-    assert.equal(logs[0][1].responseCode, 535);
-    assert.match(logs[0][1].response, /Username and Password not accepted/);
-    assert.doesNotMatch(JSON.stringify(logs), /smtp-user-test|smtp-test-secret|alerts-test/);
-  } finally {
-    console.error = originalConsoleError;
-    for (const key of keys) {
-      if (originalValues[key] === undefined) delete process.env[key];
-      else process.env[key] = originalValues[key];
-    }
-  }
+  assert.match(popup, /en attente de confirmation/);
+  assert.doesNotMatch(popup, /mail|e-mail/i);
 });
 
 test('Sans sélection du client, aucun forfait ménage n’est ajouté au montant', async () => {

@@ -5,7 +5,6 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { recordStatusChange } from '@/lib/data/history';
 import { declareTransferSchema } from '@/lib/validations/refund';
 import type { ActionResult } from '@/types';
-import { sendAdminAlert } from '@/lib/notifications/email';
 
 /**
  * Le client déclare avoir effectué le virement de garantie et peut joindre
@@ -86,18 +85,6 @@ export async function declareGuaranteeTransfer(
     fromStatus: guarantee.status,
     toStatus: 'payment_declared',
     changedBy: 'client',
-  });
-
-  await sendAdminAlert(`Virement de garantie déclaré — ${guarantee.reference}`, {
-    Référence: guarantee.reference,
-    Réservation: (guarantee as any).reservations?.reference,
-    Client: `${(guarantee as any).clients?.first_name ?? ''} ${(guarantee as any).clients?.last_name ?? ''}`.trim(),
-    Email: (guarantee as any).clients?.email,
-    Téléphone: (guarantee as any).clients?.phone,
-    Date: parsed.data.transferDate,
-    Banque: parsed.data.bankName,
-    'Référence du virement': parsed.data.reference,
-    Justificatif: proofStoragePath ? 'Oui' : 'Non',
   });
 
   revalidatePath('/admin/garanties');
