@@ -70,7 +70,7 @@ test('La demande de visite enregistre les frais affichés avant la redirection v
     '@/lib/data/history': { recordStatusChange: async () => {} },
     '@/lib/validations/viewing': { viewingRequestSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'VIS-2026-123456' },
-    '@/lib/notifications/email': { sendAdminAlert: async () => {} },
+    '@/lib/notifications/email': { sendFormRequestAlert: async () => true },
     '@/lib/utils/constants': { VIEWING_FEE_AMOUNT: 50 },
     '@/types': {},
   });

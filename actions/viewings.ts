@@ -7,7 +7,7 @@ import { upsertClient } from '@/lib/data/clients';
 import { recordStatusChange } from '@/lib/data/history';
 import { viewingRequestSchema, type ViewingRequestInput } from '@/lib/validations/viewing';
 import { generateReference } from '@/lib/utils/reference';
-import { sendAdminAlert } from '@/lib/notifications/email';
+import { sendFormRequestAlert } from '@/lib/notifications/email';
 import { VIEWING_FEE_AMOUNT } from '@/lib/utils/constants';
 import type { ActionResult } from '@/types';
 
@@ -85,8 +85,7 @@ export async function createViewingRequest(
     entityType: 'viewing_request', entityId: viewing.id, fromStatus: null, toStatus: 'pending', changedBy: 'client',
   });
 
-  await sendAdminAlert(`Nouvelle demande de visite — ${reference}`, {
-    Référence: reference,
+  await sendFormRequestAlert('visite', reference, {
     Logement: property.title,
     Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
     Email: parsed.data.email,

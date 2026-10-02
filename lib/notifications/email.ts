@@ -3,6 +3,19 @@ import nodemailer from 'nodemailer';
 
 type AlertDetails = Record<string, string | number | null | undefined>;
 
+/** Alerte l'adresse admin configurée après insertion d'une demande dans Supabase. */
+export async function sendFormRequestAlert(
+  kind: 'visite' | 'réservation',
+  reference: string,
+  details: AlertDetails
+): Promise<boolean> {
+  return sendAdminAlert(`Nouvelle demande de ${kind} — ${reference}`, {
+    Type: kind === 'visite' ? 'Visite' : 'Réservation',
+    Référence: reference,
+    ...details,
+  });
+}
+
 function escapeHtml(value: string) {
   return value.replace(/[&<>'"]/g, (character) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',

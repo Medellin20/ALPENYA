@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { reservationSchema, type ReservationInput } from '@/lib/validations/reservation';
 import { generateReference } from '@/lib/utils/reference';
 import type { ActionResult } from '@/types';
+import { sendFormRequestAlert } from '@/lib/notifications/email';
 import {
   calculateReservationPayment,
   calculateStayRentalAmount,
@@ -92,6 +93,22 @@ export async function createReservation(
     .insert(requestPayload);
 
   if (requestError) return { success: false, message: 'Une erreur est survenue, merci de réessayer.' };
+
+  await sendFormRequestAlert('réservation', reference, {
+    Logement: property.title,
+    Client: `${parsed.data.firstName} ${parsed.data.lastName}`,
+    'E-mail': parsed.data.email,
+    'Téléphone': parsed.data.phone,
+    'Date d’entrée souhaitée': parsed.data.desiredMoveInDate,
+    Durée: `${parsed.data.durationDays} jour${parsed.data.durationDays > 1 ? 's' : ''}`,
+    Occupants: parsed.data.occupantsCount,
+    'Animaux de compagnie': parsed.data.hasPets ? 'Oui' : 'Non',
+    'Tarif sélectionné': parsed.data.selectedRateId ?? null,
+    'Forfait ménage demandé': parsed.data.hasCleaningFee ? 'Oui' : 'Non',
+    'Montant du forfait ménage': cleaningFeeAmount,
+    'Montant du séjour': rentalAmount,
+    'Montant à régler estimé': paymentAmount,
+  });
 
   revalidatePath('/admin/reservations');
   revalidatePath('/admin/demandes-reservations');

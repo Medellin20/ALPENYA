@@ -71,7 +71,10 @@ function setup({ hasCleaningFee = true, serviceCharges = 125 } = {}) {
     '@/lib/validations/reservation': { reservationSchema: { safeParse: data => ({ success: true, data }) } },
     '@/lib/utils/reference': { generateReference: () => 'REN-2026-123456' },
     '@/lib/notifications/email': {
-      sendAdminAlert: async (subject, data) => { emails.push({ subject, data }); return true; },
+      sendFormRequestAlert: async (kind, reference, data) => {
+        emails.push({ subject: `Nouvelle demande de ${kind} — ${reference}`, data });
+        return true;
+      },
     },
     '@/lib/utils/reservation-payment': pricing,
   });
@@ -114,7 +117,7 @@ test('Après insertion, l’action redirige vers la page d’attente avec la ré
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('La demande complète est enregistrée une seule fois sans e-mail puis redirige vers la confirmation', async () => {
+test('La demande est enregistrée une fois et déclenche une alerte admin, sans mail au demandeur', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -144,11 +147,13 @@ test('La demande complète est enregistrée une seule fois sans e-mail puis redi
   assert.equal(s.inserts[0].cleaning_fee_amount, 125);
   assert.equal(s.inserts[0].payment_amount, 825);
   assert.equal(s.inserts.length, 1);
-  assert.equal(s.emails.length, 0);
+  assert.equal(s.emails.length, 1);
+  assert.equal(s.emails[0].subject, 'Nouvelle demande de réservation — REN-2026-123456');
+  assert.equal(s.emails[0].data['E-mail'], 'camille@example.com');
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
 });
 
-test('Le pop-up de confirmation est affiché sans envoyer de mail depuis le formulaire', async () => {
+test('Le formulaire déclenche une alerte admin et affiche le pop-up de confirmation', async () => {
   const s = setup();
 
   const redirectUrl = await captureReservationRedirect(s.action, {
@@ -165,7 +170,8 @@ test('Le pop-up de confirmation est affiché sans envoyer de mail depuis le form
     selectedRateId: 'lowSeason',
   });
 
-  assert.equal(s.emails.length, 0);
+  assert.equal(s.emails.length, 1);
+  assert.equal(s.emails[0].data['E-mail'], 'camille@example.com');
   assert.equal(redirectUrl, '/appartements/chalet/reserver/confirmation?ref=REN-2026-123456');
   const popup = fs.readFileSync('components/forms/reservation-confirmation-toast.tsx', 'utf8');
   assert.match(popup, /Vous recevrez un mail de confirmation dans un instant/);
