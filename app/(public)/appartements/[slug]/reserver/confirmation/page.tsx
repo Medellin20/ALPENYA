@@ -32,10 +32,6 @@ export default function ReservationConfirmationPage({
           Votre demande a bien été enregistrée et est en attente de confirmation par notre équipe. Nous vous contacterons après examen de votre dossier pour vous informer de la suite.
         </p>
 
-        <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-relaxed text-amber-800">
-          Aucun paiement n’est à effectuer avant la confirmation de votre réservation par notre équipe.
-        </p>
-
         <p className="mt-2 text-sm text-ink-500">
           Numéro de réservation : <span className="font-semibold text-ink-700">{searchParams.ref}</span>
         </p>
