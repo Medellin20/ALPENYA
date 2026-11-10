@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { motion, useAnimationFrame, useInView, useMotionValue } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 /** Les cartes sont rendues côté serveur ; seul le déplacement est interactif. */
@@ -11,16 +11,20 @@ export function PropertyCarousel({ children }: { children: React.ReactNode }) {
   const count = items.length;
   const viewport = React.useRef<HTMLDivElement>(null);
   const inView = useInView(viewport, { amount: 0.15 });
-  const reducedMotion = useReducedMotion();
+  const [reducedMotion, setReducedMotion] = React.useState(false);
+
+  React.useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(preference.matches);
+    update();
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
+  }, []);
   const [geometry, setGeometry] = React.useState({ visible: 1, step: 0 });
-  const [position, setPosition] = React.useState({ index: 0, instant: true });
-  const [hovered, setHovered] = React.useState(false);
-  const [focused, setFocused] = React.useState(false);
-  const [paused, setPaused] = React.useState(false);
+  const x = useMotionValue(0);
+  const [current, setCurrent] = React.useState(0);
   const [hidden, setHidden] = React.useState(false);
-  const moving = React.useRef(false);
   const canMove = count > geometry.visible;
-  const current = count ? position.index % count : 0;
 
   React.useEffect(() => {
     const element = viewport.current;
@@ -28,14 +32,14 @@ export function PropertyCarousel({ children }: { children: React.ReactNode }) {
     const resize = () => {
       const visible = Math.min(count, window.matchMedia('(min-width: 1024px)').matches ? 3 : window.matchMedia('(min-width: 640px)').matches ? 2 : 1);
       setGeometry({ visible, step: ((element.firstElementChild as HTMLElement).clientWidth + 24) / Math.max(visible, 1) });
-      setPosition({ index: 0, instant: true });
-      moving.current = false;
+      x.set(0);
+      setCurrent(0);
     };
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(element);
     return () => observer.disconnect();
-  }, [count]);
+  }, [count, x]);
 
   React.useEffect(() => {
     const update = () => setHidden(document.hidden);
@@ -44,36 +48,33 @@ export function PropertyCarousel({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener('visibilitychange', update);
   }, []);
 
-  const navigate = React.useCallback((index: number) => {
-    if (moving.current || !canMove || index % count === current) return;
-    moving.current = !reducedMotion;
-    setPosition({ index, instant: false });
-  }, [canMove, reducedMotion, count, current]);
+  const navigate = (index: number) => {
+    if (!canMove) return;
+    const target = (index + count) % count;
+    x.set(-target * geometry.step);
+    setCurrent(target);
+  };
 
-  React.useEffect(() => {
-    if (!canMove || !inView || reducedMotion || hovered || focused || paused || hidden) return;
-    const timer = window.setInterval(() => navigate(current + 1), 4000);
-    return () => window.clearInterval(timer);
-  }, [canMove, inView, reducedMotion, hovered, focused, paused, hidden, current, navigate]);
+  // Vitesse constante : une largeur de carte toutes les quatre secondes.
+  // Le retour à zéro est visuellement identique grâce aux cartes dupliquées.
+  useAnimationFrame((_, delta) => {
+    if (!canMove || !geometry.step || !inView || reducedMotion || hidden) return;
+    const length = count * geometry.step;
+    const offset = ((-x.get() + Math.min(delta, 100) * geometry.step / 4000) % length + length) % length;
+    x.set(-offset);
+    const next = Math.floor(offset / geometry.step);
+    if (next !== current) setCurrent(next);
+  });
 
   if (!count) return null;
-  const slides = canMove ? [...items, ...items.slice(0, geometry.visible)] : items;
+  const slides = canMove ? [...items, ...items.slice(0, geometry.visible + 1)] : items;
 
   return (
-    <div role="region" aria-roledescription="carrousel" aria-label="Notre sélection de logements"
-      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocused(true)}
-      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setFocused(false); }}>
+    <div role="region" aria-roledescription="carrousel" aria-label="Notre sélection de logements">
       <div ref={viewport} className="overflow-hidden px-1 py-6 -mx-1">
-        <motion.div className="flex items-stretch gap-6"
-          initial={false} animate={{ x: -position.index * geometry.step }}
-          transition={{ duration: reducedMotion || position.instant ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
-          onAnimationComplete={() => {
-            moving.current = false;
-            if (position.index >= count) setPosition({ index: 0, instant: true });
-          }}>
+        <motion.div className="flex items-stretch gap-6" style={{ x }}>
           {slides.map((item, index) => {
-            const visible = index >= position.index && index < position.index + geometry.visible;
+            const visible = index >= current && index < current + geometry.visible + (canMove && !reducedMotion ? 1 : 0);
             return (
               <div key={index} role="group" aria-roledescription="diapositive"
                 aria-label={`${index % count + 1} sur ${count}`} aria-hidden={!visible}
@@ -91,7 +92,6 @@ export function PropertyCarousel({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" aria-label="Annonce précédente" onClick={() => navigate((current - 1 + count) % count)}><ChevronLeft className="h-5 w-5" /></Button>
             <Button variant="outline" size="icon" aria-label="Annonce suivante" onClick={() => navigate(current + 1)}><ChevronRight className="h-5 w-5" /></Button>
-            <Button variant="ghost" size="icon" className="motion-reduce:hidden" aria-label={paused ? 'Reprendre le défilement' : 'Mettre le défilement en pause'} onClick={() => setPaused(value => !value)}>{paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}</Button>
           </div>
           <div className="flex flex-wrap items-center gap-1" aria-label="Position dans la sélection">
             {items.map((_, index) => (

@@ -52,7 +52,7 @@ export async function sendRequestAlert(subject: string, details: AlertDetails): 
         to: [recipient],
         subject,
         text,
-        html: `<div style="font-family:Georgia,Cambria,serif;color:#263238"><h2>${escapeHtml(subject)}</h2><table>${rows}</table></div>`,
+        html: `<div style="font-family:'Open Sans',Arial,sans-serif;color:#263238"><h2>${escapeHtml(subject)}</h2><table>${rows}</table></div>`,
       }),
     });
 
