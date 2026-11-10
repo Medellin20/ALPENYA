@@ -5,7 +5,9 @@ import { ArrowRight, ShieldCheck, KeyRound, CalendarCheck, Building2, Quote, Sta
 import { FadeIn } from '@/components/ui/fade-in';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
-import { getCityPropertySummaries } from '@/lib/data/properties';
+import { PropertyCarousel } from '@/components/properties/property-carousel';
+import { PropertyCard } from '@/components/properties/property-card';
+import { getCityPropertySummaries, getFeaturedProperties } from '@/lib/data/properties';
 import { FRENCH_TESTIMONIALS } from '@/lib/data/testimonials';
 
 export const revalidate = 60;
@@ -46,7 +48,10 @@ const TRUST_POINTS = [
 ];
 
 export default async function HomePage() {
-  const citySummaries = await getCityPropertySummaries();
+  const [citySummaries, featuredProperties] = await Promise.all([
+    getCityPropertySummaries(),
+    getFeaturedProperties(9),
+  ]);
 
   return (
     <>
@@ -144,6 +149,24 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {featuredProperties.length > 0 && (
+        <section className="bg-sand-100 py-12 sm:py-20">
+          <div className="container-app">
+            <FadeIn>
+              <div className="flex flex-wrap items-end justify-between gap-5">
+                <SectionHeading eyebrow="La sélection Locavia" title="Des lieux à découvrir" description="Explorez nos annonces et trouvez le logement qui vous correspond." />
+                <Button asChild variant="outline"><Link href="/appartements">Tous les biens <ArrowRight className="h-4 w-4" /></Link></Button>
+              </div>
+            </FadeIn>
+            <div className="mt-4">
+              <PropertyCarousel>
+                {featuredProperties.map(property => <PropertyCard key={property.id} property={property} />)}
+              </PropertyCarousel>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* APPARTEMENTS CLASSÉS PAR VILLE */}
       <section className="bg-ink-950 py-16 text-white sm:py-24">
