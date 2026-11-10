@@ -9,63 +9,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Palette LOCAVIA — bleu ciel lumineux, bleu nuit pour le contraste,
-        // et magenta comme accent distinctif.
+        // LOCAVIA : forêt profonde, ivoire et accents de laiton.
         ink: {
-          DEFAULT: '#102A43',
-          50: '#F0F9FF',
-          100: '#E0F2FE',
-          200: '#BAE6FD',
-          300: '#7DD3FC',
-          400: '#38BDF8',
-          500: '#0EA5E9',
-          600: '#0284C7',
-          700: '#075985',
-          800: '#0C4A6E',
-          900: '#123B5D',
-          950: '#082F49',
+          DEFAULT: '#233C35', 50: '#F2F5F2', 100: '#E2E8E1', 200: '#C5CFC5',
+          300: '#A6B6A9', 400: '#73877B', 500: '#576D61', 600: '#425C4F',
+          700: '#304D40', 800: '#243E33', 900: '#1C352B', 950: '#142B23',
         },
         canal: {
-          DEFAULT: '#38BDF8',
-          50: '#F0F9FF',
-          100: '#E0F2FE',
-          200: '#BAE6FD',
-          300: '#7DD3FC',
-          400: '#38BDF8',
-          500: '#0EA5E9',
-          600: '#0284C7',
-          700: '#0369A1',
-          800: '#075985',
-          900: '#0C4A6E',
+          DEFAULT: '#A18A5B', 50: '#FAF7EF', 100: '#F1EADB', 200: '#E4D7B9',
+          300: '#D1BD91', 400: '#B59A63', 500: '#9A7E48', 600: '#806635',
+          700: '#6A542D', 800: '#544429', 900: '#423622',
         },
         brick: {
-          DEFAULT: '#D81B60',
-          50: '#FFF0F6',
-          100: '#FFE0EC',
-          200: '#FFB8D2',
-          300: '#F986AE',
-          400: '#EE4F87',
-          500: '#D81B60',
-          600: '#BE185D',
-          700: '#9D174D',
-          800: '#831843',
+          DEFAULT: '#A44C36', 50: '#FCF3EF', 100: '#F6E2D9', 200: '#E8BEAB',
+          300: '#D89376', 400: '#BE6D50', 500: '#A44C36', 600: '#8A3D2A',
+          700: '#713323', 800: '#59291E',
         },
         sand: {
-          DEFAULT: '#F4FAFE',
-          50: '#FFFFFF',
-          100: '#F4FAFE',
-          200: '#E8F5FC',
-          300: '#D6EEFA',
+          DEFAULT: '#F7F5EF', 50: '#FFFEFB', 100: '#F7F5EF', 200: '#EDE9DE',
+          300: '#DAD3C3', 400: '#B9B09B',
         },
-        status: {
-          available: '#39A78E',
-          reserved: '#D81B60',
-          rented: '#6B7280',
-          draft: '#9CA3AF',
-        },
+        status: { available: '#397550', reserved: '#9A733A', rented: '#6B7280', draft: '#9CA3AF' },
       },
       fontFamily: {
         sans: ['var(--font-open-sans)', 'system-ui', 'sans-serif'],
+        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
       },
       fontSize: {
         'display-lg': ['3.5rem', { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '700' }],
@@ -74,14 +42,14 @@ const config: Config = {
         eyebrow: ['0.75rem', { lineHeight: '1', letterSpacing: '0.14em', fontWeight: '600' }],
       },
       borderRadius: {
-        xl: '0.875rem',
-        '2xl': '1.25rem',
-        '3xl': '1.75rem',
+        xl: '0.5rem',
+        '2xl': '0.75rem',
+        '3xl': '1rem',
       },
       boxShadow: {
-        soft: '0 2px 10px -2px rgba(2,132,199,0.12), 0 1px 2px -1px rgba(8,47,73,0.08)',
-        card: '0 8px 24px -8px rgba(2,132,199,0.18), 0 2px 6px -2px rgba(8,47,73,0.08)',
-        lifted: '0 22px 48px -14px rgba(8,47,73,0.28)',
+        soft: '0 2px 10px -2px rgba(20,43,35,0.06), 0 1px 2px -1px rgba(20,43,35,0.04)',
+        card: '0 8px 24px -8px rgba(20,43,35,0.10), 0 2px 6px -2px rgba(20,43,35,0.04)',
+        lifted: '0 22px 48px -14px rgba(20,43,35,0.16)',
       },
       keyframes: {
         'fade-up': {
@@ -110,7 +78,7 @@ const config: Config = {
       },
       backgroundImage: {
         'canal-line':
-          'linear-gradient(90deg, transparent, rgba(14,165,233,0.28) 20%, rgba(14,165,233,0.28) 80%, transparent)',
+          'linear-gradient(90deg, transparent, rgba(161,138,91,0.28) 20%, rgba(161,138,91,0.28) 80%, transparent)',
       },
     },
   },

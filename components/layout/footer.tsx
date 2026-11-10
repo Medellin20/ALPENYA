@@ -21,13 +21,13 @@ export function Footer() {
 
   return (
     <footer className="border-t border-ink-100 bg-ink-950 text-sand-200">
-      <div className="container-app grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      <div className="container-app grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         <div>
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-canal-300/40 bg-white/5">
               <Home className="h-4.5 w-4.5 text-white" strokeWidth={2.25} />
             </span>
-            <span className="text-lg font-extrabold tracking-tight text-white">
+            <span className="font-serif text-2xl font-normal tracking-[0.08em] text-white">
               LOCAVIA
             </span>
           </Link>

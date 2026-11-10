@@ -16,11 +16,11 @@ export function SectionHeading({
   return (
     <div className={cn(align === 'center' && 'text-center', className)}>
       {eyebrow && (
-        <span className="text-eyebrow uppercase text-canal-600">{eyebrow}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-canal-600">{eyebrow}</span>
       )}
-      <h2 className="mt-2 text-display-sm text-ink-900 sm:text-display-md">{title}</h2>
+      <h2 className="mt-4 font-serif text-3xl font-normal leading-tight tracking-tight text-ink-900 sm:text-5xl">{title}</h2>
       {description && (
-        <p className={cn('mt-3 max-w-2xl text-ink-500', align === 'center' && 'mx-auto')}>
+        <p className={cn('mt-5 max-w-2xl text-sm leading-7 text-ink-600', align === 'center' && 'mx-auto')}>
           {description}
         </p>
       )}

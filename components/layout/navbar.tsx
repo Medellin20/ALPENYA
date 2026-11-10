@@ -92,17 +92,17 @@ export function Navbar() {
       className={cn(
         'sticky top-0 z-50 w-full border-b transition-all duration-300',
         scrolled
-          ? 'border-ink-100 bg-white/95 shadow-soft backdrop-blur-xl'
-          : 'border-transparent bg-sand-100/85 backdrop-blur-lg'
+          ? 'border-ink-100 bg-sand-100/95 shadow-soft backdrop-blur-xl'
+          : 'border-ink-100 bg-sand-100/95 backdrop-blur-lg'
       )}
     >
       <nav className="container-app flex h-16 items-center justify-between md:h-20">
         <Link href="/" aria-label="LOCAVIA — Accueil" className="flex items-center gap-2 shrink-0">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-canal-400 to-canal-700 text-white shadow-soft">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink-950 text-white shadow-soft">
             <Home className="h-4.5 w-4.5" strokeWidth={2.25} />
           </span>
-          <span className="hidden text-lg font-extrabold tracking-tight text-ink-900 min-[390px]:inline">
-            <span className="text-canal-600">LOCAVIA</span>
+          <span className="hidden font-serif text-2xl font-normal tracking-[0.08em] text-ink-900 min-[390px]:inline">
+            <span className="text-ink-950">LOCAVIA</span>
           </span>
         </Link>
 
@@ -113,9 +113,9 @@ export function Navbar() {
               href={link.href}
               aria-current={isActivePath(pathname, link.href) ? 'page' : undefined}
               className={cn(
-                'rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
+                'rounded-lg px-3.5 py-2 text-xs font-semibold tracking-wide transition-colors',
                 isActivePath(pathname, link.href)
-                  ? 'bg-ink-950 text-white'
+                  ? 'bg-ink-950/5 text-ink-950'
                   : 'text-ink-600 hover:bg-white hover:text-ink-950'
               )}
             >

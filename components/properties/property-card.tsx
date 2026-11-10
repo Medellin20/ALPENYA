@@ -16,8 +16,8 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
   const highlights = property.amenities.slice(0, 2);
 
   return (
-    <article className="estate-card group relative flex h-full flex-col rounded-3xl border border-ink-100/70 bg-white p-2 shadow-soft">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-sand-200">
+    <article className="estate-card group relative flex h-full flex-col rounded-2xl border border-ink-100 bg-white shadow-soft">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-t-2xl bg-sand-200">
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -45,13 +45,13 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
           {property.property_images.length > 0 && <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-black/25 px-2 py-1 text-xs backdrop-blur-sm"><Camera className="h-3.5 w-3.5" aria-hidden="true" /><span>{property.property_images.length} photos</span></span>}
         </div>
       </div>
-      <FavoriteButton propertyId={property.id} className="absolute right-5 top-5 z-20" />
-      <div className="flex flex-1 flex-col px-3 pb-3 pt-5 sm:px-4 sm:pb-4">
+      <FavoriteButton propertyId={property.id} className="absolute right-3 top-3 z-20" />
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-5 sm:px-6 sm:pb-6">
         <div className="flex items-center gap-2 text-xs font-medium text-ink-600">
           <StatusDot colorClass={statusMeta.colorClass} />{statusMeta.label}
         </div>
-        <h3 className="mt-2 min-h-[3.5rem] text-lg font-bold leading-7 tracking-tight text-ink-950">
-          <Link href={`/appartements/${property.slug}`} className="line-clamp-2 after:absolute after:inset-0 after:z-10 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-canal-600 focus-visible:after:ring-offset-4">
+        <h3 className="mt-2 min-h-[3.5rem] font-serif text-xl font-normal leading-7 tracking-tight text-ink-950">
+          <Link href={`/appartements/${property.slug}`} className="line-clamp-2 after:absolute after:inset-0 after:z-10 after:rounded-2xl focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-canal-600 focus-visible:after:ring-offset-4">
             {property.title}
           </Link>
         </h3>
@@ -65,7 +65,7 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-ink-100 pt-4">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-700">{isStudio ? 'Loyer hors charges' : property.property_type === 'mobile_home' ? 'Location' : isVilla ? 'Juillet – août' : 'Hors saison'}</p>
-            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-extrabold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ {isStudio ? 'mois' : 'semaine'}</span>}</p>
+            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-ink-950"><span className="text-2xl font-semibold tracking-tight">{property.monthly_price > 0 ? formatPrice(property.monthly_price) : 'Nous consulter'}</span>{property.monthly_price > 0 && <span className="text-xs font-normal text-ink-700">/ {isStudio ? 'mois' : 'semaine'}</span>}</p>
           </div>
           <span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-950 text-white transition-colors group-hover:bg-brick-500"><ArrowUpRight className="h-5 w-5" /></span>
         </div>

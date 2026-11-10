@@ -55,58 +55,44 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* HERO ÉDITORIAL */}
-      <section className="overflow-hidden bg-sand-100 pb-10 pt-4 sm:pb-16 sm:pt-8 lg:pt-12">
-        <div className="container-app grid items-stretch gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-7">
-          <div className="hero-copy flex flex-col justify-between rounded-2xl bg-ink-950 p-6 text-white sm:rounded-[2rem] sm:p-10 lg:min-h-[620px] lg:p-12">
+      {/* HERO PANORAMIQUE */}
+      <section className="locavia-hero px-3 pb-12 pt-3 sm:px-6 sm:pb-16 lg:px-8">
+        <div className="relative mx-auto max-w-[1536px] overflow-hidden rounded-2xl bg-ink-950">
+          <Image src="/properties/grand-bornand/IMG_4225.jpeg" alt="Salon lumineux au Grand-Bornand, ouvert sur les montagnes" fill priority sizes="100vw" className="hero-photograph object-cover object-[65%_center]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/55 to-ink-950/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-950/50 via-transparent to-transparent" />
+          <div className="hero-copy relative mx-auto flex min-h-[570px] max-w-7xl flex-col justify-center px-6 py-16 text-white sm:min-h-[650px] sm:px-12 lg:min-h-[690px] lg:px-16">
             <div>
-              <p className="text-eyebrow uppercase text-canal-300">Lieux choisis · France</p>
-              <h1 className="mt-6 max-w-xl text-[2.65rem] font-extrabold leading-[0.96] tracking-[-0.05em] min-[380px]:text-5xl sm:mt-7 sm:text-7xl lg:text-[5.25rem]">
-                L’ailleurs,
-                <span className="block font-light italic text-canal-300">autrement.</span>
-              </h1>
-              <p className="mt-8 max-w-md text-base leading-relaxed text-sand-200 sm:text-lg">
-                Des chalets, villas, appartements meublés et mobil-homes, sélectionnés avec exigence. De la première visite à la remise des clés, nous avançons avec vous.
-              </p>
+              <p className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.26em] text-canal-200 sm:text-xs"><span className="h-px w-8 bg-canal-300" />L’immobilier, avec attention</p>
+              <h1 className="mt-8 max-w-3xl font-serif text-[3.3rem] font-normal leading-[1.02] tracking-[-0.035em] sm:text-7xl lg:text-[6.1rem]">L’art de trouver<span className="block italic text-canal-200">votre place.</span></h1>
+              <p className="mt-7 max-w-md text-sm leading-7 text-white/85 sm:text-base">Des chalets, villas, appartements meublés et mobil-homes choisis avec exigence. Un lieu qui vous ressemble, un accompagnement à chaque étape.</p>
             </div>
-            <div className="mt-10 flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap sm:mt-12">
-              <Button asChild size="lg" variant="secondary" className="w-full px-4 min-[430px]:w-auto sm:px-7">
-                <Link href="/appartements">Explorer la sélection <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full border-white/20 bg-transparent px-4 text-white hover:bg-white/10 hover:text-white min-[430px]:w-auto sm:px-7">
-                <Link href="/comment-ca-marche">Notre approche</Link>
-              </Button>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="w-full bg-sand-100 text-ink-950 hover:bg-white min-[430px]:w-auto"><Link href="/appartements">Découvrir nos biens <ArrowRight className="h-4 w-4" /></Link></Button>
+              <Button asChild size="lg" variant="outline" className="w-full border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white min-[430px]:w-auto"><Link href="/comment-ca-marche">L’expérience Locavia</Link></Button>
             </div>
-          </div>
-
-          <div className="relative min-h-[360px] overflow-hidden rounded-2xl min-[400px]:min-h-[440px] sm:min-h-[560px] sm:rounded-[2rem] lg:min-h-[620px]">
-            <Image src="/properties/grand-bornand/IMG_4225.jpeg" alt="Salon lumineux en bois au Grand-Bornand, ouvert sur les montagnes verdoyantes" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="hero-photograph object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-transparent" />
-            <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3 rounded-xl border border-white/20 bg-white/10 p-4 text-white backdrop-blur-md sm:inset-x-7 sm:bottom-7 sm:gap-4 sm:rounded-2xl sm:p-6">
-              <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Une pause au vert</p><p className="mt-1 text-xl font-bold sm:text-2xl">Le Grand-Bornand</p></div>
-            </div>
+            <div className="absolute bottom-7 right-8 hidden items-center gap-3 text-white/80 lg:flex"><MapPin className="h-4 w-4 text-canal-200" /><span className="text-xs tracking-wide">Le Grand-Bornand · France</span></div>
           </div>
         </div>
-
-        <div className="container-app mt-5 grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-ink-200 sm:grid-cols-3">
-          {TRUST_POINTS.map((point) => <div key={point.label} className="flex items-center gap-3 bg-white/90 px-5 py-4 sm:block sm:px-4 sm:py-5 lg:flex lg:px-6"><span className="shrink-0 text-2xl font-extrabold text-ink-950">{point.value}</span><span className="text-sm leading-snug text-ink-500">{point.label}</span></div>)}
+        <div className="container-app mt-7 grid grid-cols-1 divide-y divide-ink-200/60 sm:mt-9 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {TRUST_POINTS.map((point) => <div key={point.label} className="flex items-center gap-4 px-3 py-4 sm:justify-center sm:px-5"><span className="shrink-0 font-serif text-3xl text-ink-950">{point.value}</span><span className="max-w-[175px] text-xs leading-relaxed text-ink-600">{point.label}</span></div>)}
         </div>
       </section>
 
       {/* ACCÈS PAR CATÉGORIE */}
       <section className="bg-white py-16 sm:py-24">
-        <div className="container-app grid gap-9 lg:grid-cols-[0.65fr_1.35fr] lg:gap-12">
+        <div className="container-app grid gap-10">
           <FadeIn>
             <SectionHeading
               eyebrow="Nos collections"
               title="Quatre façons de se sentir chez soi."
               description="Un séjour à la montagne, une villa, un appartement prêt à vivre ou une pause en plein air : trouvez votre lieu."
             />
-            <p className="mt-7 hidden text-sm font-semibold uppercase tracking-[0.18em] text-ink-300 lg:block">Collections 01 — 04</p>
+            <p className="mt-5 text-xs font-medium uppercase tracking-[0.2em] text-ink-500">Collections 01 — 04</p>
           </FadeIn>
-          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
+          <div className="collection-grid grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <FadeIn delay={0.05} className="min-w-0">
-              <Link href="/appartements?type=chalet" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+              <Link href="/appartements?type=chalet" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[360px] sm:p-6">
                 <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 1024px) 50vw, 34vw" className="object-cover opacity-55 transition duration-500 motion-safe:group-hover:scale-[1.035] group-hover:opacity-45" />
                 <div className="relative mt-auto">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><MountainSnow className="h-5 w-5" /></span>
@@ -117,7 +103,7 @@ export default async function HomePage() {
               </Link>
             </FadeIn>
             <FadeIn delay={0.1} className="min-w-0">
-              <Link href="/appartements?type=villa" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+              <Link href="/appartements?type=villa" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[360px] sm:p-6">
                 <div className="absolute inset-0 bg-gradient-to-br from-canal-500/30 via-transparent to-ink-950/70" />
                 <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" />
                 <div className="absolute -right-4 top-12 h-36 w-36 rounded-full border border-white/10" />
@@ -134,12 +120,12 @@ export default async function HomePage() {
               { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, image: '/images/categories/mobil-home.png', color: 'bg-ink-950 text-white', action: 'Découvrir les mobil-homes' },
             ].map(({ type, title, description, icon: Icon, image, color, action }, index) => (
               <FadeIn key={type} delay={0.15 + index * 0.05} className="min-w-0">
-                <Link href={`/appartements?type=${type}`} className={`estate-card group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[350px] sm:rounded-[2rem] sm:p-8 ${color}`}>
+                <Link href={`/appartements?type=${type}`} className={`estate-card group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[360px] sm:p-6 ${color}`}>
                   <Image src={image} alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-500 motion-safe:group-hover:scale-[1.035]" />
                   <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/55 to-ink-950/20" />
                   <Icon className="relative mb-8 h-12 w-12 stroke-1" aria-hidden="true" />
                   <div className="relative mt-auto">
-                    <h3 className="break-words text-2xl font-extrabold xl:text-3xl">{title}</h3>
+                    <h3 className="break-words text-2xl font-extrabold xl:text-2xl">{title}</h3>
                     <p className="mt-3 text-sm leading-relaxed sm:text-base">{description}</p>
                     <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">{action}<ArrowRight className="h-4 w-4 shrink-0 transition-transform motion-safe:group-hover:translate-x-1" /></span>
                   </div>
@@ -229,13 +215,13 @@ export default async function HomePage() {
             />
           </FadeIn>
 
-          <div className="relative mx-auto mt-12 max-w-4xl">
-            <div className="absolute bottom-10 left-5 top-10 hidden w-px bg-ink-100 sm:block" />
+          <div className="relative mx-auto mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="hidden" />
             {STEPS.map((step, i) => (
-              <FadeIn key={step.title} delay={i * 0.08}>
-                <div className="relative mb-4 grid gap-4 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft sm:grid-cols-[2.5rem_1fr] sm:items-center sm:gap-6 sm:p-6">
-                  <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-ink-950 text-sm font-bold text-white">{i + 1}</div>
-                  <div className="grid gap-3 sm:grid-cols-[3rem_1fr] sm:items-center">
+              <FadeIn key={step.title} delay={i * 0.08} className="h-full">
+                <div className="relative flex h-full flex-col gap-6 border-t border-ink-200 py-6">
+                  <div className="relative z-10 font-serif text-4xl italic text-canal-600">0{i + 1}</div>
+                  <div className="grid gap-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-canal-50 text-canal-700">
                     <step.icon className="h-5 w-5" />
                   </div>
@@ -280,7 +266,7 @@ export default async function HomePage() {
                     {[1, 2, 3, 4, 5].map((star) => <Star key={star} className="h-3.5 w-3.5 fill-current" />)}
                   </div>
                 </div>
-                <blockquote className="mt-5 flex-1 text-sm leading-relaxed text-ink-600" lang="nl">
+                <blockquote className="mt-5 flex-1 text-sm leading-relaxed text-ink-600" lang="fr">
                   “{testimonial}”
                 </blockquote>
                 <p className="mt-5 border-t border-ink-100 pt-4 text-xs font-semibold uppercase tracking-wide text-ink-400">
@@ -296,8 +282,8 @@ export default async function HomePage() {
       <section className="pb-20">
         <div className="container-app">
           <FadeIn>
-            <div className="overflow-hidden rounded-2xl bg-ink-700 px-5 py-11 text-center sm:rounded-3xl sm:px-16 sm:py-14">
-              <h2 className="text-display-sm font-extrabold text-white sm:text-display-md">
+            <div className="overflow-hidden rounded-2xl bg-ink-950 px-5 py-11 text-center sm:rounded-3xl sm:px-16 sm:py-14">
+              <h2 className="font-serif text-3xl font-normal text-white sm:text-5xl">
                 Prêt à découvrir votre prochaine destination ?
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sand-200">

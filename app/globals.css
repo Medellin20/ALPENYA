@@ -150,43 +150,12 @@ input[type='number'] {
   appearance: textfield;
 }
 
-/* Panorama global des pages publiques, avec un voile pour garder une bonne
-   lisibilité sur ordinateur comme sur mobile. */
-.site-background {
-  background-image:
-    linear-gradient(rgba(247, 250, 252, 0.88), rgba(247, 250, 252, 0.88)),
-    url('/images/site-background.webp');
-  background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
-/* Un grain très léger donne aux grands aplats une présence plus éditoriale. */
-.site-background::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-}
-
-/* Les surfaces claires restent lisibles tout en laissant apparaître le décor. */
-.site-background .bg-white {
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.site-background .bg-sand-100 {
-  background-color: rgba(247, 245, 240, 0.86);
-}
-
-@media (max-width: 767px) {
-  .site-background {
-    /* background-attachment: fixed est coûteux et instable sur certains mobiles. */
-    background-attachment: scroll;
-  }
-}
+/* Fond ivoire sobre commun aux pages publiques. */
+.site-background { background: #f7f5ef; }
+.site-background h1 { font-family: Georgia, Cambria, 'Times New Roman', serif; font-weight: 400; }
+.site-background footer h3 { color: #d1bd91; }
+.collection-grid > div > a { border-radius: 0.75rem; }
+.collection-grid h3 { font-family: Georgia, Cambria, serif; font-weight: 400; }
 
 /* Mouvements courts, sans modifier la géométrie des grilles ou des liens. */
 .estate-card {
@@ -196,7 +165,7 @@ input[type='number'] {
 @media (hover: hover) and (pointer: fine) {
   .estate-card:hover,
   .estate-card:focus-within {
-    box-shadow: 0 18px 40px -20px rgba(11, 48, 67, 0.28);
+    box-shadow: 0 18px 40px -20px rgba(20, 43, 35, 0.22);
   }
 }
 
