@@ -91,11 +91,11 @@ export function Footer() {
           <ul className="mt-4 space-y-3">
             <li>
               <a
-                href="mailto:contacts@alpenia-residences.com"
+                href="mailto:contacts@locavia.agency"
                 className="flex min-w-0 items-center gap-2.5 break-all text-sm text-sand-300 transition-colors hover:text-white"
               >
                 <Mail className="h-4 w-4 shrink-0" />
-                contacts@alpenia-residences.com
+                contacts@locavia.agency
               </a>
             </li>
           </ul>

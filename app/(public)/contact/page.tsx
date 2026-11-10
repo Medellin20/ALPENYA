@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const INFO = [
-  { icon: Mail, label: 'contacts@alpenia-residences.com' },
+  { icon: Mail, label: 'contacts@locavia.agency' },
   { icon: Phone, label: '+33 1 23 45 67 89' },
   { icon: MapPin, label: 'Paris, France' },
   { icon: Clock, label: 'Lun–Ven, 9h–18h (CET)' },

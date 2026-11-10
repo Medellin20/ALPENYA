@@ -70,9 +70,9 @@ export default async function ViewingConfirmationPage({
               Après le virement, envoyez votre justificatif à{' '}
               <a
                 className="break-all font-semibold underline"
-                href={`mailto:contacts@alpenia-residences.com?subject=${encodeURIComponent(`Justificatif de virement — ${viewing.reference}`)}`}
+                href={`mailto:contacts@locavia.agency?subject=${encodeURIComponent(`Justificatif de virement — ${viewing.reference}`)}`}
               >
-                contacts@alpenia-residences.com
+                contacts@locavia.agency
               </a>{' '}
               en indiquant votre référence.
             </p>

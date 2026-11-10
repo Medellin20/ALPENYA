@@ -33,7 +33,7 @@ export default function MentionsLegalesPage() {
       </p>
 
       <h2>Contact</h2>
-      <p>Pour toute question relative aux présentes mentions légales : contacts@alpenia-residences.com</p>
+      <p>Pour toute question relative aux présentes mentions légales : contacts@locavia.agency</p>
     </LegalPage>
   );
 }
