@@ -1,8 +1,8 @@
-# ALPENIA
+# LOCAVIA
 
 **Plateforme professionnelle de gestion et de location de chalets et villas en France.**
 
-ALPENIA permet de publier des chalets et villas, gérer les demandes de visite, les réservations, les paiements de garantie et les remboursements — avec un espace client et un tableau de bord administrateur intégré.
+LOCAVIA permet de publier des chalets et villas, gérer les demandes de visite, les réservations, les paiements de garantie et les remboursements — avec un espace client et un tableau de bord administrateur intégré.
 
 ---
 
@@ -59,7 +59,7 @@ ADMIN_SESSION_SECRET=generez-une-longue-chaine-aleatoire-ici
 # Alertes des demandes de visite et de réservation (Resend)
 RESEND_API_KEY=re_votre_cle_api
 ALERT_EMAIL=alertes@votre-domaine.com
-ALERT_FROM_EMAIL="ALPENIA <notifications@votre-domaine-verifie.com>"
+ALERT_FROM_EMAIL="LOCAVIA <notifications@votre-domaine-verifie.com>"
 
 STRIPE_SECRET_KEY=sk_test_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...

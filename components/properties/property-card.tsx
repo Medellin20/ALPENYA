@@ -16,7 +16,7 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
   const highlights = property.amenities.slice(0, 2);
 
   return (
-    <article className="group relative flex h-full flex-col rounded-3xl border border-ink-100/70 bg-white p-2 shadow-soft transition-shadow duration-300 hover:shadow-lifted">
+    <article className="estate-card group relative flex h-full flex-col rounded-3xl border border-ink-100/70 bg-white p-2 shadow-soft">
       <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-sand-200">
         {primaryImage ? (
           <Image
@@ -24,7 +24,7 @@ export function PropertyCard({ property }: { property: PropertyWithRelations }) 
             alt={primaryImage.alt_text || property.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
+            className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-[1.035]"
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-sand-100 to-canal-100 text-ink-600">

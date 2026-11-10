@@ -28,7 +28,7 @@ export function Footer() {
               <Home className="h-4.5 w-4.5 text-white" strokeWidth={2.25} />
             </span>
             <span className="text-lg font-extrabold tracking-tight text-white">
-              ALPENIA
+              LOCAVIA
             </span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-sand-300">
@@ -104,7 +104,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-app flex flex-col items-center justify-between gap-3 py-5 text-xs text-sand-400 sm:flex-row">
-          <p>© {year} ALPENIA. Tous droits réservés.</p>
+          <p>© {year} LOCAVIA. Tous droits réservés.</p>
           <p>Location de biens en France</p>
         </div>
       </div>

@@ -11,7 +11,7 @@ import { FRENCH_TESTIMONIALS } from '@/lib/data/testimonials';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'ALPENIA — Biens à louer en France',
+  title: 'LOCAVIA — Biens à louer en France',
   description:
     "Découvrez des chalets, villas, appartements meublés et mobil-homes en France. Visites, réservation et suivi réunis sur une plateforme claire.",
 };
@@ -53,7 +53,7 @@ export default async function HomePage() {
       {/* HERO ÉDITORIAL */}
       <section className="overflow-hidden bg-sand-100 pb-10 pt-4 sm:pb-16 sm:pt-8 lg:pt-12">
         <div className="container-app grid items-stretch gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-7">
-          <FadeIn className="flex flex-col justify-between rounded-2xl bg-ink-950 p-6 text-white sm:rounded-[2rem] sm:p-10 lg:min-h-[620px] lg:p-12">
+          <div className="hero-copy flex flex-col justify-between rounded-2xl bg-ink-950 p-6 text-white sm:rounded-[2rem] sm:p-10 lg:min-h-[620px] lg:p-12">
             <div>
               <p className="text-eyebrow uppercase text-canal-300">Lieux choisis · France</p>
               <h1 className="mt-6 max-w-xl text-[2.65rem] font-extrabold leading-[0.96] tracking-[-0.05em] min-[380px]:text-5xl sm:mt-7 sm:text-7xl lg:text-[5.25rem]">
@@ -72,15 +72,15 @@ export default async function HomePage() {
                 <Link href="/comment-ca-marche">Notre approche</Link>
               </Button>
             </div>
-          </FadeIn>
+          </div>
 
-          <FadeIn delay={0.08} className="relative min-h-[360px] overflow-hidden rounded-2xl min-[400px]:min-h-[440px] sm:min-h-[560px] sm:rounded-[2rem] lg:min-h-[620px]">
-            <Image src="/properties/grand-bornand/IMG_4225.jpeg" alt="Salon lumineux en bois au Grand-Bornand, ouvert sur les montagnes verdoyantes" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+          <div className="relative min-h-[360px] overflow-hidden rounded-2xl min-[400px]:min-h-[440px] sm:min-h-[560px] sm:rounded-[2rem] lg:min-h-[620px]">
+            <Image src="/properties/grand-bornand/IMG_4225.jpeg" alt="Salon lumineux en bois au Grand-Bornand, ouvert sur les montagnes verdoyantes" fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="hero-photograph object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-transparent" />
             <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3 rounded-xl border border-white/20 bg-white/10 p-4 text-white backdrop-blur-md sm:inset-x-7 sm:bottom-7 sm:gap-4 sm:rounded-2xl sm:p-6">
               <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Une pause au vert</p><p className="mt-1 text-xl font-bold sm:text-2xl">Le Grand-Bornand</p></div>
             </div>
-          </FadeIn>
+          </div>
         </div>
 
         <div className="container-app mt-5 grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-ink-200 sm:grid-cols-3">
@@ -101,18 +101,18 @@ export default async function HomePage() {
           </FadeIn>
           <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
             <FadeIn delay={0.05} className="min-w-0">
-              <Link href="/appartements?type=chalet" className="group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
-                <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 1024px) 50vw, 34vw" className="object-cover opacity-55 transition duration-500 group-hover:scale-105 group-hover:opacity-45" />
+              <Link href="/appartements?type=chalet" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-ink-900 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+                <Image src="/properties/la-clusaz/IMG_4208.jpeg" alt="Chalet en montagne" fill sizes="(max-width: 1024px) 50vw, 34vw" className="object-cover opacity-55 transition duration-500 motion-safe:group-hover:scale-[1.035] group-hover:opacity-45" />
                 <div className="relative mt-auto">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><MountainSnow className="h-5 w-5" /></span>
                   <h3 className="mt-4 text-2xl font-extrabold sm:text-3xl">Chalets</h3>
                   <p className="mt-1 max-w-sm text-sm text-white/80 sm:text-base">Montagne, neige, cheminée et séjours chaleureux en famille ou entre amis.</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les chalets <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les chalets <ArrowRight className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" /></span>
                 </div>
               </Link>
             </FadeIn>
             <FadeIn delay={0.1} className="min-w-0">
-              <Link href="/appartements?type=villa" className="group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
+              <Link href="/appartements?type=villa" className="estate-card group relative flex h-full min-h-72 overflow-hidden rounded-2xl bg-canal-800 p-3 text-white shadow-card min-[400px]:min-h-80 sm:min-h-[430px] sm:rounded-[2rem] sm:p-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-canal-500/30 via-transparent to-ink-950/70" />
                 <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" />
                 <div className="absolute -right-4 top-12 h-36 w-36 rounded-full border border-white/10" />
@@ -120,23 +120,23 @@ export default async function HomePage() {
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur"><Palmtree className="h-5 w-5" /></span>
                   <h3 className="mt-4 text-2xl font-extrabold sm:text-3xl">Villas</h3>
                   <p className="mt-1 max-w-sm text-sm text-white/80 sm:text-base">Littoral, jardin, piscine et espaces privilégiés pour vous retrouver.</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les villas <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">Découvrir les villas <ArrowRight className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" /></span>
                 </div>
               </Link>
             </FadeIn>
             {[
               { type: 'furnished_studio', title: 'Appartements meublés', description: 'Un appartement équipé et prêt à vivre, pour vous installer simplement.', icon: Building2, image: '/images/categories/appartement-meuble.png', color: 'bg-ink-950 text-white', action: 'Trouver mon appartement' },
               { type: 'mobile_home', title: 'Mobil-homes', description: 'Une terrasse, du grand air et un pied-à-terre pour vos prochaines vacances.', icon: Caravan, image: '/images/categories/mobil-home.png', color: 'bg-ink-950 text-white', action: 'Découvrir les mobil-homes' },
-            ].map(({ type, title, description, icon: Icon, image, color, action }) => (
-              <FadeIn key={type} className="min-w-0">
-                <Link href={`/appartements?type=${type}`} className={`group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[350px] sm:rounded-[2rem] sm:p-8 ${color}`}>
-                  <Image src={image} alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />
+            ].map(({ type, title, description, icon: Icon, image, color, action }, index) => (
+              <FadeIn key={type} delay={0.15 + index * 0.05} className="min-w-0">
+                <Link href={`/appartements?type=${type}`} className={`estate-card group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl p-5 shadow-card sm:min-h-[350px] sm:rounded-[2rem] sm:p-8 ${color}`}>
+                  <Image src={image} alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-500 motion-safe:group-hover:scale-[1.035]" />
                   <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/55 to-ink-950/20" />
                   <Icon className="relative mb-8 h-12 w-12 stroke-1" aria-hidden="true" />
                   <div className="relative mt-auto">
                     <h3 className="break-words text-2xl font-extrabold xl:text-3xl">{title}</h3>
                     <p className="mt-3 text-sm leading-relaxed sm:text-base">{description}</p>
-                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">{action}<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" /></span>
+                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold sm:text-sm">{action}<ArrowRight className="h-4 w-4 shrink-0 transition-transform motion-safe:group-hover:translate-x-1" /></span>
                   </div>
                 </Link>
               </FadeIn>
@@ -170,11 +170,11 @@ export default async function HomePage() {
               <FadeIn key={summary.city} className="min-w-0" delay={Math.min(index, 6) * 0.04}>
                 <Link
                   href={`/appartements?city=${encodeURIComponent(summary.city)}`}
-                  className="group relative flex min-h-64 overflow-hidden rounded-2xl bg-ink-900 p-5 sm:min-h-80 sm:rounded-3xl sm:p-6"
+                  className="estate-card group relative flex min-h-64 overflow-hidden rounded-2xl bg-ink-900 p-5 sm:min-h-80 sm:rounded-3xl sm:p-6"
                 >
                   <div className="absolute inset-0 bg-ink-900">
                     {summary.imageUrl ? (
-                      <Image src={summary.imageUrl} alt={`Logement à ${summary.city}`} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover opacity-65 transition duration-500 group-hover:scale-105 group-hover:opacity-50" />
+                      <Image src={summary.imageUrl} alt={`Logement à ${summary.city}`} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover opacity-65 transition duration-500 motion-safe:group-hover:scale-[1.035] group-hover:opacity-50" />
                     ) : (
                       <span className="flex h-full items-center justify-center text-canal-500"><MapPin className="h-7 w-7" /></span>
                     )}
@@ -185,7 +185,7 @@ export default async function HomePage() {
                     <h3 className="mt-2 truncate text-2xl font-extrabold text-white sm:text-3xl">{summary.city}</h3>
                     <p className="mt-1 text-sm text-white/70">Découvrir les logements</p>
                   </div>
-                  <ArrowRight className="relative mt-auto h-6 w-6 shrink-0 text-white transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="relative mt-auto h-6 w-6 shrink-0 text-white transition-transform motion-safe:group-hover:translate-x-1" />
                 </Link>
               </FadeIn>
             ))}
@@ -240,7 +240,7 @@ export default async function HomePage() {
           <FadeIn>
             <SectionHeading
               eyebrow="Témoignages"
-             title="Ce que nos clients disent d'ALPENIA"
+             title="Ce que nos clients disent de LOCAVIA"
               description="Des retours de clients accompagnés dans leur recherche de logement en France. Faites défiler pour consulter les 50 témoignages."
             />
           </FadeIn>
@@ -261,7 +261,7 @@ export default async function HomePage() {
                   “{testimonial}”
                 </blockquote>
                 <p className="mt-5 border-t border-ink-100 pt-4 text-xs font-semibold uppercase tracking-wide text-ink-400">
-                  Client d'ALPENIA · Avis {index + 1}
+                  Client de LOCAVIA · Avis {index + 1}
                 </p>
               </article>
             ))}
@@ -273,7 +273,7 @@ export default async function HomePage() {
       <section className="pb-20">
         <div className="container-app">
           <FadeIn>
-            <div className="overflow-hidden rounded-2xl bg-ink-700 px-5 py-11 text-center sm:rounded-3xl sm:px-16 sm:py-14 animate-float">
+            <div className="overflow-hidden rounded-2xl bg-ink-700 px-5 py-11 text-center sm:rounded-3xl sm:px-16 sm:py-14">
               <h2 className="text-display-sm font-extrabold text-white sm:text-display-md">
                 Prêt à découvrir votre prochaine destination ?
               </h2>

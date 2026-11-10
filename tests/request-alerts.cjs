@@ -28,7 +28,7 @@ test('La fonction envoie une alerte à Resend par HTTP sans dépendance Nodemail
     env: {
       RESEND_API_KEY: 're_test_secret',
       ALERT_EMAIL: 'alerts@example.com',
-      ALERT_FROM_EMAIL: 'ALPENIA <alerts@verified.example.com>',
+      ALERT_FROM_EMAIL: 'LOCAVIA <alerts@verified.example.com>',
     },
     fetchImpl: async (url, options) => {
       request = { url, options };
@@ -45,7 +45,7 @@ test('La fonction envoie une alerte à Resend par HTTP sans dépendance Nodemail
   assert.equal(request.options.method, 'POST');
   assert.equal(request.options.headers.Authorization, 'Bearer re_test_secret');
   const body = JSON.parse(request.options.body);
-  assert.equal(body.from, 'ALPENIA <alerts@verified.example.com>');
+  assert.equal(body.from, 'LOCAVIA <alerts@verified.example.com>');
   assert.deepEqual(body.to, ['alerts@example.com']);
   assert.equal(body.subject, 'Nouvelle visite');
   assert.match(body.text, /Référence: VIS-123/);

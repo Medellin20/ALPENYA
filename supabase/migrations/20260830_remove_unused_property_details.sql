@@ -1,5 +1,5 @@
 -- Suppression définitive des informations de construction qui ne sont plus
--- collectées ni affichées par ALPENIA.
+-- collectées ni affichées par LOCAVIA.
 alter table public.properties
   drop column if exists construction_year,
   drop column if exists construction_type,

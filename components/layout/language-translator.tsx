@@ -14,11 +14,11 @@ declare global {
         ) => void;
       };
     };
-    alpeniaTranslateReady?: () => void;
+    locaviaTranslateReady?: () => void;
   }
 }
 
-const GOOGLE_TRANSLATE_SCRIPT = 'https://translate.google.com/translate_a/element.js?cb=alpeniaTranslateReady';
+const GOOGLE_TRANSLATE_SCRIPT = 'https://translate.google.com/translate_a/element.js?cb=locaviaTranslateReady';
 
 export function LanguageTranslator({ id, className }: { id: string; className?: string }) {
   const initialized = React.useRef(false);
@@ -67,25 +67,25 @@ export function LanguageTranslator({ id, className }: { id: string; className?: 
       }
     };
 
-    window.addEventListener('alpenia-translate-ready', initialize);
+    window.addEventListener('locavia-translate-ready', initialize);
 
     if (window.google?.translate) {
       initialize();
     } else {
-      window.alpeniaTranslateReady = () => {
-        window.dispatchEvent(new Event('alpenia-translate-ready'));
+      window.locaviaTranslateReady = () => {
+        window.dispatchEvent(new Event('locavia-translate-ready'));
       };
 
       if (!document.querySelector(`script[src="${GOOGLE_TRANSLATE_SCRIPT}"]`)) {
         const script = document.createElement('script');
         script.src = GOOGLE_TRANSLATE_SCRIPT;
         script.async = true;
-        script.onerror = () => window.removeEventListener('alpenia-translate-ready', initialize);
+        script.onerror = () => window.removeEventListener('locavia-translate-ready', initialize);
         document.head.appendChild(script);
       }
     }
 
-    return () => window.removeEventListener('alpenia-translate-ready', initialize);
+    return () => window.removeEventListener('locavia-translate-ready', initialize);
   }, [id]);
 
   return (

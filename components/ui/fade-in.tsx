@@ -1,10 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
 
-// Apparition progressive utilisée pour les sections de la page d'accueil,
-// déclenchée lorsque l'élément entre dans le viewport.
+// Le HTML reste visible sans JavaScript. Chaque apparition ne joue qu'une fois.
 export function FadeIn({
   children,
   delay = 0,
@@ -14,15 +12,36 @@ export function FadeIn({
   delay?: number;
   className?: string;
 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const element = ref.current;
+    if (!element || !('IntersectionObserver' in window)) return;
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let animation: Animation | undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      if (preference.matches || !element.animate) return;
+      animation = element.animate(
+        [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 700, delay: Math.min(Math.max(delay, 0), 0.3) * 1000, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'backwards' }
+      );
+    }, { threshold: 0.08 });
+    const onPreferenceChange = () => {
+      if (preference.matches) {
+        animation?.cancel();
+        observer.disconnect();
+      }
+    };
+    if (!preference.matches) observer.observe(element);
+    preference.addEventListener('change', onPreferenceChange);
+    return () => {
+      observer.disconnect();
+      animation?.cancel();
+      preference.removeEventListener('change', onPreferenceChange);
+    };
+  }, [delay]);
+
+  return <div ref={ref} className={className}>{children}</div>;
 }

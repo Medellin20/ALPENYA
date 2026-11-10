@@ -1,8 +1,8 @@
 {
-  "name": "alpenia",
+  "name": "locavia",
   "version": "1.0.0",
   "private": true,
-  "description": "ALPENIA — plateforme de location de chalets et villas en France",
+  "description": "LOCAVIA — plateforme de location de chalets et villas en France",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

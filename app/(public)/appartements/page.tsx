@@ -103,7 +103,7 @@ function CatalogueHeader({ city, propertyType }: { city?: string; propertyType?:
   return (
     <header className="relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-10 text-white sm:px-10 sm:py-12">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[60px] border-white/[0.04]" />
-      <p className="relative text-xs font-semibold uppercase tracking-[0.24em] text-canal-200">La collection ALPENIA</p>
+      <p className="relative text-xs font-semibold uppercase tracking-[0.24em] text-canal-200">La collection LOCAVIA</p>
       <h1 className="relative mt-5 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
         {city ? <>Une parenthèse à <span className="font-serif font-normal italic text-canal-200">{city}.</span></> : propertyType === 'chalet' ? <>L’esprit chalet.<br /><span className="font-serif font-normal italic text-canal-200">La montagne pour horizon.</span></> : propertyType === 'villa' ? <>L’art de la villa.<br /><span className="font-serif font-normal italic text-canal-200">Du soleil, de l’espace.</span></> : propertyType === 'furnished_studio' ? <>Un appartement prêt à vivre.<br /><span className="font-serif font-normal italic text-canal-200">Meublé pour votre confort.</span></> : propertyType === 'mobile_home' ? <>L’esprit plein air.<br /><span className="font-serif font-normal italic text-canal-200">Découvrez nos mobil-homes.</span></> : <>Des lieux à découvrir.<br /><span className="font-serif font-normal italic text-canal-200">Des séjours à imaginer.</span></>}
       </h1>

@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   icons: { icon: '/favicon.svg' },
   title: {
-    default: 'ALPENIA — Biens à louer en France',
-    template: '%s | ALPENIA',
+    default: 'LOCAVIA — Biens à louer en France',
+    template: '%s | LOCAVIA',
   },
   description:
     'Découvrez nos chalets, villas, appartements meublés et mobil-homes à louer en France.',
@@ -29,20 +29,20 @@ export const metadata: Metadata = {
     'location mobil-home',
     'chalet Alpes',
     'villa Côte d’Azur',
-    'ALPENIA',
+    'LOCAVIA',
   ],
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    siteName: 'ALPENIA',
-    title: 'ALPENIA — Biens à louer en France',
+    siteName: 'LOCAVIA',
+    title: 'LOCAVIA — Biens à louer en France',
     description:
       'Recherchez, visitez et réservez votre prochain logement en toute confiance.',
     url: siteUrl,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ALPENIA — Biens à louer en France',
+    title: 'LOCAVIA — Biens à louer en France',
     description: 'Trouvez votre prochain logement en France.',
   },
   robots: {

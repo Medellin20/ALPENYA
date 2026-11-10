@@ -30,10 +30,10 @@ const sizeClasses: Record<ButtonSize, string> = {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, disabled, children, asChild = false, type, ...props }, ref) => {
     const sharedClassName = cn(
-          'inline-flex max-w-full items-center justify-center whitespace-normal text-center leading-snug font-semibold [&>svg]:shrink-0 transition-all duration-200',
+          'locavia-button inline-flex max-w-full items-center justify-center whitespace-normal text-center leading-snug font-semibold [&>svg]:shrink-0 transition-[background-color,color,border-color,box-shadow,transform] duration-200',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink-700 focus-visible:ring-offset-2',
-          'active:scale-[0.98]',
+          'motion-safe:enabled:active:scale-[0.98]',
           variantClasses[variant],
           sizeClasses[size],
           className

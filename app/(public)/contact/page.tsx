@@ -5,7 +5,7 @@ import { FadeIn } from '@/components/ui/fade-in';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: "Contactez l’équipe ALPENIA pour toute question sur la location d’un chalet ou d’une villa en France.",
+  description: "Contactez l’équipe LOCAVIA pour toute question sur la location d’un chalet ou d’une villa en France.",
 };
 
 const INFO = [

@@ -1,4 +1,5 @@
 import type { PropertyWithRelations } from '@/types/database';
+import { FadeIn } from '@/components/ui/fade-in';
 import { PropertyCard } from '@/components/properties/property-card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { SearchX } from 'lucide-react';
@@ -17,13 +18,13 @@ export function PropertyGrid({ properties }: { properties: PropertyWithRelations
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {properties.map((property, index) => (
-        <div
+        <FadeIn
           key={property.id}
-          className="min-w-0 h-full motion-safe:animate-fade-up"
-          style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
+          className="min-w-0 h-full"
+          delay={(index % 3) * 0.06}
         >
           <PropertyCard property={property} />
-        </div>
+        </FadeIn>
       ))}
     </div>
   );

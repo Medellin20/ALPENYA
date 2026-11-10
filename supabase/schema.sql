@@ -1,5 +1,5 @@
     -- =============================================================================
-    -- ALPENIA — SCHÉMA DE BASE DE DONNÉES
+    -- LOCAVIA — SCHÉMA DE BASE DE DONNÉES
     -- À exécuter dans Supabase SQL Editor (Project > SQL Editor > New query)
     -- Ordre d'exécution : schema.sql -> rls_policies.sql -> seed.sql
     -- =============================================================================
@@ -295,7 +295,7 @@
     );
 
     insert into bank_settings (id, beneficiary_name, iban, bic, bank_name, payment_instructions, default_deposit_amount)
-    values (1, 'ALPENIA (À CONFIGURER)', 'FR00 0000 0000 0000 0000 0000 000', 'XXXXXXXX', 'Banque à configurer',
+    values (1, 'LOCAVIA (À CONFIGURER)', 'FR00 0000 0000 0000 0000 0000 000', 'XXXXXXXX', 'Banque à configurer',
             'RIB de démonstration — ne pas effectuer de virement avant son remplacement dans l''espace administrateur.', 0)
     on conflict (id) do nothing;
 

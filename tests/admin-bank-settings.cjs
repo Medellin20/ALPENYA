@@ -58,7 +58,7 @@ function setup({ error = null, row = { id: 1 } } = {}) {
 }
 
 const settings = {
-  beneficiaryName: 'Alpenia',
+  beneficiaryName: 'Locavia',
   iban: 'FR7612345678901234567890123',
   bic: 'AGRIFRPP',
   paymentInstructions: 'Indiquer la référence du dossier.',

@@ -8,7 +8,7 @@ export default function MentionsLegalesPage() {
     <LegalPage title="Mentions légales" updatedAt="9 août 2026">
       <h2>Éditeur du site</h2>
       <p>
-        Le site ALPENIA est édité par ALPENIA SAS, société à responsabilité simplifiée de droit français. <em>[Ces informations sont fournies à titre d’exemple et doivent être
+        Le site LOCAVIA est édité par LOCAVIA SAS, société à responsabilité simplifiée de droit français. <em>[Ces informations sont fournies à titre d’exemple et doivent être
         complétées avec les données réelles de votre société : raison sociale, SIRET, adresse
         du siège, numéro de TVA, directeur de la publication.]</em>
       </p>
@@ -28,7 +28,7 @@ export default function MentionsLegalesPage() {
 
       <h2>Responsabilité</h2>
       <p>
-        ALPENIA s’efforce d’assurer l’exactitude des informations diffusées sur ce site mais
+        LOCAVIA s’efforce d’assurer l’exactitude des informations diffusées sur ce site mais
         ne saurait être tenue responsable des erreurs, omissions ou indisponibilités temporaires.
       </p>
 

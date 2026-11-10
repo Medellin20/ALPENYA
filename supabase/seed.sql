@@ -1,5 +1,5 @@
 -- =============================================================================
--- ALPENIA — DONNÉES DE RÉFÉRENCE (aucun bien ni client)
+-- LOCAVIA — DONNÉES DE RÉFÉRENCE (aucun bien ni client)
 -- À exécuter après schema.sql et rls_policies.sql
 -- Utilise la service role (SQL Editor Supabase l'exécute déjà avec les
 -- droits nécessaires, RLS n'entre pas en jeu ici).
