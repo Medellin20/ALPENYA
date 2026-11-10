@@ -63,7 +63,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950/50 via-transparent to-transparent" />
           <div className="hero-copy relative mx-auto flex min-h-[570px] max-w-7xl flex-col justify-center px-6 py-16 text-white sm:min-h-[650px] sm:px-12 lg:min-h-[690px] lg:px-16">
             <div>
-              <p className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.26em] text-canal-200 sm:text-xs"><span className="h-px w-8 bg-canal-300" />L’immobilier, avec attention</p>
+              <p className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.26em] text-canal-200 sm:text-xs">L’immobilier, avec attention</p>
               <h1 className="mt-8 max-w-3xl font-serif text-[3.3rem] font-normal leading-[1.02] tracking-[-0.035em] sm:text-7xl lg:text-[6.1rem]">L’art de trouver<span className="block italic text-canal-200">votre place.</span></h1>
               <p className="mt-7 max-w-md text-sm leading-7 text-white/85 sm:text-base">Des chalets, villas, appartements meublés et mobil-homes choisis avec exigence. Un lieu qui vous ressemble, un accompagnement à chaque étape.</p>
             </div>
@@ -257,7 +257,7 @@ export default async function HomePage() {
           <div className="mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 [scrollbar-width:thin]">
             {FRENCH_TESTIMONIALS.map((testimonial, index) => (
               <article
-                key={index}
+                key={testimonial.name}
                 className="flex min-h-64 w-[calc(100vw-3rem)] max-w-sm shrink-0 snap-start flex-col rounded-2xl border border-ink-100 bg-white p-5 shadow-soft sm:w-80 sm:p-6"
               >
                 <div className="flex items-center justify-between gap-3">
@@ -267,11 +267,12 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <blockquote className="mt-5 flex-1 text-sm leading-relaxed text-ink-600" lang="fr">
-                  “{testimonial}”
+                  “{testimonial.text}”
                 </blockquote>
-                <p className="mt-5 border-t border-ink-100 pt-4 text-xs font-semibold uppercase tracking-wide text-ink-400">
-                  Client de LOCAVIA · Avis {index + 1}
-                </p>
+                <div className="mt-5 border-t border-ink-100 pt-4">
+                  <p className="text-sm font-semibold text-ink-900">{testimonial.name}</p>
+                  <p className="mt-1 text-xs text-ink-500">Client de LOCAVIA · Avis {index + 1}</p>
+                </div>
               </article>
             ))}
           </div>
