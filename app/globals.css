@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --font-locavia: Georgia, Cambria, 'Times New Roman', serif;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -152,10 +156,10 @@ input[type='number'] {
 
 /* Fond ivoire sobre commun aux pages publiques. */
 .site-background { background: #f7f5ef; }
-.site-background h1 { font-family: Georgia, Cambria, 'Times New Roman', serif; font-weight: 400; }
+.site-background h1 { font-weight: 400; }
 .site-background footer h3 { color: #d1bd91; }
 .collection-grid > div > a { border-radius: 0.75rem; }
-.collection-grid h3 { font-family: Georgia, Cambria, serif; font-weight: 400; }
+.collection-grid h3 { font-weight: 400; }
 
 /* Mouvements courts, sans modifier la géométrie des grilles ou des liens. */
 .estate-card {

@@ -32,8 +32,9 @@ const config: Config = {
         status: { available: '#397550', reserved: '#9A733A', rented: '#6B7280', draft: '#9CA3AF' },
       },
       fontFamily: {
-        sans: ['var(--font-open-sans)', 'system-ui', 'sans-serif'],
-        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+        sans: ['var(--font-locavia)'],
+        serif: ['var(--font-locavia)'],
+        mono: ['var(--font-locavia)'],
       },
       fontSize: {
         'display-lg': ['3.5rem', { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '700' }],

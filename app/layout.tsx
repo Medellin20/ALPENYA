@@ -1,15 +1,7 @@
 import type { Metadata } from 'next';
-import { Open_Sans } from 'next/font/google';
 import { Toaster } from 'sonner';
 import './globals.css';
 import { getSiteUrl } from '@/lib/utils/site-url';
-
-const openSans = Open_Sans({
-  subsets: ['latin'],
-  variable: '--font-open-sans',
-  display: 'swap',
-  weight: ['300', '400', '500', '600', '700', '800'],
-});
 
 const siteUrl = getSiteUrl();
 
@@ -53,7 +45,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={openSans.variable}>
+    <html lang="fr">
       <body className="font-sans">
         {children}
         <Toaster
@@ -61,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           richColors
           toastOptions={{
             style: {
-              fontFamily: 'var(--font-open-sans)',
+              fontFamily: 'var(--font-locavia)',
             },
           }}
         />
